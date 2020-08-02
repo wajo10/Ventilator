@@ -97,6 +97,16 @@ class Controller {
                 /*output_min=*/0.f,
                 /*output_max=*/1.0f};
 
+  PID air_flow_pid_{"air_flow_",
+                    " for air flow PID",
+                    /*kp=*/0.1f,
+                    /*ki=*/20.0f,
+                    /*kd=*/0.0f,
+                    /*p_term=*/PID::TermApplication::OnError,
+                    /*d_term=*/PID::TermApplication::OnMeasurement,
+                    /*output_min=*/0.f,
+                    /*output_max=*/1.0f};
+
   // These objects accumulate flow to calculate volume.
   //
   // For debugging, we accumulate flow with and without error correction.  See
@@ -143,9 +153,13 @@ class Controller {
   // Outputs - read from external debug program, modified by the controller.
   DbgFloat dbg_pc_setpoint_{"pc_setpoint", DbgAccess::ReadOnly, 0.0f, "cmH2O",
                             "Pressure control set-point"};
+
   // \todo: need a forced_fio2 variable
   DbgFloat dbg_fio2_setpoint_{"fio2_setpoint", DbgAccess::ReadOnly, 0.21f, "ratio",
                               "FiO2 setpoint [0.0, 1.0] as commanded by GUI"};
+
+  DbgFloat dbg_air_flow_setpoint_{"air_flow_setpoint", DbgAccess::ReadOnly, 0.0f, "L/s",
+                                  "Setpoint for air flow PID"};
 
   DbgFloat dbg_net_flow_{"net_flow", DbgAccess::ReadOnly, 0.0f, "mL/s", "Net flow rate"};
   DbgFloat dbg_net_flow_uncorrected_{"net_flow_uncorrected", DbgAccess::ReadOnly, 0.0f, "mL/s",
