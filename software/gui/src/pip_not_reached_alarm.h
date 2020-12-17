@@ -24,7 +24,7 @@ private:
            const BreathSignals &breath_signals) override {
     (void)now;
     (void)status;
-    if (breath_signals.num_breaths() < 3)
+    if (breath_signals.num_breaths() < 4)
       return std::nullopt;
     auto pip = breath_signals.pip();
     if (pip.has_value() && std::ceil(*pip) < threshold_cmh2o_) {

@@ -36,9 +36,19 @@ class GuiStateContainer : public QObject {
 
 public:
   enum VentilationMode {
-    PRESSURE_CONTROL,
-    PRESSURE_ASSIST,
-    HIGH_FLOW_NASAL_CANNULA,
+      OFF,
+      PRESSURE_CONTROL ,
+      PRESSURE_ASSIST ,
+      HIGH_FLOW_NASAL_CANNULA,
+      VC ,
+      CPAP,
+      VC_AC ,
+      PSV ,
+      SIMVPC ,
+      SIMVVC ,
+      BIPAP ,
+      PRVC ,
+      SPV
   };
   Q_ENUM(VentilationMode)
 
@@ -55,6 +65,11 @@ public:
           commanded_pip_ + 5);
       alarm_manager_.get_pip_not_reached_alarm()->SetThresholdCmH2O(
           commanded_pip_ - 5);
+
+      alarm_manager_.get_viv_exceeded_alarm()->SetThresholdml(
+          commanded_viv_ + 5);
+      alarm_manager_.get_viv_not_reached_alarm()->SetThresholdml(
+          commanded_viv_ - 5);
     });
     // Set initial alarm parameters per above.
     params_changed();
@@ -73,12 +88,32 @@ public:
     status.uptime_ms = TimeAMinusB(SteadyClock::now(), startup_time_).count();
     status.desired_params.mode = [&] {
       switch (commanded_mode_) {
+      case VentilationMode::OFF:
+        return VentMode::VentMode_OFF;
       case VentilationMode::PRESSURE_CONTROL:
         return VentMode::VentMode_PRESSURE_CONTROL;
       case VentilationMode::PRESSURE_ASSIST:
         return VentMode::VentMode_PRESSURE_ASSIST;
       case VentilationMode::HIGH_FLOW_NASAL_CANNULA:
         return VentMode::VentMode_HIGH_FLOW_NASAL_CANNULA;
+      case VentilationMode::VC:
+        return VentMode::VentMode_VC;
+      case VentilationMode::CPAP:
+        return VentMode::VentMode_CPAP;
+      case VentilationMode::VC_AC:
+        return VentMode::VentMode_VC_AC;
+      case VentilationMode::PSV:
+        return VentMode::VentMode_PSV;
+      case VentilationMode::SIMVPC:
+        return VentMode::VentMode_SIMVPC;
+      case VentilationMode::SIMVVC:
+        return VentMode::VentMode_SIMVVC;
+      case VentilationMode::BIPAP:
+        return VentMode:: VentMode_BIPAP;
+      case VentilationMode::PRVC:
+        return VentMode::VentMode_PRVC;
+      case VentilationMode::SPV:
+        return VentMode::VentMode_SPV;
       default:
         // Should never happen.
         CRIT("Unexpected commanded_mode: {}", commanded_mode_);
@@ -88,6 +123,10 @@ public:
     status.desired_params.peep_cm_h2o = commanded_peep_;
     status.desired_params.breaths_per_min = commanded_rr_;
     status.desired_params.pip_cm_h2o = commanded_pip_;
+    status.desired_params.viv = commanded_viv_;
+    status.desired_params.flow_l_per_min = commanded_flow_;
+    status.desired_params.psupp = commanded_psupp_;
+    status.desired_params.pstep = commanded_pstep_;
     float breath_duration_sec = 60.0 / commanded_rr_;
     float commanded_e_time = breath_duration_sec - commanded_i_time_;
     status.desired_params.inspiratory_expiratory_ratio =
@@ -104,20 +143,34 @@ public:
   }
 
   Q_PROPERTY(bool is_using_fake_data READ get_is_using_fake_data CONSTANT)
+
   // Measured parameters
   Q_PROPERTY(qreal measured_pressure READ get_measured_pressure NOTIFY
                  measurements_changed)
+
   Q_PROPERTY(
       qreal measured_flow READ get_measured_flow NOTIFY measurements_changed)
+
   Q_PROPERTY(qreal measured_tv READ get_measured_tv NOTIFY measurements_changed)
+
   Q_PROPERTY(
       quint32 measured_rr READ get_measured_rr NOTIFY measurements_changed)
+
   Q_PROPERTY(
       quint32 measured_peep READ get_measured_peep NOTIFY measurements_changed)
+
+  Q_PROPERTY(
+      quint32 measured_viv READ get_measured_viv NOTIFY measurements_changed)
+
+  Q_PROPERTY(
+      quint32 measured_psupp READ get_measured_psupp NOTIFY measurements_changed)
+
   Q_PROPERTY(
       quint32 measured_pip READ get_measured_pip NOTIFY measurements_changed)
+
   Q_PROPERTY(
       qreal measured_ier READ get_measured_ier NOTIFY measurements_changed)
+
   Q_PROPERTY(qreal measured_fio2_percent READ get_measured_fio2_percent NOTIFY
                  measurements_changed)
 
@@ -134,12 +187,28 @@ public:
   // Commanded parameters
   Q_PROPERTY(VentilationMode commanded_mode MEMBER commanded_mode_ NOTIFY
                  params_changed)
+
   Q_PROPERTY(quint32 commanded_rr MEMBER commanded_rr_ NOTIFY params_changed)
+
   Q_PROPERTY(
       quint32 commanded_peep MEMBER commanded_peep_ NOTIFY params_changed)
+
+  Q_PROPERTY(
+      quint32 commanded_viv MEMBER commanded_viv_ NOTIFY params_changed)
+
+  Q_PROPERTY(
+          quint32 commanded_flow MEMBER commanded_flow_ NOTIFY params_changed)
+
+  Q_PROPERTY(
+          quint32 commanded_psupp MEMBER commanded_psupp_ NOTIFY params_changed)
+  Q_PROPERTY(
+          quint32 commanded_pstep MEMBER commanded_pstep_ NOTIFY params_changed)
+
   Q_PROPERTY(quint32 commanded_pip MEMBER commanded_pip_ NOTIFY params_changed)
+
   Q_PROPERTY(
       qreal commanded_i_time MEMBER commanded_i_time_ NOTIFY params_changed)
+
   Q_PROPERTY(qreal commanded_fio2_percent MEMBER commanded_fio2_percent_ NOTIFY
                  params_changed)
 
@@ -223,12 +292,20 @@ private:
     return history_.GetLastStatus().sensor_readings.volume_ml;
   }
   qreal get_measured_rr() const {
-    return (commanded_mode_ == VentilationMode::PRESSURE_CONTROL)
+    return (commanded_mode_ == VentilationMode::VC)
                ? commanded_rr_
                : breath_signals_.rr().value_or(commanded_rr_);
   }
   qreal get_measured_peep() const {
     return breath_signals_.peep().value_or(commanded_peep_);
+  }
+
+  qreal get_measured_psupp() const {
+    return 0;//breath_signals_.peep().value_or(commanded_psupp_);
+  }
+
+  qreal get_measured_viv() const {
+    return breath_signals_.viv().value_or(commanded_viv_);
   }
   qreal get_measured_pip() const {
     return breath_signals_.pip().value_or(commanded_pip_);
@@ -260,7 +337,11 @@ private:
   quint32 commanded_rr_ = 12;
   quint32 commanded_pip_ = 15;
   quint32 commanded_peep_ = 5;
-  qreal commanded_i_time_ = 1.0;
+  qreal   commanded_i_time_ = 1.0;
+  quint32 commanded_viv_ = 300;
+  quint32 commanded_psupp_ = 5;
+  quint32 commanded_pstep_ = 1;
+  quint32 commanded_flow_ = 1;
   // https://respiraworks.slack.com/archives/C011UMNUWGZ/p1592608246223200?thread_ts=1592603466.221100&cid=C011UMNUWGZ
   qreal commanded_fio2_percent_ = 21.0;
 

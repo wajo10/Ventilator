@@ -14,6 +14,7 @@ limitations under the License.
 */
 
 #include "actuators.h"
+#include "commfail_alarm.h"
 #include "comms.h"
 #include "controller.h"
 #include "debug.h"
@@ -48,6 +49,7 @@ static DebugFloat
 static Controller controller;
 static ControllerStatus controller_status;
 static Sensors sensors;
+static CommFailAlarm alarm;
 
 static SensorsProto AsSensorsProto(const SensorReadings &r,
                                    const ControllerState &c) {
@@ -151,6 +153,9 @@ static void background_loop() {
 
     comms_handler(local_controller_status, &gui_status);
 
+    alarm.Handler(Hal.now(), CommsGetLastRxTimeStamp()) ? Hal.BuzzerOn()
+                                                        : Hal.BuzzerOff();
+
     // Override received gui_status from the RPi with values from DebugVars iff
     // the gui_mode DebugVar has a legal value.
     if (uint32_t m = gui_mode.Get(); m >= _VentMode_MIN && m <= _VentMode_MAX) {
@@ -161,6 +166,26 @@ static void background_loop() {
       p.pip_cm_h2o = gui_pip.Get();
       p.inspiratory_expiratory_ratio = gui_ie_ratio.Get();
       p.fio2 = gui_fio2.Get() / 100.f;
+    }
+    {
+      static int count;
+
+      if (count < 250000) {
+        count++;
+        if (count == 250000) {
+          count = 0;
+          debug.Print("mo %d ", gui_status.desired_params.mode);
+          debug.Print("bp %d ", gui_status.desired_params.breaths_per_min);
+          debug.Print("pe %d ", gui_status.desired_params.peep_cm_h2o);
+          debug.Print("pi %d ", gui_status.desired_params.pip_cm_h2o);
+          debug.Print("ie %f ", gui_status.desired_params.inspiratory_expiratory_ratio);
+          debug.Print("fi %f ", gui_status.desired_params.fio2);
+          debug.Print("vi %f ", gui_status.desired_params.viv_ml);
+          debug.Print("fl %f ", gui_status.desired_params.flow_l_per_min);
+          debug.Print("ps %d ", gui_status.desired_params.psupp_cm_h2o);
+          debug.Print("pt %d\n", gui_status.desired_params.pstep_cm_h2o);
+        }
+      }
     }
 
     // Copy the gui_status data into our controller status
@@ -185,6 +210,8 @@ int main() {
   NVparamsInit();
 
   comms_init();
+
+  alarm.Initialize(Hal.now());
 
   background_loop();
 }

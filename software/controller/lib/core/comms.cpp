@@ -138,3 +138,6 @@ void comms_handler(const ControllerStatus &controller_status,
   process_tx(controller_status);
   process_rx(gui_status);
 }
+
+// just return last rx time stamp
+Time CommsGetLastRxTimeStamp() { return last_rx; }

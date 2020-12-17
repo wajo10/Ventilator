@@ -20,6 +20,7 @@ limitations under the License.
 #include <variant>
 
 #include "network_protocol.pb.h"
+#include "sensors.h"
 #include "units.h"
 
 // This module encapsulates the blower system's finite state machine (FSM).
@@ -72,6 +73,10 @@ struct BlowerSystemState {
   // immediately", whereas pressure_setpoint == 0 instructs the system to try
   // to achieve 0 pressure by e.g. closing valves.
   std::optional<Pressure> pressure_setpoint;
+  // volume setpoint used in volume control/assist modes
+  std::optional<Volume> volume_setpoint;
+  // volumetricflow setpoint used in HFNC, CPAP & BIPAP
+  std::optional<VolumetricFlow> flow_setpoint;
 
   // Should air be primarily flowing into the patient, or out of the patient?
   FlowDirection flow_direction;
@@ -83,7 +88,12 @@ struct BlowerSystemState {
   // breath boundaries.
   Pressure pip;
   Pressure peep;
+  Pressure psup;
+  Pressure pstep;
 
+  // inspire volume used in volume control/assist modes
+  Volume viv;
+  bool is_in_exhale = false;
   // Is this the last BlowerSystemState returned at the end of the breath cycle?
   bool is_end_of_breath = false;
 };
@@ -111,19 +121,22 @@ public:
   explicit OffFsm(Time now, const VentParams &) {}
   BlowerSystemState DesiredState(Time now, const BlowerFsmInputs &inputs) {
     return {
-        .pressure_setpoint = std::nullopt,
-        // TODO: It doesn't make much sense to specify a flow direction when the
-        // device is off and therefore there's no flow!  It might be better to
-        // have a different BlowerSystemState struct for different categories of
-        // modes: One for pressure modes, one for volume modes, one for flow
-        // modes (high-flow nasal cannula), and one for the off mode.
-        //
-        // Same applies to the is_end_of_breath flag: it doesn't really pertain
-        // to the off state but hardcode it to false by convention.
-        .flow_direction = FlowDirection::EXPIRATORY,
-        .pip = cmH2O(0.0f),
-        .peep = cmH2O(0.0f),
-        .is_end_of_breath = false,
+      .pressure_setpoint = std::nullopt,
+      .volume_setpoint = std::nullopt,
+      // TODO: It doesn't make much sense to specify a flow direction when the
+      // device is off and therefore there's no flow!  It might be better to
+      // have a different BlowerSystemState struct for different categories of
+      // modes: One for pressure modes, one for volume modes, one for flow
+      // modes (high-flow nasal cannula), and one for the off mode.
+      //
+      // Same applies to the is_end_of_breath flag: it doesn't really pertain
+      // to the off state but hardcode it to false by convention.
+      .flow_direction = FlowDirection::EXPIRATORY,
+      .pip = cmH2O(0.0f),
+      .peep = cmH2O(0.0f),
+      .viv = ml(0.0f),
+      .is_in_exhale = false,
+      .is_end_of_breath = false,
     };
   }
 };
@@ -164,6 +177,7 @@ private:
   Time start_time_;
   Time inspire_end_;
   Time expire_deadline_;
+  Duration inspire_duration;
 
   // During exhale we maintain two exponentially-weighted averages of flow, one
   // which updates quickly (fast_flow_avg_), and one which updates slowly
@@ -178,6 +192,206 @@ private:
   std::optional<VolumetricFlow> slow_flow_avg_;
 };
 
+// "Breath finite state machine" for pressure control mode.
+class HFNCFsm {
+public:
+  explicit HFNCFsm(Time now, const VentParams &params);
+  BlowerSystemState DesiredState(Time now, const BlowerFsmInputs &inputs);
+
+private:
+  const VolumetricFlow needed_flow_;
+  Time start_time_;
+  Time inspire_end_;
+  Time expire_end_;
+};
+
+// "Breath finite state machine" for volume control mode.
+class VolumeControlFsm {
+public:
+  explicit VolumeControlFsm(Time now, const VentParams &params);
+  BlowerSystemState DesiredState(Time now, const BlowerFsmInputs &inputs);
+
+private:
+  const Volume inspire_volume_;
+  const Pressure expire_pressure_;
+  Time start_time_;
+  Time inspire_end_;
+  Time expire_end_;
+};
+
+// "Breath finite state machine" for pressure control mode.
+class CPAPFsm {
+public:
+  explicit CPAPFsm(Time now, const VentParams &params);
+  BlowerSystemState DesiredState(Time now, const BlowerFsmInputs &inputs);
+
+private:
+  const VolumetricFlow needed_flow_;
+  const Pressure expire_pressure_;
+  Time start_time_;
+  Time inspire_end_;
+  Time expire_end_;
+};
+
+// "Breath finite state machine" for volume assist mode.
+//
+class VolumeAssistFsm {
+public:
+  explicit VolumeAssistFsm(Time now, const VentParams &params);
+  BlowerSystemState DesiredState(Time now, const BlowerFsmInputs &inputs);
+
+private:
+  bool PatientInspiring(Time now, const BlowerFsmInputs &inputs);
+
+  const Volume inspire_volume_;
+  const Pressure expire_pressure_;
+  Time start_time_;
+  Time inspire_end_;
+  Time expire_end_;
+  Duration inspire_duration;
+
+  std::optional<VolumetricFlow> fast_flow_avg_;
+  std::optional<VolumetricFlow> slow_flow_avg_;
+};
+
+// "Breath finite state machine" for pressure support mode.
+//
+class PressureSupportFsm {
+public:
+  explicit PressureSupportFsm(Time now, const VentParams &params);
+  BlowerSystemState DesiredState(Time now, const BlowerFsmInputs &inputs);
+
+private:
+  bool PatientInspiring(Time now, const BlowerFsmInputs &inputs);
+  bool PatientExhaling(Time now, const BlowerFsmInputs &inputs);
+
+  const Pressure psupp_;
+  const Pressure expire_pressure_;
+  Time start_time_;
+  Time inspire_end_;
+  Time expire_end_;
+  Duration inspire_duration;
+  Duration expire_duration;
+
+  std::optional<VolumetricFlow> fast_flow_avg_;
+  std::optional<VolumetricFlow> slow_flow_avg_;
+};
+
+// "Breath finite state machine" for PC_SIMV mode.
+//
+class SIMVPCFsm {
+public:
+  explicit SIMVPCFsm(Time now, const VentParams &params);
+  BlowerSystemState DesiredState(Time now, const BlowerFsmInputs &inputs);
+
+private:
+  bool PatientInspiring(Time now, const BlowerFsmInputs &inputs);
+  bool PatientExhaling(Time now, const BlowerFsmInputs &inputs);
+
+  Pressure inspire_pressure_;
+  const Pressure expire_pressure_;
+  const Pressure psupp_;
+  Time start_time_;
+  Time inspire_end_;
+  Time expire_end_;
+  Duration inspire_duration;
+  Duration expire_duration;
+
+  std::optional<VolumetricFlow> fast_flow_avg_;
+  std::optional<VolumetricFlow> slow_flow_avg_;
+};
+
+// "Breath finite state machine" for VC_SIMV mode.
+//
+class SIMVVCFsm {
+public:
+  explicit SIMVVCFsm(Time now, const VentParams &params);
+  BlowerSystemState DesiredState(Time now, const BlowerFsmInputs &inputs);
+
+private:
+  bool PatientInspiring(Time now, const BlowerFsmInputs &inputs);
+  bool PatientExhaling(Time now, const BlowerFsmInputs &inputs);
+
+  const Volume inspire_volume_;
+  const Pressure expire_pressure_;
+  const Pressure psupp_;
+  Time start_time_;
+  Time inspire_end_;
+  Time expire_end_;
+  Duration inspire_duration;
+  Duration expire_duration;
+  bool pressure_support;
+
+  std::optional<VolumetricFlow> fast_flow_avg_;
+  std::optional<VolumetricFlow> slow_flow_avg_;
+};
+
+// "Breath finite state machine" for BIPAP mode.
+//
+class BIPAPFsm {
+public:
+  explicit BIPAPFsm(Time now, const VentParams &params);
+  BlowerSystemState DesiredState(Time now, const BlowerFsmInputs &inputs);
+
+private:
+  bool PatientInspiring(Time now, const BlowerFsmInputs &inputs);
+  bool PatientExhaling(Time now, const BlowerFsmInputs &inputs);
+
+  const Pressure inspire_pressure_;
+  const Pressure expire_pressure_;
+  const Pressure psupp_;
+  Time start_time_;
+  Time inspire_end_;
+  Time expire_end_;
+  Duration inspire_duration;
+  Duration expire_duration;
+
+  std::optional<VolumetricFlow> fast_flow_avg_;
+  std::optional<VolumetricFlow> slow_flow_avg_;
+};
+
+// "Breath finite state machine" for PRVC mode.
+//
+class PRVCFsm {
+public:
+  explicit PRVCFsm(Time now, const VentParams &params);
+  BlowerSystemState DesiredState(Time now, const BlowerFsmInputs &inputs);
+
+private:
+  const Pressure inspire_pressure_;
+  const Pressure expire_pressure_;
+  const Pressure pstep_;
+  const Volume inspire_volume_;
+  Time start_time_;
+  Time inspire_end_;
+  Time expire_end_;
+  Duration inspire_duration;
+  Duration expire_duration;
+};
+
+// "Breath finite state machine" for SPV mode.
+//
+class SPVFsm {
+public:
+  explicit SPVFsm(Time now, const VentParams &params);
+  BlowerSystemState DesiredState(Time now, const BlowerFsmInputs &inputs);
+
+private:
+  bool PatientInspiring(Time now, const BlowerFsmInputs &inputs);
+  bool PatientExhaling(Time now, const BlowerFsmInputs &inputs);
+
+  const Pressure psupp_;
+  const Pressure expire_pressure_;
+  Time start_time_;
+  Time inspire_end_;
+  Time expire_end_;
+  Duration inspire_duration;
+  Duration expire_duration;
+
+  std::optional<VolumetricFlow> fast_flow_avg_;
+  std::optional<VolumetricFlow> slow_flow_avg_;
+};
+
 class BlowerFsm {
 public:
   // Gets the state that the the blower system should (ideally) deliver right
@@ -186,7 +400,21 @@ public:
                                  const BlowerFsmInputs &inputs);
 
 private:
-  std::variant<OffFsm, PressureControlFsm, PressureAssistFsm> fsm_;
+  std::variant<
+    OffFsm,
+    PressureControlFsm,
+    PressureAssistFsm,
+    HFNCFsm,
+    VolumeControlFsm,
+    CPAPFsm,
+    VolumeAssistFsm,
+    PressureSupportFsm,
+    SIMVPCFsm,
+    SIMVVCFsm,
+    BIPAPFsm,
+    PRVCFsm,
+    SPVFsm
+    > fsm_;
 };
 
 #endif // BLOWER_FSM_H

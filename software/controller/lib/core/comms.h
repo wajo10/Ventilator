@@ -17,6 +17,7 @@ limitations under the License.
 #define COMMS_H
 
 #include "network_protocol.pb.h"
+#include "units.h"
 #include <stdint.h>
 
 // This module periodically sends messages to the GUI device and receives
@@ -30,5 +31,7 @@ void comms_init();
 // gui_status accordingly.
 void comms_handler(const ControllerStatus &controller_status,
                    GuiStatus *gui_status);
+
+Time CommsGetLastRxTimeStamp();
 
 #endif // COMMS_H

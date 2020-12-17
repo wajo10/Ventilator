@@ -133,6 +133,10 @@ message VentParams {
 
   // A value between 0..1. Technically only values in [0.21, 1] are allowed.
   required float fio2 = 10;
+  required float viv_ml = 11;
+  required float flow_l_per_min = 12;
+//  required uint32 psupp_cm_h2o = 13;
+//  required uint32 pstep_cm_h2o = 14;
 }
 
 // See

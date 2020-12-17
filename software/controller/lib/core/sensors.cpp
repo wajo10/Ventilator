@@ -28,6 +28,7 @@ static DebugFloat dbg_pressure("pressure", "Patient pressure, cmH2O");
 static DebugFloat dbg_flow_inhale("flow_inhale", "Inhale flow rate, cc/sec");
 static DebugFloat dbg_flow_exhale("flow_exhale", "Exhale flow rate, cc/sec");
 static DebugFloat dbg_fio2("fio2", "Fraction of inspired oxygen, [0.0 - 1.0]");
+static DebugFloat dbg_fio2volts("fio2volts", "FIO2 reading in raw volts");
 // Flow correction happens as part of volume computation, in the Controller.
 static DebugFloat dbg_flow_uncorrected("flow_uncorrected",
                                        "Uncorrected net flow rate, cc/sec");
@@ -181,6 +182,7 @@ SensorReadings Sensors::GetReadings() const {
   dbg_flow_inhale.Set(inflow.ml_per_sec());
   dbg_flow_exhale.Set(outflow.ml_per_sec());
   dbg_flow_uncorrected.Set(uncorrected_flow.ml_per_sec());
+  dbg_fio2volts.Set(Hal.analogRead(PinFor(Sensor::kFIO2)).volts());
 
   return {
       .patient_pressure = patient_pressure,

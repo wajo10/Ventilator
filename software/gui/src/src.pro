@@ -17,6 +17,7 @@ CONFIG += staticlib
 HEADERS += \
   alarm.h \
   alarm_manager.h \
+  breath_signals.h \
   chrono.h \
   connected_device.h \
   controller_history.h \
@@ -30,7 +31,10 @@ HEADERS += \
   simple_clock.h \
   time_series_graph.h \
   time_series_graph_painter.h \
-  logger.h
+  logger.h \
+    viv_exceeded_alarm.h \
+    viv_exceeded_alarm.h \
+    viv_not_reached_alarm.h
 
 SOURCES += gui_state_container.cpp \
   periodic_closure.cpp \
