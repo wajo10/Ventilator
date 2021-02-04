@@ -57,7 +57,10 @@ void HalApi::InitPSOL() {
   // The STM32 datasheet has a table (table 17) which shows
   // which functions can be connected to each pin.  For
   // PA11 we select function 1 to connect it to timer 1.
-  GPIO_PinAltFunc(GPIO_A_BASE, 11, 1);
+  // GPIO_PinAltFunc(GPIO_A_BASE, 11, 1); //TIM1_CH4
+
+  // Edwin Mod:
+  GPIO_PinAltFunc(GPIO_A_BASE, 8, 1); // TIM1_CH1
 
   TimerRegs *tmr = TIMER1_BASE;
 
@@ -73,9 +76,15 @@ void HalApi::InitPSOL() {
   // TODO - the ccMode and ccEnable registers of the timer
   // should really be converted to bit flags for better
   // readability
-  tmr->ccMode[1] = 0x6800;
+  // tmr->ccMode[1] = 0x6800;
 
-  tmr->ccEnable = 0x1000;
+  // Edwin Mod:
+  tmr->ccMode[0] = 0x0068;
+
+  // tmr->ccEnable = 0x1000;
+
+  // Edwin Mod:
+  tmr->ccEnable = 0x0001;
 
   // For timer 1 we need to disable the main output enable
   // (MOE) feature by setting bit 15 of the deadtime register.
@@ -83,7 +92,7 @@ void HalApi::InitPSOL() {
   tmr->deadTime = 0x8000;
 
   // Start with 0% duty cycle
-  tmr->compare[3] = 0;
+  tmr->compare[0] = 0;
 
   // Load the shadow registers
   tmr->event = 1;
@@ -111,7 +120,7 @@ void HalApi::PSOL_Value(float val) {
     scaled = closed_pwm + val * (open_pwm - closed_pwm);
   }
   float duty = scaled * static_cast<float>(tmr->reload);
-  tmr->compare[3] = static_cast<int>(duty);
+  tmr->compare[0] = static_cast<int>(duty);
 }
 
 #endif
