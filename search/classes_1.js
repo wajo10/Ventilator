@@ -1,7 +1,7 @@
 var searchData=
 [
   ['actuatorsstate_123',['ActuatorsState',['../structActuatorsState.html',1,'']]],
-  ['adc_5fregs_5f_124',['ADC_Regs_',['../structADC__Regs__.html',1,'']]],
+  ['adc_5fregs_124',['ADC_Regs',['../structADC__Regs.html',1,'']]],
   ['alarmmanager_125',['AlarmManager',['../classAlarmManager.html',1,'']]],
   ['alarmpriority_126',['AlarmPriority',['../classAlarmPriority.html',1,'']]],
   ['arithscalar_127',['ArithScalar',['../classunits__detail_1_1ArithScalar.html',1,'units_detail']]],

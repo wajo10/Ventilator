@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RespiraWorks Ventilator: Watchdog_Regs_ Struct Reference</title>
+<title>RespiraWorks Ventilator: IntCtrl_Regs Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,29 +63,32 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structWatchdog__Regs__-members.html">List of all members</a>  </div>
+<a href="structIntCtrl__Regs-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">Watchdog_Regs_ Struct Reference</div>  </div>
+<div class="title">IntCtrl_Regs Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a7ed0801f939c951b1383247b008ec630"><td class="memItemLeft" align="right" valign="top"><a id="a7ed0801f939c951b1383247b008ec630"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>key</b></td></tr>
-<tr class="separator:a7ed0801f939c951b1383247b008ec630"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abeae08a20e727a3f44a7d6ffabcf684a"><td class="memItemLeft" align="right" valign="top"><a id="abeae08a20e727a3f44a7d6ffabcf684a"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>prescale</b></td></tr>
-<tr class="separator:abeae08a20e727a3f44a7d6ffabcf684a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a232e30437523f8848427b05eb8a1c58d"><td class="memItemLeft" align="right" valign="top"><a id="a232e30437523f8848427b05eb8a1c58d"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>reload</b></td></tr>
-<tr class="separator:a232e30437523f8848427b05eb8a1c58d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad0bcdd6776c13ae73297c883ae74218c"><td class="memItemLeft" align="right" valign="top"><a id="ad0bcdd6776c13ae73297c883ae74218c"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>status</b></td></tr>
-<tr class="separator:ad0bcdd6776c13ae73297c883ae74218c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6f61e8d91455722d9aa3206614efdbf6"><td class="memItemLeft" align="right" valign="top"><a id="a6f61e8d91455722d9aa3206614efdbf6"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>window</b></td></tr>
-<tr class="separator:a6f61e8d91455722d9aa3206614efdbf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac600c4910ca7aaa93dad78aedba65dd5"><td class="memItemLeft" align="right" valign="top"><a id="ac600c4910ca7aaa93dad78aedba65dd5"></a>
+REG&#160;</td><td class="memItemRight" valign="bottom"><b>setEna</b> [32]</td></tr>
+<tr class="separator:ac600c4910ca7aaa93dad78aedba65dd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56eaf2a49cb7438e9fcdfdea3fd59148"><td class="memItemLeft" align="right" valign="top"><a id="a56eaf2a49cb7438e9fcdfdea3fd59148"></a>
+REG&#160;</td><td class="memItemRight" valign="bottom"><b>clrEna</b> [32]</td></tr>
+<tr class="separator:a56eaf2a49cb7438e9fcdfdea3fd59148"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e09b52adc92832917bad115e0b73eb0"><td class="memItemLeft" align="right" valign="top"><a id="a2e09b52adc92832917bad115e0b73eb0"></a>
+REG&#160;</td><td class="memItemRight" valign="bottom"><b>setPend</b> [32]</td></tr>
+<tr class="separator:a2e09b52adc92832917bad115e0b73eb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae43ca9b304d12deaf353d46603df0f28"><td class="memItemLeft" align="right" valign="top"><a id="ae43ca9b304d12deaf353d46603df0f28"></a>
+REG&#160;</td><td class="memItemRight" valign="bottom"><b>clrPend</b> [32]</td></tr>
+<tr class="separator:ae43ca9b304d12deaf353d46603df0f28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc8edf62a13861ddde1d28f6462d43a3"><td class="memItemLeft" align="right" valign="top"><a id="afc8edf62a13861ddde1d28f6462d43a3"></a>
+REG&#160;</td><td class="memItemRight" valign="bottom"><b>active</b> [64]</td></tr>
+<tr class="separator:afc8edf62a13861ddde1d28f6462d43a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c8361b9bf69b94c71e563928577496b"><td class="memItemLeft" align="right" valign="top"><a id="a8c8361b9bf69b94c71e563928577496b"></a>
+BREG&#160;</td><td class="memItemRight" valign="bottom"><b>priority</b> [1024]</td></tr>
+<tr class="separator:a8c8361b9bf69b94c71e563928577496b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/home/runner/work/Ventilator/Ventilator/software/controller/lib/hal/hal_stm32_regs.h</li>
