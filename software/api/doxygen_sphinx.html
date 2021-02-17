@@ -1,0 +1,362 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Controller &mdash; RespiraWorks Ventilator  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="API" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> RespiraWorks Ventilator
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../system/index.html">System Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Software Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../level_of_concern.html">Level of Concern</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../SDP.html">Software Development Plan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../SRS.html">Software Requirements Specification</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">API</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Controller</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">RespiraWorks Ventilator</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Software Documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">API</a> &raquo;</li>
+        
+      <li>Controller</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/software/api/doxygen_sphinx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <blockquote>
+<div></div></blockquote>
+<div class="section" id="controller">
+<span id="api-ventilator"></span><h1>Controller<a class="headerlink" href="#controller" title="Permalink to this headline">¶</a></h1>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="cpp function">
+<dt>
+<span class="target" id="controller_8h_1ac89a01e5bfdf608a29feed8d3d0c8a60"></span><code class="sig-name descname"><span class="pre">static</span> <span class="pre">DebugFloat</span> <span class="pre">dbg_blower_valve_ki</span> <span class="pre">(&quot;blower_valve_ki&quot;,</span> <span class="pre">&quot;Integral</span> <span class="pre">gain</span> <span class="pre">for</span> <span class="pre">blower</span> <span class="pre">valve</span> <span class="pre">PID&quot;,</span> <span class="pre">-1.0f)</span></code></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt>
+<span class="target" id="controller_8h_1a9bfb73c0baeccc4d4663d7d6f4391780"></span><code class="sig-name descname"><span class="pre">static</span> <span class="pre">DebugFloat</span> <span class="pre">dbg_blower_valve_kp</span> <span class="pre">(&quot;blower_valve_kp&quot;,</span> <span class="pre">&quot;Proportional</span> <span class="pre">gain</span> <span class="pre">for</span> <span class="pre">blower</span> <span class="pre">valve</span> <span class="pre">PID&quot;,</span> <span class="pre">0.04f)</span></code></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt>
+<span class="target" id="controller_8h_1a8c132d99cafe1474a0eaf2c3d1616d86"></span><code class="sig-name descname"><span class="pre">static</span> <span class="pre">DebugFloat</span> <span class="pre">dbg_blower_valve_kd</span> <span class="pre">(&quot;blower_valve_kd&quot;,</span> <span class="pre">&quot;Derivative</span> <span class="pre">gain</span> <span class="pre">for</span> <span class="pre">blower</span> <span class="pre">valve</span> <span class="pre">PID&quot;)</span></code></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt>
+<span class="target" id="controller_8h_1a7380bad2867d3566ee365446964672b7"></span><code class="sig-name descname"><span class="pre">static</span> <span class="pre">DebugFloat</span> <span class="pre">dbg_psol_kp</span> <span class="pre">(&quot;psol_kp&quot;,</span> <span class="pre">&quot;Proportional</span> <span class="pre">gain</span> <span class="pre">for</span> <span class="pre">O2</span> <span class="pre">psol</span> <span class="pre">PID&quot;,</span> <span class="pre">0.04f)</span></code></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt>
+<span class="target" id="controller_8h_1aa0d350c8ab8f36d0cce2eac231711c33"></span><code class="sig-name descname"><span class="pre">static</span> <span class="pre">DebugFloat</span> <span class="pre">dbg_psol_ki</span> <span class="pre">(&quot;psol_ki&quot;,</span> <span class="pre">&quot;Integral</span> <span class="pre">gain</span> <span class="pre">for</span> <span class="pre">O2</span> <span class="pre">psol</span> <span class="pre">PID&quot;,</span> <span class="pre">20.0f)</span></code></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt>
+<span class="target" id="controller_8h_1afc9b3b9e86f42615fe0bc2a2cb61ead9"></span><code class="sig-name descname"><span class="pre">static</span> <span class="pre">DebugFloat</span> <span class="pre">dbg_psol_kd</span> <span class="pre">(&quot;psol_kd&quot;,</span> <span class="pre">&quot;Derivative</span> <span class="pre">gain</span> <span class="pre">for</span> <span class="pre">O2</span> <span class="pre">psol</span> <span class="pre">PID&quot;,</span> <span class="pre">0)</span></code></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt>
+<span class="target" id="controller_8h_1a37f3a7ba92a40fa9d03dcb94fcb5ba9e"></span><code class="sig-name descname"><span class="pre">static</span> <span class="pre">DebugFloat</span> <span class="pre">dbg_blower_valve_computed_ki</span> <span class="pre">(&quot;blower_valve_computed_ki&quot;,</span> <span class="pre">&quot;Integral</span> <span class="pre">gain</span> <span class="pre">for</span> <span class="pre">blower</span> <span class="pre">valve</span> <span class="pre">PID.</span>&#160; <span class="pre">READ</span> <span class="pre">&quot;</span> <span class="pre">&quot;ONLY</span> <span class="pre">-</span> <span class="pre">This</span> <span class="pre">value</span> <span class="pre">is</span> <span class="pre">gain-scheduled.&quot;,</span> <span class="pre">10.0f)</span></code></dt>
+<dd></dd></dl>
+
+</div>
+<dl class="cpp struct">
+<dt id="_CPPv415ControllerState">
+<span id="_CPPv315ControllerState"></span><span id="_CPPv215ControllerState"></span><span id="ControllerState"></span><span class="target" id="structControllerState"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ControllerState</span></code><a class="headerlink" href="#_CPPv415ControllerState" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="cpp var">
+<dt id="_CPPv4N15ControllerState17pressure_setpointE">
+<span id="_CPPv3N15ControllerState17pressure_setpointE"></span><span id="_CPPv2N15ControllerState17pressure_setpointE"></span><span id="ControllerState::pressure_setpoint__Pressure"></span><span class="target" id="structControllerState_1a494cf145a4fdf024f0cba79ee3d2322e"></span><span class="pre">Pressure</span> <code class="sig-name descname"><span class="pre">pressure_setpoint</span></code><a class="headerlink" href="#_CPPv4N15ControllerState17pressure_setpointE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N15ControllerState14patient_volumeE">
+<span id="_CPPv3N15ControllerState14patient_volumeE"></span><span id="_CPPv2N15ControllerState14patient_volumeE"></span><span id="ControllerState::patient_volume__Volume"></span><span class="target" id="structControllerState_1aa23aa62afce16f77ca172efdb9a811f9"></span><span class="pre">Volume</span> <code class="sig-name descname"><span class="pre">patient_volume</span></code><a class="headerlink" href="#_CPPv4N15ControllerState14patient_volumeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N15ControllerState8net_flowE">
+<span id="_CPPv3N15ControllerState8net_flowE"></span><span id="_CPPv2N15ControllerState8net_flowE"></span><span id="ControllerState::net_flow__VolumetricFlow"></span><span class="target" id="structControllerState_1aca6946de158fec60261cc8805c7676f1"></span><span class="pre">VolumetricFlow</span> <code class="sig-name descname"><span class="pre">net_flow</span></code><a class="headerlink" href="#_CPPv4N15ControllerState8net_flowE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N15ControllerState15flow_correctionE">
+<span id="_CPPv3N15ControllerState15flow_correctionE"></span><span id="_CPPv2N15ControllerState15flow_correctionE"></span><span id="ControllerState::flow_correction__VolumetricFlow"></span><span class="target" id="structControllerState_1a372d902dffa14bf96c06db1f0b15bd94"></span><span class="pre">VolumetricFlow</span> <code class="sig-name descname"><span class="pre">flow_correction</span></code><a class="headerlink" href="#_CPPv4N15ControllerState15flow_correctionE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N15ControllerState9breath_idE">
+<span id="_CPPv3N15ControllerState9breath_idE"></span><span id="_CPPv2N15ControllerState9breath_idE"></span><span id="ControllerState::breath_id__uint64_t"></span><span class="target" id="structControllerState_1a88e2fd75f746c069c7efe8becd52238d"></span><span class="pre">uint64_t</span> <code class="sig-name descname"><span class="pre">breath_id</span></code> <span class="pre">=</span> <span class="pre">{</span><span class="pre">0</span><span class="pre">}</span><a class="headerlink" href="#_CPPv4N15ControllerState9breath_idE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt id="_CPPv410Controller">
+<span id="_CPPv310Controller"></span><span id="_CPPv210Controller"></span><span id="Controller"></span><span class="target" id="classController"></span><em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">Controller</span></code><a class="headerlink" href="#_CPPv410Controller" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N10Controller10ControllerEv">
+<span id="_CPPv3N10Controller10ControllerEv"></span><span id="_CPPv2N10Controller10ControllerEv"></span><span id="Controller::Controller"></span><span class="target" id="classController_1ae1d7f1814db7ab462eaf42f8b84f3670"></span><code class="sig-name descname"><span class="pre">Controller</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="pre">=</span> <span class="pre">default</span><a class="headerlink" href="#_CPPv4N10Controller10ControllerEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N10Controller3RunE4TimeRK10VentParamsRK14SensorReadings">
+<span id="_CPPv3N10Controller3RunE4TimeRK10VentParamsRK14SensorReadings"></span><span id="_CPPv2N10Controller3RunE4TimeRK10VentParamsRK14SensorReadings"></span><span id="Controller::Run__Time.VentParamsCR.SensorReadingsCR"></span><span class="target" id="classController_1ae5bff17e63ff7a185e77e3e53a4f3443"></span><span class="pre">std</span><span class="pre">::</span><span class="pre">pair</span><span class="pre">&lt;</span><span class="pre">ActuatorsState</span><span class="pre">,</span> <a class="reference internal" href="#_CPPv415ControllerState" title="ControllerState"><span class="pre">ControllerState</span></a><span class="pre">&gt;</span> <code class="sig-name descname"><span class="pre">Run</span></code><span class="sig-paren">(</span><span class="pre">Time</span> <em><span class="pre">now</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">VentParams</span> <span class="pre">&amp;</span><em><span class="pre">params</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">SensorReadings</span> <span class="pre">&amp;</span><em><span class="pre">sensor_readings</span></em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10Controller3RunE4TimeRK10VentParamsRK14SensorReadings" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N10Controller13GetLoopPeriodEv">
+<span id="_CPPv3N10Controller13GetLoopPeriodEv"></span><span id="_CPPv2N10Controller13GetLoopPeriodEv"></span><span id="Controller::GetLoopPeriod"></span><span class="target" id="classController_1ac9425454d6204c1cf166c2da08961066"></span><em class="property"><span class="pre">static</span></em> <span class="pre">Duration</span> <code class="sig-name descname"><span class="pre">GetLoopPeriod</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10Controller13GetLoopPeriodEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Private Members</p>
+<dl class="cpp var">
+<dt id="_CPPv4N10Controller10breath_id_E">
+<span id="_CPPv3N10Controller10breath_id_E"></span><span id="_CPPv2N10Controller10breath_id_E"></span><span id="Controller::breath_id___uint64_t"></span><span class="target" id="classController_1a984d72e86a08a4f31d3fa0c79094c8f8"></span><span class="pre">uint64_t</span> <code class="sig-name descname"><span class="pre">breath_id_</span></code> <span class="pre">=</span> <span class="pre">{</span><span class="pre">0</span><span class="pre">}</span><a class="headerlink" href="#_CPPv4N10Controller10breath_id_E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N10Controller4fsm_E">
+<span id="_CPPv3N10Controller4fsm_E"></span><span id="_CPPv2N10Controller4fsm_E"></span><span id="Controller::fsm___BlowerFsm"></span><span class="target" id="classController_1a8ffb3c4fbd8e23cff6caf0f84c3fd6ca"></span><span class="pre">BlowerFsm</span> <code class="sig-name descname"><span class="pre">fsm_</span></code><a class="headerlink" href="#_CPPv4N10Controller4fsm_E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N10Controller17blower_valve_pid_E">
+<span id="_CPPv3N10Controller17blower_valve_pid_E"></span><span id="_CPPv2N10Controller17blower_valve_pid_E"></span><span id="Controller::blower_valve_pid___PID"></span><span class="target" id="classController_1a89f07eb4ee15d9f353d1f89e7af0cfb2"></span><span class="pre">PID</span> <code class="sig-name descname"><span class="pre">blower_valve_pid_</span></code> <span class="pre">=</span> <span class="pre">PID</span><span class="pre">(</span><span class="pre">dbg_blower_valve_kp</span><span class="pre">.</span><span class="pre">Get</span><span class="pre">(</span><span class="pre">)</span><span class="pre">,</span> <span class="pre">dbg_blower_valve_computed_ki</span><span class="pre">.</span><span class="pre">Get</span><span class="pre">(</span><span class="pre">)</span><span class="pre">,</span> <span class="pre">dbg_blower_valve_kd</span><span class="pre">.</span><span class="pre">Get</span><span class="pre">(</span><span class="pre">)</span><span class="pre">,</span> <span class="pre">ProportionalTerm</span><span class="pre">::</span><span class="pre">ON_ERROR</span><span class="pre">,</span> <span class="pre">DifferentialTerm</span><span class="pre">::</span><span class="pre">ON_MEASUREMENT</span><span class="pre">,</span> <span class="pre">0.f</span><span class="pre">,</span> <span class="pre">1.0f</span><span class="pre">)</span><a class="headerlink" href="#_CPPv4N10Controller17blower_valve_pid_E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N10Controller9psol_pid_E">
+<span id="_CPPv3N10Controller9psol_pid_E"></span><span id="_CPPv2N10Controller9psol_pid_E"></span><span id="Controller::psol_pid___PID"></span><span class="target" id="classController_1a4c682af456f8d14a2ce2ee7fc28d5f52"></span><span class="pre">PID</span> <code class="sig-name descname"><span class="pre">psol_pid_</span></code> <span class="pre">=</span> <span class="pre">PID</span><span class="pre">(</span><span class="pre">dbg_psol_kp</span><span class="pre">.</span><span class="pre">Get</span><span class="pre">(</span><span class="pre">)</span><span class="pre">,</span> <span class="pre">dbg_psol_ki</span><span class="pre">.</span><span class="pre">Get</span><span class="pre">(</span><span class="pre">)</span><span class="pre">,</span> <span class="pre">dbg_psol_kd</span><span class="pre">.</span><span class="pre">Get</span><span class="pre">(</span><span class="pre">)</span><span class="pre">,</span> <span class="pre">ProportionalTerm</span><span class="pre">::</span><span class="pre">ON_ERROR</span><span class="pre">,</span> <span class="pre">DifferentialTerm</span><span class="pre">::</span><span class="pre">ON_MEASUREMENT</span><span class="pre">,</span> <span class="pre">0.f</span><span class="pre">,</span> <span class="pre">1.0f</span><span class="pre">)</span><a class="headerlink" href="#_CPPv4N10Controller9psol_pid_E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N10Controller16flow_integrator_E">
+<span id="_CPPv3N10Controller16flow_integrator_E"></span><span id="_CPPv2N10Controller16flow_integrator_E"></span><span id="Controller::flow_integrator___std::optional:FlowIntegrator:"></span><span class="target" id="classController_1a19e809add9b051e7962ca56f9b9f2b1a"></span><span class="pre">std</span><span class="pre">::</span><span class="pre">optional</span><span class="pre">&lt;</span><span class="pre">FlowIntegrator</span><span class="pre">&gt;</span> <code class="sig-name descname"><span class="pre">flow_integrator_</span></code> <span class="pre">=</span> <span class="pre">FlowIntegrator</span><span class="pre">(</span><span class="pre">)</span><a class="headerlink" href="#_CPPv4N10Controller16flow_integrator_E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N10Controller28uncorrected_flow_integrator_E">
+<span id="_CPPv3N10Controller28uncorrected_flow_integrator_E"></span><span id="_CPPv2N10Controller28uncorrected_flow_integrator_E"></span><span id="Controller::uncorrected_flow_integrator___std::optional:FlowIntegrator:"></span><span class="target" id="classController_1a64b4a64c9a613782ead9fa1032442a8b"></span><span class="pre">std</span><span class="pre">::</span><span class="pre">optional</span><span class="pre">&lt;</span><span class="pre">FlowIntegrator</span><span class="pre">&gt;</span> <code class="sig-name descname"><span class="pre">uncorrected_flow_integrator_</span></code> <span class="pre">=</span> <span class="pre">FlowIntegrator</span><span class="pre">(</span><span class="pre">)</span><a class="headerlink" href="#_CPPv4N10Controller28uncorrected_flow_integrator_E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N10Controller18ventilator_was_on_E">
+<span id="_CPPv3N10Controller18ventilator_was_on_E"></span><span id="_CPPv2N10Controller18ventilator_was_on_E"></span><span id="Controller::ventilator_was_on___b"></span><span class="target" id="classController_1a16bd123ce6f5212cbf56f390ee1c0bee"></span><span class="pre">bool</span> <code class="sig-name descname"><span class="pre">ventilator_was_on_</span></code> <span class="pre">=</span> <span class="pre">{</span><span class="pre">false</span><span class="pre">}</span><a class="headerlink" href="#_CPPv4N10Controller18ventilator_was_on_E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="index.html" class="btn btn-neutral float-left" title="API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, RespiraWorks.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

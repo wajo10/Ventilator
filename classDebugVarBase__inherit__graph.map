@@ -1,0 +1,8 @@
+<map id="DebugVarBase" name="DebugVarBase">
+<area shape="rect" id="node1" title=" " alt="" coords="190,5,307,32"/>
+<area shape="rect" id="node2" href="$classDebugVar.html" title=" " alt="" coords="133,87,218,114"/>
+<area shape="rect" id="node6" href="$classFnDebugVar.html" title=" " alt="" coords="243,80,401,121"/>
+<area shape="rect" id="node3" href="$classDebugFloat.html" title=" " alt="" coords="5,169,103,196"/>
+<area shape="rect" id="node4" href="$classDebugInt32.html" title=" " alt="" coords="127,169,224,196"/>
+<area shape="rect" id="node5" href="$classDebugUInt32.html" title=" " alt="" coords="249,169,355,196"/>
+</map>
