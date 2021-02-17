@@ -11,9 +11,9 @@ var searchData=
   ['sensorreadings_213',['SensorReadings',['../structSensorReadings.html',1,'']]],
   ['sensors_214',['Sensors',['../classSensors.html',1,'']]],
   ['simpleclock_215',['SimpleClock',['../classSimpleClock.html',1,'']]],
-  ['spi_5fregs_216',['SPI_Regs',['../structSPI__Regs.html',1,'']]],
+  ['spi_5fregs_5f_216',['SPI_Regs_',['../structSPI__Regs__.html',1,'']]],
   ['stepmotor_217',['StepMotor',['../classStepMotor.html',1,'']]],
   ['stepperstatus_218',['StepperStatus',['../structStepperStatus.html',1,'']]],
   ['structure_219',['Structure',['../structNVParams_1_1Structure.html',1,'NVParams']]],
-  ['sysctrl_5freg_220',['SysCtrl_Reg',['../structSysCtrl__Reg.html',1,'']]]
+  ['sysctrl_5freg_5f_220',['SysCtrl_Reg_',['../structSysCtrl__Reg__.html',1,'']]]
 ];

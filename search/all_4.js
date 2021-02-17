@@ -7,7 +7,7 @@ var searchData=
   ['debuguint32_38',['DebugUInt32',['../classDebugUInt32.html',1,'']]],
   ['debugvar_39',['DebugVar',['../classDebugVar.html',1,'']]],
   ['debugvarbase_40',['DebugVarBase',['../classDebugVarBase.html',1,'']]],
-  ['dma_5fregs_41',['DMA_Regs',['../structDMA__Regs.html',1,'']]],
+  ['dma_5fregs_5f_41',['DMA_Regs_',['../structDMA__Regs__.html',1,'']]],
   ['dmactrl_42',['DMACtrl',['../classDMACtrl.html',1,'']]],
   ['duration_43',['Duration',['../classDuration.html',1,'']]]
 ];

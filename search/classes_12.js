@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['watchdog_5fregs_237',['Watchdog_Regs',['../structWatchdog__Regs.html',1,'']]]
+  ['watchdog_5fregs_5f_237',['Watchdog_Regs_',['../structWatchdog__Regs__.html',1,'']]]
 ];
