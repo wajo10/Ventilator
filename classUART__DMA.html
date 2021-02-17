@@ -72,29 +72,29 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a1afd50116852eaa2fe89dc0abdbe2177"><td class="memItemLeft" align="right" valign="top"><a id="a1afd50116852eaa2fe89dc0abdbe2177"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>UART_DMA</b> (<a class="el" href="structUART__Regs.html">UART_Regs</a> *const uart, <a class="el" href="structDMA__Regs.html">DMA_Regs</a> *const dma, uint8_t txCh, uint8_t rxCh, <a class="el" href="classUART__DMA__RxListener.html">UART_DMA_RxListener</a> &amp;rxl, <a class="el" href="classUART__DMA__TxListener.html">UART_DMA_TxListener</a> &amp;txl, char matchChar)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><b>UART_DMA</b> (UART_Regs *const uart, DMA_Regs *const dma, uint8_t txCh, uint8_t rxCh, <a class="el" href="classUART__DMA__RxListener.html">UART_DMA_RxListener</a> &amp;rxl, <a class="el" href="classUART__DMA__TxListener.html">UART_DMA_TxListener</a> &amp;txl, char matchChar)</td></tr>
 <tr class="separator:a1afd50116852eaa2fe89dc0abdbe2177"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a531b2a32fa4f43ab0df2c883e08c121d"><td class="memItemLeft" align="right" valign="top"><a id="a531b2a32fa4f43ab0df2c883e08c121d"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (int baud)</td></tr>
 <tr class="separator:a531b2a32fa4f43ab0df2c883e08c121d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac478e4a146e3e669dd35be6df0afb105"><td class="memItemLeft" align="right" valign="top"><a id="ac478e4a146e3e669dd35be6df0afb105"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isTxInProgress</b> ()</td></tr>
-<tr class="separator:ac478e4a146e3e669dd35be6df0afb105"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d8490423c82cddd1572652825a0f66f"><td class="memItemLeft" align="right" valign="top"><a id="a6d8490423c82cddd1572652825a0f66f"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isRxInProgress</b> ()</td></tr>
-<tr class="separator:a6d8490423c82cddd1572652825a0f66f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a833f4b5fa4dee5ae68c8018529d0207b"><td class="memItemLeft" align="right" valign="top"><a id="a833f4b5fa4dee5ae68c8018529d0207b"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>startTX</b> (const char *buf, uint32_t length)</td></tr>
-<tr class="separator:a833f4b5fa4dee5ae68c8018529d0207b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7b3a0f0d294187294024e629344f467"><td class="memItemLeft" align="right" valign="top"><a id="aa7b3a0f0d294187294024e629344f467"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>isTxInProgress</b> () const</td></tr>
+<tr class="separator:aa7b3a0f0d294187294024e629344f467"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82ebde8ea082449c0eb58d42752ce69a"><td class="memItemLeft" align="right" valign="top"><a id="a82ebde8ea082449c0eb58d42752ce69a"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>isRxInProgress</b> () const</td></tr>
+<tr class="separator:a82ebde8ea082449c0eb58d42752ce69a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef0782a2dce7a8f29406be13cf92a87d"><td class="memItemLeft" align="right" valign="top"><a id="aef0782a2dce7a8f29406be13cf92a87d"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>startTX</b> (char *buf, uint32_t length)</td></tr>
+<tr class="separator:aef0782a2dce7a8f29406be13cf92a87d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae25cfb140d09dcce79217c469958c2b8"><td class="memItemLeft" align="right" valign="top"><a id="ae25cfb140d09dcce79217c469958c2b8"></a>
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>getRxBytesLeft</b> ()</td></tr>
 <tr class="separator:ae25cfb140d09dcce79217c469958c2b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc9fff2433f79fc1533a49e166125915"><td class="memItemLeft" align="right" valign="top"><a id="adc9fff2433f79fc1533a49e166125915"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>stopTX</b> ()</td></tr>
 <tr class="separator:adc9fff2433f79fc1533a49e166125915"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa37c97e1376c8ff7509a9d2e7c414e7d"><td class="memItemLeft" align="right" valign="top"><a id="aa37c97e1376c8ff7509a9d2e7c414e7d"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>startRX</b> (const char *buf, uint32_t length, uint32_t timeout)</td></tr>
-<tr class="separator:aa37c97e1376c8ff7509a9d2e7c414e7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7488af2082fa193e96ae4f92eebe8061"><td class="memItemLeft" align="right" valign="top"><a id="a7488af2082fa193e96ae4f92eebe8061"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>startRX</b> (char *buf, uint32_t length, uint32_t timeout)</td></tr>
+<tr class="separator:a7488af2082fa193e96ae4f92eebe8061"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa59928cd538ba0d4b83a877800703b22"><td class="memItemLeft" align="right" valign="top"><a id="aa59928cd538ba0d4b83a877800703b22"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>stopRX</b> ()</td></tr>
 <tr class="separator:aa59928cd538ba0d4b83a877800703b22"><td class="memSeparator" colspan="2">&#160;</td></tr>
