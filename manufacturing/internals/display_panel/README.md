@@ -92,6 +92,27 @@ BEFORE purchasing any parts.**
 [a12mcmc]: https://www.mcmaster.com/93475A230/
 [a13mcmc]: https://www.mcmaster.com/92095A189/
 
+## Automatic BoM table
+
+The following is just a test table that was created by custom filling and exporting the BoM in inventor into a csv and then converitng the csv using some [online tools](https://tableconvert.com/) into markdown.  
+
+| Item | Part Number  | QTY | Title                               | Estimated Cost | REV  | Manufacturer     | Vendor              | Vendor Part Number | Optional | Comments                                                        | Keywords                                                      |
+|------|--------------|-----|-------------------------------------|----------------|------|------------------|---------------------|--------------------|----------|-----------------------------------------------------------------|---------------------------------------------------------------|
+| 1    | ELEV03EA0001 | 1   | Touchscreen                         | $49.00         | V0.3 | UPerfect         | AliExpress          | 4000747984746      | No       | 7" capacitive touchscreen with speakers                         | "electrical, sourced, internals, display_assembly"            |
+| 2    | ELEV03RW0002 | 1   | Open CASCADE Shape Model of the PCB |                | v0.3 | RespiraWorks     | RespiraWorks        |                    | No       | RespiraWorks custom PCB                                         | "electrical, custom, internals, display_assembly"             |
+| 3    | ELEV03EM0002 | 1   | Nucleo board                        | $14.43         | v0.3 | ST Micro         | Mouser  RSComputing | 511-NUCLEO-L452RE  | No       | "STM32 Nucleo dev board, DO NOT get the -P version"             | "electrical, sourced, internals, display_assembly"            |
+| 4    | ELEV03EM0003 | 1   | Raspberry Pi Board                  | $52.23         | v0.3 | Raspberry Pi     | Mouser              | RPI4-MODBP-2GB     | No       | Raspberry Pi 4                                                  | "electrical, sourced, internals, display_assembly"            |
+| 5    | ELEV03RW0004 | 1   | Interim Board                       |                | v0.3 | RespiraWorks     | RespiraWorks        |                    | Yes      | RespiraWorks Rev1 interim board                                 | "electrical, custom, internals, display_assembly"             |
+| 6    | MECV03EM0001 | 4   | PCB Lower Standoff                  | $0.59          | v0.3 | Wurst Elektronik | Digikey             | 732-10395-ND       | No       | "M2.5 standoff, 9mm tall"                                       | "mechanical, sourced, internals, display_assembly"            |
+| 7    | MECV03EM0002 | 4   | RaspberryPi Upper Standoff          | $0.62          | v0.3 | Wurst Elektronik | Digikey             | 732-10435-ND       | No       | "M2.5 standoff, 20mm tall"                                      | "mechanical, sourced, internals, display_assembly"            |
+| 8    | ELEV03ED0005 | 2   | Stepper Driver Board                | $10.64         | v0.3 | RespiraWorks     | Digikey  Mouser     | X-NUCLEO-IHM03A1   | No       | One-axis stepper driver board                                   | "electrical, sourced, internals, display_assembly"            |
+| 9    | MECV03EM0003 | 4   | Touchscreen Mounting Locknut        | $7.70          | v0.3 | McMaster-Carr    | McMaster-Carr       | 93625A101          | No       | M2 lock nut                                                     | "mechanical, sourced, internals, display_assembly"            |
+| 10   | MECV03EM0004 | 4   | Touchscreen Mounting Washer Front   | $1.06          | v0.3 | McMaster-Carr    | McMaster-Carr       | 93475A195          | No       | "M2 washer, 5mm OD"                                             | "mechanical, sourced, internals, display_assembly"            |
+| 11   | MECV03EM0005 | 4   | RasberryPi Mounting Screw           | $0.05          | v0.3 | McMaster-Carr    | McMaster-Carr       | 92095A458          | No       | "M2.5 screw, 6mm"                                               | "mechanical, sourced, internals, display_assembly"            |
+| 12   | MECV03EM0006 | 4   | Touchscreen Mounting Screw          | $7.44          | v0.3 | McMaster-Carr    | McMaster-Carr       | 92095A455          | No       | "	M2 screw, 12mm"                                               | "mechanical, sourced, internals, display_assembly"            |
+| 13   | MECV03EM0007 | 4   | Touchscreen Mounting Washer Back    | $2.40          | v0.3 | McMaster-Carr    | McMaster-Carr       | 91116A240          | No       | "	M2 washer, 7mm OD"                                            | "mechanical, sourced, internals, display_assembly"            |
+| 14   | ELEV03EX9001 | 1   | Alternate Stepper Driver Board      | $15.00         | v0.3 | ST Micro         | ST RSComputing      | X-NUCLEO-IHM02A1   | Yes      | "Two-axis stepper driver board, Alternative to 2x ELEV03ED0005" | "electrical, sourced, internals, display_assembly, alternate" |
+
 ## Assembly
 
 | Part  | Source |
