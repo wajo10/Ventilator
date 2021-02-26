@@ -6,6 +6,6 @@ var searchData=
   ['timerregs_5f_105',['TimerRegs_',['../structTimerRegs__.html',1,'']]],
   ['timeseriesgraph_106',['TimeSeriesGraph',['../classTimeSeriesGraph.html',1,'']]],
   ['timeseriesgraphpainter_107',['TimeSeriesGraphPainter',['../classTimeSeriesGraphPainter.html',1,'']]],
-  ['trace_108',['Trace',['../classTrace.html',1,'']]],
-  ['tracecmd_109',['TraceCmd',['../classTraceCmd.html',1,'']]]
+  ['trace_108',['Trace',['../classDebug_1_1Trace.html',1,'Debug']]],
+  ['tracehandler_109',['TraceHandler',['../classDebug_1_1Command_1_1TraceHandler.html',1,'Debug::Command']]]
 ];
