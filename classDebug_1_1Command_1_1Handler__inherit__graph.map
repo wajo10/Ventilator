@@ -1,9 +1,0 @@
-<map id="Debug::Command::Handler" name="Debug::Command::Handler">
-<area shape="rect" id="node1" title=" " alt="" coords="5,132,204,159"/>
-<area shape="rect" id="node2" href="$classDebug_1_1Command_1_1ConsoleHandler.html" title=" " alt="" coords="252,5,503,32"/>
-<area shape="rect" id="node3" href="$classDebug_1_1Command_1_1ModeHandler.html" title=" " alt="" coords="260,56,495,83"/>
-<area shape="rect" id="node4" href="$classDebug_1_1Command_1_1PeekHandler.html" title=" " alt="" coords="262,107,493,133"/>
-<area shape="rect" id="node5" href="$classDebug_1_1Command_1_1PokeHandler.html" title=" " alt="" coords="263,157,492,184"/>
-<area shape="rect" id="node6" href="$classDebug_1_1Command_1_1TraceHandler.html" title=" " alt="" coords="261,208,493,235"/>
-<area shape="rect" id="node7" href="$classDebug_1_1Command_1_1VarHandler.html" title=" " alt="" coords="268,259,487,285"/>
-</map>
