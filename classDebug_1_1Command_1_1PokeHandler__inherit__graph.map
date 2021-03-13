@@ -1,4 +1,5 @@
 <map id="Debug::Command::PokeHandler" name="Debug::Command::PokeHandler">
-<area shape="rect" id="node1" title=" " alt="" coords="5,80,235,107"/>
-<area shape="rect" id="node2" href="$classDebug_1_1Command_1_1Handler.html" title=" " alt="" coords="21,5,219,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="6,155,235,181"/>
+<area shape="rect" id="node2" href="$classDebug_1_1Command_1_1PeekHandler.html" title=" " alt="" coords="5,80,236,107"/>
+<area shape="rect" id="node3" href="$classDebug_1_1Command_1_1Handler.html" title=" " alt="" coords="21,5,220,32"/>
 </map>
