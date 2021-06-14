@@ -158,7 +158,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>CopyDataToWriteBuffer
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:a78a2830d7c6aac15405f5ebbd063066f"><td class="memItemLeft" align="right" valign="top"><a id="a78a2830d7c6aac15405f5ebbd063066f"></a>
-int8_t&#160;</td><td class="memItemRight" valign="bottom"><b>error_retry_</b> {kMaxRetries}</td></tr>
+int8_t&#160;</td><td class="memItemRight" valign="bottom"><b>error_retry_</b> {MaxRetries}</td></tr>
 <tr class="separator:a78a2830d7c6aac15405f5ebbd063066f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e52d2292eb79e4ea7e143b05581de41"><td class="memItemLeft" align="right" valign="top"><a id="a3e52d2292eb79e4ea7e143b05581de41"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>dma_enable_</b> {false}</td></tr>
@@ -175,18 +175,18 @@ uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><b>next_data_</b> {
 <tr class="memitem:ab2f5af945788046300d91e2297f9b310"><td class="memItemLeft" align="right" valign="top"><a id="ab2f5af945788046300d91e2297f9b310"></a>
 uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>remaining_size_</b> {0}</td></tr>
 <tr class="separator:ab2f5af945788046300d91e2297f9b310"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae564f49cf9ff10a19a962f333c543c8c"><td class="memItemLeft" align="right" valign="top"><a id="ae564f49cf9ff10a19a962f333c543c8c"></a>
-<a class="el" href="classCircularBuffer.html">CircularBuffer</a>&lt; uint8_t, kQueueLength &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>buffer_</b></td></tr>
-<tr class="separator:ae564f49cf9ff10a19a962f333c543c8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a571f7bdc8391f5dee12236aa75a028"><td class="memItemLeft" align="right" valign="top"><a id="a0a571f7bdc8391f5dee12236aa75a028"></a>
-<a class="el" href="structI2C_1_1Request.html">Request</a>&#160;</td><td class="memItemRight" valign="bottom"><b>queue_</b> [kQueueLength]</td></tr>
-<tr class="separator:a0a571f7bdc8391f5dee12236aa75a028"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a668abcc58708442cf411e9b0d388aa73"><td class="memItemLeft" align="right" valign="top"><a id="a668abcc58708442cf411e9b0d388aa73"></a>
+<a class="el" href="classCircularBuffer.html">CircularBuffer</a>&lt; uint8_t, QueueLength &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>buffer_</b></td></tr>
+<tr class="separator:a668abcc58708442cf411e9b0d388aa73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f3300ac90dc05d4d69519373142e778"><td class="memItemLeft" align="right" valign="top"><a id="a4f3300ac90dc05d4d69519373142e778"></a>
+<a class="el" href="structI2C_1_1Request.html">Request</a>&#160;</td><td class="memItemRight" valign="bottom"><b>queue_</b> [QueueLength]</td></tr>
+<tr class="separator:a4f3300ac90dc05d4d69519373142e778"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a257847cb42682c882b7fbdb49b9b1528"><td class="memItemLeft" align="right" valign="top"><a id="a257847cb42682c882b7fbdb49b9b1528"></a>
 uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>ind_queue_</b> {0}</td></tr>
 <tr class="separator:a257847cb42682c882b7fbdb49b9b1528"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad98f7104a79ab5ec53ab05b11bb952d4"><td class="memItemLeft" align="right" valign="top"><a id="ad98f7104a79ab5ec53ab05b11bb952d4"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>write_buffer_</b> [kWriteBufferSize]</td></tr>
-<tr class="separator:ad98f7104a79ab5ec53ab05b11bb952d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0c058f331d8027d9cc7d0176be68c13"><td class="memItemLeft" align="right" valign="top"><a id="af0c058f331d8027d9cc7d0176be68c13"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>write_buffer_</b> [WriteBufferSize]</td></tr>
+<tr class="separator:af0c058f331d8027d9cc7d0176be68c13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e8f1650f1f9159c5b4ef1f1f5e8aab6"><td class="memItemLeft" align="right" valign="top"><a id="a2e8f1650f1f9159c5b4ef1f1f5e8aab6"></a>
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>write_buffer_index_</b> {0}</td></tr>
 <tr class="separator:a2e8f1650f1f9159c5b4ef1f1f5e8aab6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -194,20 +194,20 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>write_buffer_inde
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>write_buffer_start_</b> {0}</td></tr>
 <tr class="separator:a026cb1495cdcf0a117b52a4bd1805a82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84d73814687d7972cee36d6c6b365f09"><td class="memItemLeft" align="right" valign="top"><a id="a84d73814687d7972cee36d6c6b365f09"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>wrapping_index_</b> {kWriteBufferSize}</td></tr>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>wrapping_index_</b> {WriteBufferSize}</td></tr>
 <tr class="separator:a84d73814687d7972cee36d6c6b365f09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-attribs"></a>
 Static Protected Attributes</h2></td></tr>
-<tr class="memitem:a61a5f7c834eec458dddd8b03a8d7c3d7"><td class="memItemLeft" align="right" valign="top"><a id="a61a5f7c834eec458dddd8b03a8d7c3d7"></a>
-static constexpr uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>kQueueLength</b> {80}</td></tr>
-<tr class="separator:a61a5f7c834eec458dddd8b03a8d7c3d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55517204de2d253d1340852a4debc09a"><td class="memItemLeft" align="right" valign="top"><a id="a55517204de2d253d1340852a4debc09a"></a>
-static constexpr uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>kWriteBufferSize</b> {4096}</td></tr>
-<tr class="separator:a55517204de2d253d1340852a4debc09a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a519ba4cd189e0a2b7dfd287ab72565e7"><td class="memItemLeft" align="right" valign="top"><a id="a519ba4cd189e0a2b7dfd287ab72565e7"></a>
-static constexpr int8_t&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxRetries</b> {5}</td></tr>
-<tr class="separator:a519ba4cd189e0a2b7dfd287ab72565e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab670bd09b00c4f00f5be5c476931c3f4"><td class="memItemLeft" align="right" valign="top"><a id="ab670bd09b00c4f00f5be5c476931c3f4"></a>
+static constexpr uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>QueueLength</b> {80}</td></tr>
+<tr class="separator:ab670bd09b00c4f00f5be5c476931c3f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f7b28f6547ddf3dcd9a417e61d6f1f2"><td class="memItemLeft" align="right" valign="top"><a id="a7f7b28f6547ddf3dcd9a417e61d6f1f2"></a>
+static constexpr uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>WriteBufferSize</b> {4096}</td></tr>
+<tr class="separator:a7f7b28f6547ddf3dcd9a417e61d6f1f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7b1dd8a24f22243b40d21145d769a8a"><td class="memItemLeft" align="right" valign="top"><a id="aa7b1dd8a24f22243b40d21145d769a8a"></a>
+static constexpr int8_t&#160;</td><td class="memItemRight" valign="bottom"><b>MaxRetries</b> {5}</td></tr>
+<tr class="separator:aa7b1dd8a24f22243b40d21145d769a8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>/home/runner/work/Ventilator/Ventilator/software/controller/lib/hal/i2c.h</li>
