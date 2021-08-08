@@ -13,11 +13,23 @@ def testInsertion():
     insertData("sampleData123", "example/examples", arrOfData)
 
 
-def createObjectToInsertToMongo(filename, filepath, dataToAdd):
-    return {"filename": filename, "filepath": filepath, "data": dataToAdd}
+def createObjectToInsertToMongo(
+    filename, filepath, dataToAdd, metaData=None, metaDataSpecificToThisTest=None
+):
+    return {
+        "filename": filename,
+        "filepath": filepath,
+        "data": dataToAdd,
+        "metaData": metaData,
+        "metaDataSpecificToThisTest": metaDataSpecificToThisTest,
+    }
 
 
-def insertData(filename, filepath, dataToAdd):
-    objectToAdd = createObjectToInsertToMongo(filename, filepath, dataToAdd)
+def insertData(
+    filename, filepath, dataToAdd, metaData=None, metaDataSpecificToThisTest=None
+):
+    objectToAdd = createObjectToInsertToMongo(
+        filename, filepath, dataToAdd, metaData, metaDataSpecificToThisTest
+    )
     newDataPiece = myColl.insert_one(objectToAdd)
     print(newDataPiece)

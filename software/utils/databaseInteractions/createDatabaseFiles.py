@@ -1,5 +1,6 @@
 # NOW SETUP MONGO FUNCTIONALITY
 import pymongo
+import json
 from mongoFunctions.readData import testGetData
 from mongoFunctions.insertData import testInsertion, insertData
 from mongoFunctions.deleteData import deleteAllCollectionData
@@ -10,6 +11,7 @@ myClient = pymongo.MongoClient(
 
 myDB = myClient["sampleData"]
 myColl = myDB["dataFiles"]
+metaDataFileName = "meta-data.json"
 # testInsertion()
 deleteAllCollectionData(
     "dataFiles"
@@ -64,10 +66,22 @@ def uploadFile(mypath, filename):
     # print(headers)
 
     dataToSave = createDataToInsert(fileLines, countStartOfData, headers)
-
     savedPath = mypath.split("..")[2] + filename
     # insertData("gui-sample-data.dat", dataToSave)
-    insertData(filename, savedPath, dataToSave)
+
+    # grab metadata to add to the database
+    metaData = (
+        json.load(open(mypath + metaDataFileName, "r"))
+        if os.path.isfile(mypath + metaDataFileName)
+        else None
+    )
+    metaDataSpecificToThisTest = (
+        json.load(open(mypath + (filename.split(".")[0] + "-" + metaDataFileName), "r"))
+        if os.path.isfile(mypath + (filename.split(".")[0] + "-" + metaDataFileName))
+        else None
+    )
+
+    insertData(filename, savedPath, dataToSave, metaData, metaDataSpecificToThisTest)
 
 
 # NOW GRAB ALL FILENAMES
@@ -124,5 +138,5 @@ def downloadAllFiles(tmppath, level, onlyUploadBaseDirectory):
     loopThroughFilesAndUpload(tmppath, dataFiles)
 
 
-# uploadFile(mypath, "gui-sample-data.dat") # upload a specific example
-downloadAllFiles(mypath, 0, False)  # switch to false!
+uploadFile(mypath, "gui-sample-data.dat")  # upload a specific example
+# downloadAllFiles(mypath, 0, False)  # switch to false!
