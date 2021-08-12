@@ -85,9 +85,9 @@ Inheritance diagram for DebugVarBase:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac6b1112d975eaee3957390b1671b9c4f"><td class="memItemLeft" align="right" valign="top"><a id="ac6b1112d975eaee3957390b1671b9c4f"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DebugVarBase</b> (VarType type, const char *name, const char *help, const char *fmt)</td></tr>
-<tr class="separator:ac6b1112d975eaee3957390b1671b9c4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e4f14f8ea616a18146076a8f30f4715"><td class="memItemLeft" align="right" valign="top"><a id="a8e4f14f8ea616a18146076a8f30f4715"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>DebugVarBase</b> (VarType type, const char *name, const char *help, VarAccess access=VarAccess::ReadWrite, const char *fmt=&quot;&quot;, const char *unit=&quot;&quot;)</td></tr>
+<tr class="separator:a8e4f14f8ea616a18146076a8f30f4715"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a442a3624694dfc581e520fc629c81dce"><td class="memItemLeft" align="right" valign="top"><a id="a442a3624694dfc581e520fc629c81dce"></a>
 virtual uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>GetValue</b> ()=0</td></tr>
 <tr class="separator:a442a3624694dfc581e520fc629c81dce"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -103,18 +103,30 @@ const char *&#160;</td><td class="memItemRight" valign="bottom"><b>GetFormat</b>
 <tr class="memitem:ab90644259e3b28e25d3b065ea2b3ca3c"><td class="memItemLeft" align="right" valign="top"><a id="ab90644259e3b28e25d3b065ea2b3ca3c"></a>
 const char *&#160;</td><td class="memItemRight" valign="bottom"><b>GetHelp</b> () const</td></tr>
 <tr class="separator:ab90644259e3b28e25d3b065ea2b3ca3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab329a8fdab61f55fe700a44272b214e"><td class="memItemLeft" align="right" valign="top"><a id="aab329a8fdab61f55fe700a44272b214e"></a>
+const char *&#160;</td><td class="memItemRight" valign="bottom"><b>GetUnit</b> () const</td></tr>
+<tr class="separator:aab329a8fdab61f55fe700a44272b214e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add8a6752b00036dcad694a2dbf4b5b5b"><td class="memItemLeft" align="right" valign="top"><a id="add8a6752b00036dcad694a2dbf4b5b5b"></a>
 VarType&#160;</td><td class="memItemRight" valign="bottom"><b>GetType</b> () const</td></tr>
 <tr class="separator:add8a6752b00036dcad694a2dbf4b5b5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13701fb160b49b01a74026cf858b31b8"><td class="memItemLeft" align="right" valign="top"><a id="a13701fb160b49b01a74026cf858b31b8"></a>
 uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>GetId</b> () const</td></tr>
 <tr class="separator:a13701fb160b49b01a74026cf858b31b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74f2126543448b1d3401300bb29e1c1c"><td class="memItemLeft" align="right" valign="top"><a id="a74f2126543448b1d3401300bb29e1c1c"></a>
+VarAccess&#160;</td><td class="memItemRight" valign="bottom"><b>GetAccess</b> () const</td></tr>
+<tr class="separator:a74f2126543448b1d3401300bb29e1c1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf2fe0ad4bf195b1b6d88c30ad2294f9"><td class="memItemLeft" align="right" valign="top"><a id="acf2fe0ad4bf195b1b6d88c30ad2294f9"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>WriteAllowed</b> () const</td></tr>
+<tr class="separator:acf2fe0ad4bf195b1b6d88c30ad2294f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a076143525e7638c75ef53d4dc7b264cd"><td class="memItemLeft" align="right" valign="top"><a id="a076143525e7638c75ef53d4dc7b264cd"></a>
 static <a class="el" href="classDebugVarBase.html">DebugVarBase</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>FindVar</b> (uint16_t vid)</td></tr>
 <tr class="separator:a076143525e7638c75ef53d4dc7b264cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a343e4e2d9b48a87ef032d2fbf8304e69"><td class="memItemLeft" align="right" valign="top"><a id="a343e4e2d9b48a87ef032d2fbf8304e69"></a>
+static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>GetVarCount</b> ()</td></tr>
+<tr class="separator:a343e4e2d9b48a87ef032d2fbf8304e69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>/home/runner/work/Ventilator/Ventilator/software/controller/lib/debugvars/vars.h</li>
