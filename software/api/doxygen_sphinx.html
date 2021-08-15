@@ -186,44 +186,6 @@
 <div></div></blockquote>
 <div class="section" id="controller">
 <span id="api-ventilator"></span><h1>Controller<a class="headerlink" href="#controller" title="Permalink to this headline">¶</a></h1>
-<div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
-<dl class="cpp function">
-<dt class="sig sig-object cpp">
-<span class="target" id="controller_8h_1ae41107bee46554436cc96f014759f38f"></span><span class="sig-name descname"><span class="pre">static</span> <span class="pre">DebugFloat</span> <span class="pre">dbg_blower_valve_ki</span> <span class="pre">(&quot;blower_valve_ki&quot;,</span> <span class="pre">&quot;Integral</span> <span class="pre">gain</span> <span class="pre">for</span> <span class="pre">blower</span> <span class="pre">valve</span> <span class="pre">PID&quot;,</span> <span class="pre">VarAccess::ReadWrite,</span> <span class="pre">-1.0f)</span></span></dt>
-<dd></dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp">
-<span class="target" id="controller_8h_1a99934d1354e432ebf96b403c032dae70"></span><span class="sig-name descname"><span class="pre">static</span> <span class="pre">DebugFloat</span> <span class="pre">dbg_blower_valve_kp</span> <span class="pre">(&quot;blower_valve_kp&quot;,</span> <span class="pre">&quot;Proportional</span> <span class="pre">gain</span> <span class="pre">for</span> <span class="pre">blower</span> <span class="pre">valve</span> <span class="pre">PID&quot;,</span> <span class="pre">VarAccess::ReadWrite,</span> <span class="pre">0.04f)</span></span></dt>
-<dd></dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp">
-<span class="target" id="controller_8h_1a8c132d99cafe1474a0eaf2c3d1616d86"></span><span class="sig-name descname"><span class="pre">static</span> <span class="pre">DebugFloat</span> <span class="pre">dbg_blower_valve_kd</span> <span class="pre">(&quot;blower_valve_kd&quot;,</span> <span class="pre">&quot;Derivative</span> <span class="pre">gain</span> <span class="pre">for</span> <span class="pre">blower</span> <span class="pre">valve</span> <span class="pre">PID&quot;)</span></span></dt>
-<dd></dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp">
-<span class="target" id="controller_8h_1a20c1b3c9f825eecde02f4ea328ae7288"></span><span class="sig-name descname"><span class="pre">static</span> <span class="pre">DebugFloat</span> <span class="pre">dbg_psol_kp</span> <span class="pre">(&quot;psol_kp&quot;,</span> <span class="pre">&quot;Proportional</span> <span class="pre">gain</span> <span class="pre">for</span> <span class="pre">O2</span> <span class="pre">psol</span> <span class="pre">PID&quot;,</span> <span class="pre">VarAccess::ReadWrite,</span> <span class="pre">0.04f)</span></span></dt>
-<dd></dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp">
-<span class="target" id="controller_8h_1a1976a23d2c08486b9e36c1252ab1ec78"></span><span class="sig-name descname"><span class="pre">static</span> <span class="pre">DebugFloat</span> <span class="pre">dbg_psol_ki</span> <span class="pre">(&quot;psol_ki&quot;,</span> <span class="pre">&quot;Integral</span> <span class="pre">gain</span> <span class="pre">for</span> <span class="pre">O2</span> <span class="pre">psol</span> <span class="pre">PID&quot;,</span> <span class="pre">VarAccess::ReadWrite,</span> <span class="pre">20.0f)</span></span></dt>
-<dd></dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp">
-<span class="target" id="controller_8h_1aa335a769b399d8ca4f8debc9fa25fc5b"></span><span class="sig-name descname"><span class="pre">static</span> <span class="pre">DebugFloat</span> <span class="pre">dbg_psol_kd</span> <span class="pre">(&quot;psol_kd&quot;,</span> <span class="pre">&quot;Derivative</span> <span class="pre">gain</span> <span class="pre">for</span> <span class="pre">O2</span> <span class="pre">psol</span> <span class="pre">PID&quot;,</span> <span class="pre">VarAccess::ReadWrite,</span> <span class="pre">0)</span></span></dt>
-<dd></dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp">
-<span class="target" id="controller_8h_1a03bb8e46d5d1385ae9a3c10c3ac33fff"></span><span class="sig-name descname"><span class="pre">static</span> <span class="pre">DebugFloat</span> <span class="pre">dbg_blower_valve_computed_ki</span> <span class="pre">(&quot;blower_valve_computed_ki&quot;,</span> <span class="pre">&quot;Integral</span> <span class="pre">gain</span> <span class="pre">for</span> <span class="pre">blower</span> <span class="pre">valve</span> <span class="pre">PID.</span> <span class="pre">&quot;</span> <span class="pre">&quot;This</span> <span class="pre">value</span> <span class="pre">is</span> <span class="pre">gain-scheduled.&quot;,</span> <span class="pre">VarAccess::ReadOnly,</span> <span class="pre">10.0f)</span></span></dt>
-<dd></dd></dl>
-
-</div>
 <dl class="cpp struct">
 <dt class="sig sig-object cpp" id="_CPPv415ControllerState">
 <span id="_CPPv315ControllerState"></span><span id="_CPPv215ControllerState"></span><span id="ControllerState"></span><span class="target" id="structControllerState"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ControllerState</span></span></span><a class="headerlink" href="#_CPPv415ControllerState" title="Permalink to this definition">¶</a><br /></dt>
@@ -264,7 +226,7 @@
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N10Controller10ControllerEv">
-<span id="_CPPv3N10Controller10ControllerEv"></span><span id="_CPPv2N10Controller10ControllerEv"></span><span id="Controller::Controller"></span><span class="target" id="classController_1ae1d7f1814db7ab462eaf42f8b84f3670"></span><span class="sig-name descname"><span class="n"><span class="pre">Controller</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">default</span></span><a class="headerlink" href="#_CPPv4N10Controller10ControllerEv" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N10Controller10ControllerEv"></span><span id="_CPPv2N10Controller10ControllerEv"></span><span id="Controller::Controller"></span><span class="target" id="classController_1a95c56822d667e94b031451729ce069a9"></span><span class="sig-name descname"><span class="n"><span class="pre">Controller</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10Controller10ControllerEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp function">
@@ -295,12 +257,12 @@
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N10Controller17blower_valve_pid_E">
-<span id="_CPPv3N10Controller17blower_valve_pid_E"></span><span id="_CPPv2N10Controller17blower_valve_pid_E"></span><span id="Controller::blower_valve_pid___PID"></span><span class="target" id="classController_1a89f07eb4ee15d9f353d1f89e7af0cfb2"></span><span class="n"><span class="pre">PID</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blower_valve_pid_</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">PID</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">dbg_blower_valve_kp</span></span><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">Get</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">dbg_blower_valve_computed_ki</span></span><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">Get</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">dbg_blower_valve_kd</span></span><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">Get</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">ProportionalTerm</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">OnError</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">DifferentialTerm</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">OnMeasurement</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">0.f</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">1.0f</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv4N10Controller17blower_valve_pid_E" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N10Controller17blower_valve_pid_E"></span><span id="_CPPv2N10Controller17blower_valve_pid_E"></span><span id="Controller::blower_valve_pid___PID"></span><span class="target" id="classController_1a89f07eb4ee15d9f353d1f89e7af0cfb2"></span><span class="n"><span class="pre">PID</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blower_valve_pid_</span></span></span><a class="headerlink" href="#_CPPv4N10Controller17blower_valve_pid_E" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N10Controller9psol_pid_E">
-<span id="_CPPv3N10Controller9psol_pid_E"></span><span id="_CPPv2N10Controller9psol_pid_E"></span><span id="Controller::psol_pid___PID"></span><span class="target" id="classController_1a4c682af456f8d14a2ce2ee7fc28d5f52"></span><span class="n"><span class="pre">PID</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">psol_pid_</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">PID</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">dbg_psol_kp</span></span><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">Get</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">dbg_psol_ki</span></span><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">Get</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">dbg_psol_kd</span></span><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">Get</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">ProportionalTerm</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">OnError</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">DifferentialTerm</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">OnMeasurement</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">0.f</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">1.0f</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv4N10Controller9psol_pid_E" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N10Controller9psol_pid_E"></span><span id="_CPPv2N10Controller9psol_pid_E"></span><span id="Controller::psol_pid___PID"></span><span class="target" id="classController_1a4c682af456f8d14a2ce2ee7fc28d5f52"></span><span class="n"><span class="pre">PID</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">psol_pid_</span></span></span><a class="headerlink" href="#_CPPv4N10Controller9psol_pid_E" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp var">

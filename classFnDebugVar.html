@@ -89,9 +89,9 @@ Collaboration diagram for FnDebugVar&lt; GetFn, SetFn &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7149dec8712523fb545652e8fde97580"><td class="memItemLeft" align="right" valign="top"><a id="a7149dec8712523fb545652e8fde97580"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>FnDebugVar</b> (VarType type, const char *name, const char *help, GetFn get_fn, SetFn set_fn, VarAccess access=VarAccess::ReadWrite, const char *fmt=&quot;&quot;, const char *unit=&quot;&quot;)</td></tr>
-<tr class="separator:a7149dec8712523fb545652e8fde97580"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3d78b1f4b63168635117191f9c8622f"><td class="memItemLeft" align="right" valign="top"><a id="ad3d78b1f4b63168635117191f9c8622f"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>FnDebugVar</b> (VarType type, const char *name, VarAccess access, const char *units, GetFn get_fn, SetFn set_fn, const char *help, const char *fmt=&quot;&quot;)</td></tr>
+<tr class="separator:ad3d78b1f4b63168635117191f9c8622f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ad5899fe4efef3c0b9450976107f2bd"><td class="memItemLeft" align="right" valign="top"><a id="a0ad5899fe4efef3c0b9450976107f2bd"></a>
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>GetValue</b> () override</td></tr>
 <tr class="separator:a0ad5899fe4efef3c0b9450976107f2bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -99,9 +99,9 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>GetValue</b> () o
 void&#160;</td><td class="memItemRight" valign="bottom"><b>SetValue</b> (uint32_t value) override</td></tr>
 <tr class="separator:a388102ee3b7a37512c5eee2ef6833095"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDebugVarBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDebugVarBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDebugVarBase.html">DebugVarBase</a></td></tr>
-<tr class="memitem:a8e4f14f8ea616a18146076a8f30f4715 inherit pub_methods_classDebugVarBase"><td class="memItemLeft" align="right" valign="top"><a id="a8e4f14f8ea616a18146076a8f30f4715"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DebugVarBase</b> (VarType type, const char *name, const char *help, VarAccess access=VarAccess::ReadWrite, const char *fmt=&quot;&quot;, const char *unit=&quot;&quot;)</td></tr>
-<tr class="separator:a8e4f14f8ea616a18146076a8f30f4715 inherit pub_methods_classDebugVarBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2079438035c8c164aa0e2cf9aeca242 inherit pub_methods_classDebugVarBase"><td class="memItemLeft" align="right" valign="top"><a id="ab2079438035c8c164aa0e2cf9aeca242"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>DebugVarBase</b> (VarType type, const char *name, VarAccess access, const char *units, const char *help, const char *fmt=&quot;&quot;)</td></tr>
+<tr class="separator:ab2079438035c8c164aa0e2cf9aeca242 inherit pub_methods_classDebugVarBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8aaf81589b5e2ba765a89aa51e778637 inherit pub_methods_classDebugVarBase"><td class="memItemLeft" align="right" valign="top"><a id="a8aaf81589b5e2ba765a89aa51e778637"></a>
 const char *&#160;</td><td class="memItemRight" valign="bottom"><b>GetName</b> () const</td></tr>
 <tr class="separator:a8aaf81589b5e2ba765a89aa51e778637 inherit pub_methods_classDebugVarBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -111,9 +111,9 @@ const char *&#160;</td><td class="memItemRight" valign="bottom"><b>GetFormat</b>
 <tr class="memitem:ab90644259e3b28e25d3b065ea2b3ca3c inherit pub_methods_classDebugVarBase"><td class="memItemLeft" align="right" valign="top"><a id="ab90644259e3b28e25d3b065ea2b3ca3c"></a>
 const char *&#160;</td><td class="memItemRight" valign="bottom"><b>GetHelp</b> () const</td></tr>
 <tr class="separator:ab90644259e3b28e25d3b065ea2b3ca3c inherit pub_methods_classDebugVarBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab329a8fdab61f55fe700a44272b214e inherit pub_methods_classDebugVarBase"><td class="memItemLeft" align="right" valign="top"><a id="aab329a8fdab61f55fe700a44272b214e"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>GetUnit</b> () const</td></tr>
-<tr class="separator:aab329a8fdab61f55fe700a44272b214e inherit pub_methods_classDebugVarBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab43aa40b1b0f3c1ae3da271b92c736e6 inherit pub_methods_classDebugVarBase"><td class="memItemLeft" align="right" valign="top"><a id="ab43aa40b1b0f3c1ae3da271b92c736e6"></a>
+const char *&#160;</td><td class="memItemRight" valign="bottom"><b>GetUnits</b> () const</td></tr>
+<tr class="separator:ab43aa40b1b0f3c1ae3da271b92c736e6 inherit pub_methods_classDebugVarBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add8a6752b00036dcad694a2dbf4b5b5b inherit pub_methods_classDebugVarBase"><td class="memItemLeft" align="right" valign="top"><a id="add8a6752b00036dcad694a2dbf4b5b5b"></a>
 VarType&#160;</td><td class="memItemRight" valign="bottom"><b>GetType</b> () const</td></tr>
 <tr class="separator:add8a6752b00036dcad694a2dbf4b5b5b inherit pub_methods_classDebugVarBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
