@@ -27,20 +27,20 @@ ErrorCode VarHandler::Process(Context *context) {
   if (context->request_length < 1)
     return ErrorCode::MissingData;
 
-  Subcommand subcommand{context->request[0]};
+  DebugProtocol::VarSubcmd subcommand{flatbuffers::GetRoot<DebugProtocol::GetVarRequest>(context->request)->subcmd()};
 
   switch (subcommand) {
   // Return info about one of the variables.
-  case Subcommand::GetInfo:
+  case DebugProtocol::VarSubcmd::GetInfo:
     return GetVarInfo(context);
 
-  case Subcommand::Get:
+  case DebugProtocol::VarSubcmd::Get:
     return GetVar(context);
 
-  case Subcommand::Set:
+  case DebugProtocol::VarSubcmd::Set:
     return SetVar(context);
 
-  case Subcommand::GetCount:
+  case DebugProtocol::VarSubcmd::GetCount:
     return GetVarCount(context);
 
   default:
@@ -57,10 +57,12 @@ ErrorCode VarHandler::Process(Context *context) {
 ErrorCode VarHandler::GetVarInfo(Context *context) {
 
   // We expect a 16-bit ID to be passed
-  if (context->request_length < 3)
+  // A GetVarRequest with a subcommand and ID takes 20 bits 
+  if (context->request_length < 20)
     return ErrorCode::MissingData;
 
-  uint16_t var_id = u8_to_u16(&context->request[1]);
+  auto req = flatbuffers::GetRoot<DebugProtocol::GetVarRequest>(context->request);
+  uint16_t var_id = req->vid();
 
   const auto *var = DebugVar::FindVar(var_id);
   if (!var)
@@ -89,83 +91,99 @@ ErrorCode VarHandler::GetVarInfo(Context *context) {
       8 + name_length + format_length + help_length + unit_length)
     return ErrorCode::NoMemory;
 
-  uint32_t count = 0;
-  context->response[count++] = static_cast<uint8_t>(var->GetType());
-  context->response[count++] = static_cast<uint8_t>(var->GetAccess());
-  context->response[count++] = 0;
-  context->response[count++] = 0;
-  context->response[count++] = static_cast<uint8_t>(name_length);
-  context->response[count++] = static_cast<uint8_t>(format_length);
-  context->response[count++] = static_cast<uint8_t>(help_length);
-  context->response[count++] = static_cast<uint8_t>(unit_length);
-  memcpy(&context->response[count], var->GetName(), name_length);
-  count += static_cast<uint32_t>(name_length);
+  flatbuffers::FlatBufferBuilder builder(1024);
+  auto res_builder = DebugProtocol::CreateGetVarInfoResponse(
+    builder,
+    static_cast<uint8_t>(var->GetType()),
+    static_cast<uint8_t>(var->GetAccess()),
+    0,
+    static_cast<uint8_t>(name_length),
+    static_cast<uint8_t>(format_length),
+    static_cast<uint8_t>(help_length),
+    static_cast<uint8_t>(unit_length),
+    builder.CreateString(var->GetName()),
+    builder.CreateString(var->GetFormat()),
+    builder.CreateString(var->GetHelp()),
+    builder.CreateString(var->GetUnits())
+  );
+  builder.Finish(res_builder);
+  uint8_t *res = builder.GetBufferPointer();
+  uint32_t res_len = builder.GetSize();
 
-  memcpy(&context->response[count], var->GetFormat(), format_length);
-  count += static_cast<uint32_t>(format_length);
-
-  memcpy(&context->response[count], var->GetHelp(), help_length);
-  count += static_cast<uint32_t>(help_length);
-
-  memcpy(&context->response[count], var->GetUnits(), unit_length);
-  count += static_cast<uint32_t>(unit_length);
-
-  context->response_length = count;
+  context->response = res;
+  context->response_length = res_len;
   *(context->processed) = true;
   return ErrorCode::None;
 }
 
 ErrorCode VarHandler::GetVar(Context *context) {
   // We expect a 16-bit ID to be passed
-  if (context->request_length < 3)
+  // A GetVarRequest with a subcommand and ID takes 20 bits 
+  if (context->request_length < 20)
     return ErrorCode::MissingData;
 
-  uint16_t var_id = u8_to_u16(&context->request[1]);
+  auto req = flatbuffers::GetRoot<DebugProtocol::GetVarRequest>(context->request);
+  uint16_t var_id = req->vid();
 
   auto *var = DebugVar::FindVar(var_id);
   if (!var)
     return ErrorCode::UnknownVariable;
 
-  if (context->max_response_length < 4)
+  if (context->max_response_length < 20)
     return ErrorCode::NoMemory;
 
-  u32_to_u8(var->GetValue(), context->response);
-  context->response_length = 4;
+  flatbuffers::FlatBufferBuilder builder(1024);
+  auto res_builder = DebugProtocol::CreateGetVarResponse(
+    builder,
+    var->GetValue()
+  );
+  builder.Finish(res_builder);
+  uint8_t *res = builder.GetBufferPointer();
+  uint32_t res_len = builder.GetSize();
+
+  context->response = res;
+  context->response_length = res_len;
   *(context->processed) = true;
   return ErrorCode::None;
 }
 
 ErrorCode VarHandler::SetVar(Context *context) {
   // We expect a 16-bit ID to be passed
-  if (context->request_length < 3)
+  // A SetVarRequest with a subcommand, ID, and value takes 28 bits 
+  if (context->request_length < 28)
     return ErrorCode::MissingData;
 
-  uint16_t var_id = u8_to_u16(&context->request[1]);
+  auto req = flatbuffers::GetRoot<DebugProtocol::SetVarRequest>(context->request);
+  uint16_t var_id = req->vid();
 
   auto *var = DebugVar::FindVar(var_id);
   if (!var)
     return ErrorCode::UnknownVariable;
 
-  uint32_t count = context->request_length - 3;
-
-  if (count < 4)
-    return ErrorCode::MissingData;
-
   if (!var->WriteAllowed())
     return ErrorCode::InternalError;
 
-  var->SetValue(u8_to_u32(context->request + 3));
+  var->SetValue(req->value());
   context->response_length = 0;
   *(context->processed) = true;
   return ErrorCode::None;
 }
 
 ErrorCode VarHandler::GetVarCount(Context *context) {
-  if (context->max_response_length < 4)
+  if (context->max_response_length < 20)
     return ErrorCode::NoMemory;
 
-  u32_to_u8(DebugVarBase::GetVarCount(), context->response);
-  context->response_length = 4;
+  flatbuffers::FlatBufferBuilder builder(1024);
+  auto res_builder = DebugProtocol::CreateGetVarCountResponse(
+    builder,
+    DebugVarBase::GetVarCount()
+  );
+  builder.Finish(res_builder);
+  uint8_t *res = builder.GetBufferPointer();
+  uint32_t res_len = builder.GetSize();
+
+  context->response = res;
+  context->response_length = res_len;
   *(context->processed) = true;
   return ErrorCode::None;
 }

@@ -1,0 +1,83 @@
+// # Overview
+//
+// This file defines messages sent between the ventilator's microcontroller's 
+// debugging interface and the host computer interfacing with it via the Python
+// debugging interface.
+//
+// Commands from the host are serialized and sent over the serial port to the 
+// microcontroller, which evaluates the corresponding functions in its debugging
+// interface and responds with the requested information or an error.
+//
+// Flatbuffer is strongly typed, so we split the metadata of the debug variable
+// from the actual value for each type (int32, uint32, float)
+//
+// # Regenerate C++ flatbuffers (flatc version 1.11.0)
+// $ flatc --cpp --scoped-enums debug_protocol.fbs
+
+namespace DebugProtocol;
+
+// Debug command code
+enum CmdCode : byte {
+  Mode = 0x00,         // Return the current firmware mode
+  Peek = 0x01,         // Peek into RAM
+  Poke = 0x02,         // Poke values into RAM
+  Console = 0x03,      // Read strings from the print buffer - deprecated
+  Variable = 0x04,     // Variable access
+  Trace = 0x05,        // Data trace commands
+  EepromAccess = 0x06  // Read/Write in I2C EEPROM
+}
+
+// Variable access subcommand code
+enum VarSubcmd : byte {
+    GetInfo = 0x00,    // Get variable info (name, type, help string)
+    Get = 0x01,        // Get variable value
+    Set = 0x02,        // Set variable value
+    GetCount = 0x03    // Get count of active vars
+}
+
+// Variable access Get/GetInfo request data
+// This data is deserialized from the request_ buffer of the debugging interface
+table GetVarRequest {
+    subcmd : VarSubcmd;  // Variable access subcommand code
+    vid : ushort;        // Variable ID 
+}
+
+// Variable access Set request data
+// This data is deserialized from the request_ buffer of the debugging interface
+table SetVarRequest {
+    subcmd : VarSubcmd;  // Variable access subcommand code
+    vid : ushort;        // Variable ID
+    value : uint;        // New variable value
+}
+
+// Variable count request data
+// This data is deserialized from the request_ buffer of the debugging interface
+table GetVarCountRequest {
+    subcmd : VarSubcmd;  // Variable access subcommand code
+}
+
+// Get variable info access response data
+// This data is serialized to the response_ buffer of the debugging interface
+table GetVarInfoResponse {
+    type : byte;         // variable type code
+    access : byte;       // variable access permission
+    reserved : short;    // reserved bytes for future use
+    nameLen : byte;      // variable name string length
+    fmtLen : byte;       // formation string length
+    helpLen : byte;      // help string length
+    unitLen : byte;      // unit string length
+    name : string;       // variable name string
+    fmt : string;        // variable format string
+    help : string;       // variable help string
+    unit : string;       // variable unit string
+}
+
+// Get variable access response data
+table GetVarResponse {
+    value : uint;          // variable value
+}
+
+// Get variable count response data
+table GetVarCountResponse {
+    value : int;
+}

@@ -20,6 +20,7 @@ limitations under the License.
 #include "eeprom.h"
 #include "hal.h"
 #include "interface.h"
+#include "debug_protocol_generated.h"
 
 namespace Debug::Command {
 

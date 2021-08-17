@@ -30,41 +30,47 @@ TEST(VarHandler, GetVarInfo) {
   DebugVar var(name, VarAccess::ReadOnly, &value, unit, help, format);
 
   // expected result is hand-built from format given in var_cmd.cpp
-  std::vector<uint8_t> expected = {static_cast<uint8_t>(VarType::UInt32),
-                                   static_cast<uint8_t>(VarAccess::ReadOnly),
-                                   0,
-                                   0,
-                                   static_cast<uint8_t>(strlen(name)),
-                                   static_cast<uint8_t>(strlen(format)),
-                                   static_cast<uint8_t>(strlen(help)),
-                                   static_cast<uint8_t>(strlen(unit))};
-  for (size_t i = 0; i < strlen(name); ++i)
-    expected.push_back(name[i]);
-  for (size_t i = 0; i < strlen(format); ++i)
-    expected.push_back(format[i]);
-  for (size_t i = 0; i < strlen(help); ++i)
-    expected.push_back(help[i]);
-  for (size_t i = 0; i < strlen(unit); ++i)
-    expected.push_back(unit[i]);
+  flatbuffers::FlatBufferBuilder builder(1024);
+  auto expected_builder = DebugProtocol::CreateGetVarInfoResponse(
+    builder,
+    static_cast<uint8_t>(VarType::UInt32),
+    static_cast<uint8_t>(VarAccess::ReadOnly),
+    0,
+    static_cast<uint8_t>(strlen(name)),
+    static_cast<uint8_t>(strlen(format)),
+    static_cast<uint8_t>(strlen(help)),
+    static_cast<uint8_t>(strlen(unit)),
+    builder.CreateString(name),
+    builder.CreateString(format),
+    builder.CreateString(help),
+    builder.CreateString(unit)
+  );
+  builder.Finish(expected_builder);
+  uint8_t *expected = builder.GetBufferPointer();
+  uint32_t expected_len = builder.GetSize();
 
-  uint8_t id[2];
-  u16_to_u8(var.GetId(), id);
-  std::array req = {
-      static_cast<uint8_t>(VarHandler::Subcommand::GetInfo), id[0],
-      id[1], // Var id
-  };
-  std::array<uint8_t, 50> response;
+  uint16_t id = var.GetId();
+
+  auto req_builder = DebugProtocol::CreateGetVarRequest(
+    builder,
+    DebugProtocol::VarSubcmd::GetInfo,
+    id
+  );
+  builder.Finish(req_builder);
+  uint8_t *req = builder.GetBufferPointer();
+  uint32_t req_len = builder.GetSize();
+
   bool processed{false};
-  Context context = {.request = req.data(),
-                     .request_length = std::size(req),
-                     .response = response.data(),
-                     .max_response_length = std::size(response),
+  Context context = {.request = req,
+                     .request_length = req_len,
+                     .response = nullptr,
+                     .max_response_length = 150,
                      .response_length = 0,
                      .processed = &processed};
 
   EXPECT_EQ(ErrorCode::None, VarHandler().Process(&context));
   EXPECT_TRUE(processed);
-  for (size_t i = 0; i < expected.size(); ++i) {
+  for (size_t i = 0; i < expected_len; ++i) {
     EXPECT_EQ(context.response[i], expected[i]);
   }
 }
@@ -74,28 +80,41 @@ TEST(VarHandler, GetVar) {
   DebugVar var("name", VarAccess::ReadWrite, &value, "units", "help");
 
   // Test that a GET command obtains the variable's value.
-  uint8_t id[2];
-  u16_to_u8(var.GetId(), id);
-  std::array req = {
-      static_cast<uint8_t>(VarHandler::Subcommand::Get), id[0],
-      id[1], // Var id
-  };
-  std::array<uint8_t, 4> response;
+  flatbuffers::FlatBufferBuilder builder(1024);
+  auto expected_builder = DebugProtocol::CreateGetVarResponse(
+    builder,
+    value
+  );
+  builder.Finish(expected_builder);
+  uint8_t *expected = builder.GetBufferPointer();
+  uint32_t expected_len = builder.GetSize();
+
+  uint16_t id = var.GetId();
+
+  auto req_builder = DebugProtocol::CreateGetVarRequest(
+    builder,
+    DebugProtocol::VarSubcmd::Get,
+    id
+  );
+  builder.Finish(req_builder);
+  uint8_t *req = builder.GetBufferPointer();
+  uint32_t req_len = builder.GetSize();
+
   bool processed{false};
-  Context context = {.request = req.data(),
-                     .request_length = std::size(req),
-                     .response = response.data(),
-                     .max_response_length = std::size(response),
+  Context context = {.request = req,
+                     .request_length = req_len,
+                     .response = nullptr,
+                     .max_response_length = expected_len,
                      .response_length = 0,
                      .processed = &processed};
 
   EXPECT_EQ(ErrorCode::None, VarHandler().Process(&context));
   EXPECT_TRUE(processed);
-  EXPECT_EQ(4, context.response_length);
+  EXPECT_EQ(expected_len, context.response_length);
 
-  std::array<uint8_t, 4> expected_result;
-  u32_to_u8(value, expected_result.data());
-  EXPECT_EQ(response, expected_result);
+  for (size_t i = 0; i < expected_len; ++i) {
+    EXPECT_EQ(context.response[i], expected[i]);
+  }
 }
 
 TEST(VarHandler, SetVar) {
@@ -103,34 +122,33 @@ TEST(VarHandler, SetVar) {
   DebugVar var("name", VarAccess::ReadWrite, &value, "units", "help");
 
   uint32_t new_value = 0xCAFEBABE;
-  std::array<uint8_t, 4> new_bytes;
-  u32_to_u8(new_value, new_bytes.data());
 
   // Test that a SET command changes the variable's value.
-  uint8_t id[2];
-  u16_to_u8(var.GetId(), id);
-  std::array req = {
-      static_cast<uint8_t>(VarHandler::Subcommand::Set),
-      id[0],
-      id[1], // Var id
-      new_bytes[0],
-      new_bytes[1],
-      new_bytes[2],
-      new_bytes[3] // Value
-  };
+  uint16_t id = var.GetId();
 
-  std::array<uint8_t, 0> response;
+  flatbuffers::FlatBufferBuilder builder(1024);
+  auto req_builder = DebugProtocol::CreateSetVarRequest(
+    builder,
+    DebugProtocol::VarSubcmd::Set,
+    id,
+    new_value
+  );
+  builder.Finish(req_builder);
+  uint8_t *req = builder.GetBufferPointer();
+  uint32_t req_len = builder.GetSize();
+
   bool processed{false};
-  Context context = {.request = req.data(),
-                     .request_length = std::size(req),
-                     .response = response.data(),
-                     .max_response_length = std::size(response),
+  Context context = {.request = req,
+                     .request_length = req_len,
+                     .response = nullptr,
+                     .max_response_length = 0,
                      .response_length = 0,
                      .processed = &processed};
 
   EXPECT_EQ(ErrorCode::None, VarHandler().Process(&context));
   EXPECT_TRUE(processed);
   EXPECT_EQ(0, context.response_length);
+
 
   EXPECT_EQ(new_value, value);
 }
@@ -140,24 +158,38 @@ TEST(VarHandler, GetVarCount) {
   DebugVar dummy("name", VarAccess::ReadWrite, &value, "units");
 
   // Test that GetVarCount command obtains the number of defined variables
-  std::array req = {static_cast<uint8_t>(VarHandler::Subcommand::GetCount)};
-  std::array<uint8_t, 4> response;
+  flatbuffers::FlatBufferBuilder builder(1024);
+  auto expected_builder = DebugProtocol::CreateGetVarCountResponse(
+    builder,
+    DebugVarBase::GetVarCount()
+  );
+  builder.Finish(expected_builder);
+  uint8_t *expected = builder.GetBufferPointer();
+  uint32_t expected_len = builder.GetSize();
+
+  auto req_builder = DebugProtocol::CreateGetVarCountRequest(
+    builder,
+    DebugProtocol::VarSubcmd::GetCount
+  );
+  builder.Finish(req_builder);
+  uint8_t *req = builder.GetBufferPointer();
+  uint32_t req_len = builder.GetSize();
+
   bool processed{false};
-  Context context = {.request = req.data(),
-                     .request_length = std::size(req),
-                     .response = response.data(),
-                     .max_response_length = std::size(response),
+  Context context = {.request = req,
+                     .request_length = req_len,
+                     .response = nullptr,
+                     .max_response_length = expected_len,
                      .response_length = 0,
                      .processed = &processed};
 
   EXPECT_EQ(ErrorCode::None, VarHandler().Process(&context));
   EXPECT_TRUE(processed);
-  EXPECT_EQ(4, context.response_length);
+  EXPECT_EQ(20, context.response_length);
 
-  std::array<uint8_t, 4> expected_result;
-  u32_to_u8(DebugVarBase::GetVarCount(), expected_result.data());
-  EXPECT_EQ(response, expected_result);
-}
+  for (size_t i = 0; i < expected_len; ++i) {
+    EXPECT_EQ(context.response[i], expected[i]);
+  }}
 
 TEST(VarHandler, Errors) {
   uint32_t value = 0xDEADBEEF;
