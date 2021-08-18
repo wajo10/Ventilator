@@ -1,10 +1,10 @@
 // # Overview
 //
-// This file defines messages sent between the ventilator's microcontroller's 
+// This file defines messages sent between the ventilator's microcontroller's
 // debugging interface and the host computer interfacing with it via the Python
 // debugging interface.
 //
-// Commands from the host are serialized and sent over the serial port to the 
+// Commands from the host are serialized and sent over the serial port to the
 // microcontroller, which evaluates the corresponding functions in its debugging
 // interface and responds with the requested information or an error.
 //
@@ -37,27 +37,25 @@ enum VarSubcmd : byte {
 
 // Variable access Get/GetInfo request data
 // This data is deserialized from the request_ buffer of the debugging interface
-table GetVarRequest {
-    subcmd : VarSubcmd;  // Variable access subcommand code
-    vid : ushort;        // Variable ID 
+struct GetVarRequest {
+    vid : ushort;        // Variable ID
 }
 
 // Variable access Set request data
 // This data is deserialized from the request_ buffer of the debugging interface
-table SetVarRequest {
-    subcmd : VarSubcmd;  // Variable access subcommand code
+struct SetVarRequest {
     vid : ushort;        // Variable ID
     value : uint;        // New variable value
 }
 
-// Variable count request data
-// This data is deserialized from the request_ buffer of the debugging interface
-table GetVarCountRequest {
+union Request { GetVarRequest, SetVarRequest }
+
+table VarRequest {
     subcmd : VarSubcmd;  // Variable access subcommand code
+    request : Request;
 }
 
 // Get variable info access response data
-// This data is serialized to the response_ buffer of the debugging interface
 table GetVarInfoResponse {
     type : byte;         // variable type code
     access : byte;       // variable access permission
