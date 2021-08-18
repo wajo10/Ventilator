@@ -22,12 +22,12 @@ namespace Debug::Command {
 
 ErrorCode VarHandler::Process(Context *context) {
 
-  // The first byte of data is always required, this
-  // gives the sub-command.
-  if (context->request_length < 1)
+  // The subcommand is required
+  // A VarRequest with a subcommand and ID takes 20 bits 
+  if (context->request_length < 20)
     return ErrorCode::MissingData;
 
-  DebugProtocol::VarSubcmd subcommand{flatbuffers::GetRoot<DebugProtocol::GetVarRequest>(context->request)->subcmd()};
+  DebugProtocol::VarSubcmd subcommand{flatbuffers::GetRoot<DebugProtocol::VarRequest>(context->request)->subcmd()};
 
   switch (subcommand) {
   // Return info about one of the variables.
@@ -58,11 +58,13 @@ ErrorCode VarHandler::GetVarInfo(Context *context) {
 
   // We expect a 16-bit ID to be passed
   // A GetVarRequest with a subcommand and ID takes 20 bits 
-  if (context->request_length < 20)
+  if (context->request_length < 24)
     return ErrorCode::MissingData;
 
-  auto req = flatbuffers::GetRoot<DebugProtocol::GetVarRequest>(context->request);
-  uint16_t var_id = req->vid();
+  auto context_req = flatbuffers::GetRoot<DebugProtocol::VarRequest>(context->request);
+  auto cmddata = context_req->request_as_GetVarRequest();
+
+  uint16_t var_id = cmddata->vid();
 
   const auto *var = DebugVar::FindVar(var_id);
   if (!var)
@@ -122,8 +124,9 @@ ErrorCode VarHandler::GetVar(Context *context) {
   if (context->request_length < 20)
     return ErrorCode::MissingData;
 
-  auto req = flatbuffers::GetRoot<DebugProtocol::GetVarRequest>(context->request);
-  uint16_t var_id = req->vid();
+  auto context_req = flatbuffers::GetRoot<DebugProtocol::VarRequest>(context->request);
+  auto cmddata = context_req->request_as_GetVarRequest();
+  uint16_t var_id = cmddata->vid();
 
   auto *var = DebugVar::FindVar(var_id);
   if (!var)
@@ -153,8 +156,9 @@ ErrorCode VarHandler::SetVar(Context *context) {
   if (context->request_length < 28)
     return ErrorCode::MissingData;
 
-  auto req = flatbuffers::GetRoot<DebugProtocol::SetVarRequest>(context->request);
-  uint16_t var_id = req->vid();
+  auto context_req = flatbuffers::GetRoot<DebugProtocol::VarRequest>(context->request);
+  auto cmddata = context_req->request_as_SetVarRequest();
+  uint16_t var_id = cmddata->vid();
 
   auto *var = DebugVar::FindVar(var_id);
   if (!var)
@@ -163,7 +167,7 @@ ErrorCode VarHandler::SetVar(Context *context) {
   if (!var->WriteAllowed())
     return ErrorCode::InternalError;
 
-  var->SetValue(req->value());
+  var->SetValue(cmddata->value());
   context->response_length = 0;
   *(context->processed) = true;
   return ErrorCode::None;

@@ -50,11 +50,14 @@ TEST(VarHandler, GetVarInfo) {
   uint32_t expected_len = builder.GetSize();
 
   uint16_t id = var.GetId();
+  DebugProtocol::GetVarRequest cmddata = DebugProtocol::GetVarRequest(id);
+  auto cmddata_ = builder.CreateStruct(cmddata);
 
-  auto req_builder = DebugProtocol::CreateGetVarRequest(
+  auto req_builder = DebugProtocol::CreateVarRequest(
     builder,
     DebugProtocol::VarSubcmd::GetInfo,
-    id
+    DebugProtocol::Request::GetVarRequest,
+    cmddata_.Union()
   );
   builder.Finish(req_builder);
   uint8_t *req = builder.GetBufferPointer();
@@ -91,10 +94,14 @@ TEST(VarHandler, GetVar) {
 
   uint16_t id = var.GetId();
 
-  auto req_builder = DebugProtocol::CreateGetVarRequest(
+  DebugProtocol::GetVarRequest cmddata = DebugProtocol::GetVarRequest(id);
+  auto cmddata_ = builder.CreateStruct(cmddata);
+
+  auto req_builder = DebugProtocol::CreateVarRequest(
     builder,
     DebugProtocol::VarSubcmd::Get,
-    id
+    DebugProtocol::Request::GetVarRequest,
+    cmddata_.Union()
   );
   builder.Finish(req_builder);
   uint8_t *req = builder.GetBufferPointer();
@@ -117,6 +124,7 @@ TEST(VarHandler, GetVar) {
   }
 }
 
+// Tests SetVar
 TEST(VarHandler, SetVar) {
   uint32_t value = 0xDEADBEEF;
   DebugVar var("name", VarAccess::ReadWrite, &value, "units", "help");
@@ -127,11 +135,17 @@ TEST(VarHandler, SetVar) {
   uint16_t id = var.GetId();
 
   flatbuffers::FlatBufferBuilder builder(1024);
-  auto req_builder = DebugProtocol::CreateSetVarRequest(
-    builder,
-    DebugProtocol::VarSubcmd::Set,
+  DebugProtocol::SetVarRequest cmddata = DebugProtocol::SetVarRequest(
     id,
     new_value
+  );
+  auto cmddata_ = builder.CreateStruct(cmddata);
+
+  auto req_builder = DebugProtocol::CreateVarRequest(
+    builder,
+    DebugProtocol::VarSubcmd::Set,
+    DebugProtocol::Request::SetVarRequest,
+    cmddata_.Union()
   );
   builder.Finish(req_builder);
   uint8_t *req = builder.GetBufferPointer();
@@ -153,6 +167,7 @@ TEST(VarHandler, SetVar) {
   EXPECT_EQ(new_value, value);
 }
 
+// Tests GetVarCount
 TEST(VarHandler, GetVarCount) {
   uint32_t value = 0xDEADBEEF;
   DebugVar dummy("name", VarAccess::ReadWrite, &value, "units");
@@ -166,8 +181,8 @@ TEST(VarHandler, GetVarCount) {
   builder.Finish(expected_builder);
   uint8_t *expected = builder.GetBufferPointer();
   uint32_t expected_len = builder.GetSize();
-
-  auto req_builder = DebugProtocol::CreateGetVarCountRequest(
+  
+  auto req_builder = DebugProtocol::CreateVarRequest(
     builder,
     DebugProtocol::VarSubcmd::GetCount
   );
@@ -189,48 +204,236 @@ TEST(VarHandler, GetVarCount) {
 
   for (size_t i = 0; i < expected_len; ++i) {
     EXPECT_EQ(context.response[i], expected[i]);
-  }}
-
-TEST(VarHandler, Errors) {
-  uint32_t value = 0xDEADBEEF;
-  DebugUInt32 var("name", VarAccess::ReadWrite, value, "units", "help");
-  uint8_t id[2];
-  u16_to_u8(var.GetId(), id);
-  DebugUInt32 var_readonly("name", VarAccess::ReadOnly, value, "units", "help");
-  uint8_t id_readonly[2];
-  u16_to_u8(var_readonly.GetId(), id_readonly);
-
-  std::vector<std::tuple<std::vector<uint8_t>, ErrorCode>> requests = {
-      {{}, ErrorCode::MissingData},  // Missing subcommand
-      {{4}, ErrorCode::InvalidData}, // Invalid subcommand
-      {{0, 0xFF, 0xFF}, ErrorCode::UnknownVariable},
-      {{1, 0xFF, 0xFF}, ErrorCode::UnknownVariable},
-      {{2, 0xFF, 0xFF}, ErrorCode::UnknownVariable},
-      {{0, 1}, ErrorCode::MissingData},
-      {{1, 1}, ErrorCode::MissingData},
-      {{2, 1}, ErrorCode::MissingData},
-      {{0, id[0], id[1]}, ErrorCode::NoMemory},
-      {{1, id[0], id[1]}, ErrorCode::NoMemory},
-      {{3}, ErrorCode::NoMemory},
-      {{2, id[0], id[1], 0xCA, 0xFE, 0x00}, ErrorCode::MissingData},
-      {{2, id_readonly[0], id_readonly[1], 0xCA, 0xFE, 0x00, 0x00},
-       ErrorCode::InternalError},
-  };
-
-  for (auto &[request, error] : requests) {
-    // response size 3 to provoke No Memory error once all other checks are OK
-    std::array<uint8_t, 3> response;
-    bool processed{false};
-    Context context = {.request = request.data(),
-                       .request_length = static_cast<uint32_t>(request.size()),
-                       .response = response.data(),
-                       .max_response_length = response.size(),
-                       .response_length = 0,
-                       .processed = &processed};
-    EXPECT_EQ(error, VarHandler().Process(&context));
-    EXPECT_FALSE(processed);
-    EXPECT_EQ(context.response_length, 0);
   }
 }
+
+// Tests a request with no subcommand
+TEST(VarHandler, MissingSubcmd) {
+  flatbuffers::FlatBufferBuilder builder(1024);
+  auto req_builder = DebugProtocol::CreateVarRequest(builder);
+  builder.Finish(req_builder);
+  uint8_t *req = builder.GetBufferPointer();
+  uint32_t req_len = builder.GetSize();
+
+  bool processed{false};
+  Context context = {.request = req,
+                     .request_length = req_len,
+                     .response = nullptr,
+                     .max_response_length = 0,
+                     .response_length = 0,
+                     .processed = &processed};
+  EXPECT_EQ(ErrorCode::MissingData, VarHandler().Process(&context));
+  EXPECT_FALSE(processed);
+  EXPECT_EQ(context.response_length, 0);
+}
+
+// Tests GetVarInfo with an unknown variable
+TEST(VarHandler, GetInfoUnknownVariable) {
+  flatbuffers::FlatBufferBuilder builder(1024);
+  DebugProtocol::GetVarRequest cmddata = DebugProtocol::GetVarRequest(0xFF);
+  auto cmddata_ = builder.CreateStruct(cmddata);
+  auto req_builder = DebugProtocol::CreateVarRequest(
+    builder,
+    DebugProtocol::VarSubcmd::GetInfo,
+    DebugProtocol::Request::GetVarRequest,
+    cmddata_.Union()
+  );
+  builder.Finish(req_builder);
+  uint8_t *req = builder.GetBufferPointer();
+  uint32_t req_len = builder.GetSize();
+
+  bool processed{false};
+  Context context = {.request = req,
+                     .request_length = req_len,
+                     .response = nullptr,
+                     .max_response_length = 0,
+                     .response_length = 0,
+                     .processed = &processed};
+  EXPECT_EQ(ErrorCode::UnknownVariable, VarHandler().Process(&context));
+  EXPECT_FALSE(processed);
+  EXPECT_EQ(context.response_length, 0);
+}
+
+// Tests GetVar with an unknown variable
+TEST(VarHandler, GetUnknownVariable) {
+  flatbuffers::FlatBufferBuilder builder(1024);
+  DebugProtocol::GetVarRequest cmddata = DebugProtocol::GetVarRequest(0xFF);
+  auto cmddata_ = builder.CreateStruct(cmddata);
+  auto req_builder = DebugProtocol::CreateVarRequest(
+    builder,
+    DebugProtocol::VarSubcmd::Get,
+    DebugProtocol::Request::GetVarRequest,
+    cmddata_.Union()
+  );
+  builder.Finish(req_builder);
+  uint8_t *req = builder.GetBufferPointer();
+  uint32_t req_len = builder.GetSize();
+
+  bool processed{false};
+  Context context = {.request = req,
+                     .request_length = req_len,
+                     .response = nullptr,
+                     .max_response_length = 0,
+                     .response_length = 0,
+                     .processed = &processed};
+  EXPECT_EQ(ErrorCode::UnknownVariable, VarHandler().Process(&context));
+  EXPECT_FALSE(processed);
+  EXPECT_EQ(context.response_length, 0);
+}
+
+// Tests SetVar with an unknown variable
+TEST(VarHandler, SetUnknownVariable) {
+  flatbuffers::FlatBufferBuilder builder(1024);
+  DebugProtocol::SetVarRequest cmddata = DebugProtocol::SetVarRequest(0xFF, 0xFF);
+  auto cmddata_ = builder.CreateStruct(cmddata);
+  auto req_builder = DebugProtocol::CreateVarRequest(
+    builder,
+    DebugProtocol::VarSubcmd::Set,
+    DebugProtocol::Request::SetVarRequest,
+    cmddata_.Union()
+  );
+  builder.Finish(req_builder);
+  uint8_t *req = builder.GetBufferPointer();
+  uint32_t req_len = builder.GetSize();
+
+  bool processed{false};
+  Context context = {.request = req,
+                     .request_length = req_len,
+                     .response = nullptr,
+                     .max_response_length = 0,
+                     .response_length = 0,
+                     .processed = &processed};
+  EXPECT_EQ(ErrorCode::UnknownVariable, VarHandler().Process(&context));
+  EXPECT_FALSE(processed);
+  EXPECT_EQ(context.response_length, 0);
+}
+
+// Tests GetVarInfo when response doesn't have enough memory
+TEST(VarHandler, GetVarInfoNoMemory) {
+  uint32_t value = 0xDEADBEEF;
+  DebugUInt32 var("name", VarAccess::ReadWrite, value, "units", "help");
+  uint16_t id = var.GetId();
+
+  flatbuffers::FlatBufferBuilder builder(1024);
+  DebugProtocol::GetVarRequest cmddata = DebugProtocol::GetVarRequest(id);
+  auto cmddata_ = builder.CreateStruct(cmddata);
+  auto req_builder = DebugProtocol::CreateVarRequest(
+    builder,
+    DebugProtocol::VarSubcmd::GetInfo,
+    DebugProtocol::Request::GetVarRequest,
+    cmddata_.Union()
+  );
+  builder.Finish(req_builder);
+  uint8_t *req = builder.GetBufferPointer();
+  uint32_t req_len = builder.GetSize();
+
+  bool processed{false};
+  Context context = {.request = req,
+                     .request_length = req_len,
+                     .response = nullptr,
+                     .max_response_length = 0, // TODO: Choose an appropriate length
+                     .response_length = 0,
+                     .processed = &processed};
+  EXPECT_EQ(ErrorCode::NoMemory, VarHandler().Process(&context));
+  EXPECT_FALSE(processed);
+  EXPECT_EQ(context.response_length, 0);
+}
+
+// Tests GetVar when response doesn't have enough memory
+TEST(VarHandler, GetVarNoMemory) {
+  uint32_t value = 0xDEADBEEF;
+  DebugUInt32 var("name", VarAccess::ReadWrite, value, "units", "help");
+  uint16_t id = var.GetId();
+
+  flatbuffers::FlatBufferBuilder builder(1024);
+  DebugProtocol::GetVarRequest cmddata = DebugProtocol::GetVarRequest(id);
+  auto cmddata_ = builder.CreateStruct(cmddata);
+  auto req_builder = DebugProtocol::CreateVarRequest(
+    builder,
+    DebugProtocol::VarSubcmd::Get,
+    DebugProtocol::Request::GetVarRequest,
+    cmddata_.Union()
+  );
+  builder.Finish(req_builder);
+  uint8_t *req = builder.GetBufferPointer();
+  uint32_t req_len = builder.GetSize();
+
+  bool processed{false};
+  Context context = {.request = req,
+                     .request_length = req_len,
+                     .response = nullptr,
+                     .max_response_length = 0, // TODO: Choose an appropriate length
+                     .response_length = 0,
+                     .processed = &processed};
+  EXPECT_EQ(ErrorCode::NoMemory, VarHandler().Process(&context));
+  EXPECT_FALSE(processed);
+  EXPECT_EQ(context.response_length, 0);
+}
+
+// Tests GetVarCount when response doesn't have enough memory
+TEST(VarHandler, GetVarCountNoMemory) {
+  uint32_t value = 0xDEADBEEF;
+  DebugUInt32 var("name", VarAccess::ReadWrite, value, "units", "help");
+  DebugUInt32 var_readonly("name", VarAccess::ReadOnly, value, "units", "help");
+
+  flatbuffers::FlatBufferBuilder builder(1024);
+  auto req_builder = DebugProtocol::CreateVarRequest(
+    builder,
+    DebugProtocol::VarSubcmd::GetCount
+  );
+  builder.Finish(req_builder);
+  uint8_t *req = builder.GetBufferPointer();
+  uint32_t req_len = builder.GetSize();
+
+  bool processed{false};
+  Context context = {.request = req,
+                     .request_length = req_len,
+                     .response = nullptr,
+                     .max_response_length = 0,
+                     .response_length = 0,
+                     .processed = &processed};
+
+  EXPECT_EQ(ErrorCode::NoMemory, VarHandler().Process(&context));
+  EXPECT_FALSE(processed);
+  EXPECT_EQ(context.response_length, 0);
+}
+
+// Tests SetVar on a readonly variable
+TEST(VarHandler, VarReadOnly) {
+  uint32_t value = 0xDEADBEEF;
+  DebugUInt32 var_readonly("name", VarAccess::ReadOnly, value, "units", "help");
+  uint16_t id_readonly = var_readonly.GetId();
+
+  flatbuffers::FlatBufferBuilder builder(1024);
+  DebugProtocol::SetVarRequest cmddata = DebugProtocol::SetVarRequest(
+    id_readonly, 
+    0xFF
+  );
+  auto cmddata_ = builder.CreateStruct(cmddata);
+  auto req_builder = DebugProtocol::CreateVarRequest(
+    builder,
+    DebugProtocol::VarSubcmd::Set,
+    DebugProtocol::Request::SetVarRequest,
+    cmddata_.Union()
+  );
+  builder.Finish(req_builder);
+  uint8_t *req = builder.GetBufferPointer();
+  uint32_t req_len = builder.GetSize();
+
+  bool processed{false};
+  Context context = {.request = req,
+                     .request_length = req_len,
+                     .response = nullptr,
+                     .max_response_length = 0,
+                     .response_length = 0,
+                     .processed = &processed};
+
+  EXPECT_EQ(ErrorCode::InternalError, VarHandler().Process(&context));
+  EXPECT_FALSE(processed);
+  EXPECT_EQ(context.response_length, 0);
+}
+
+// NOTE 1: The SetVarRequest buffer object has a 32-bit unsigned int storing the 32-bit set value, receiving fewer than 4 bytes is an invalid case.
+// NOTE 2: Since we're using a DebugProtocol::VarSubcmd enum instead of raw subcommand codes, an invalid subcommand is not a valid case
 
 } // namespace Debug::Command
