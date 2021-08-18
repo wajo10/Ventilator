@@ -23,11 +23,13 @@ namespace Debug::Command {
 ErrorCode VarHandler::Process(Context *context) {
 
   // The subcommand is required
-  // A VarRequest with a subcommand and ID takes 20 bits 
+  // A VarRequest with a subcommand and ID takes 20 bits
   if (context->request_length < 20)
     return ErrorCode::MissingData;
 
-  DebugProtocol::VarSubcmd subcommand{flatbuffers::GetRoot<DebugProtocol::VarRequest>(context->request)->subcmd()};
+  DebugProtocol::VarSubcmd subcommand{
+      flatbuffers::GetRoot<DebugProtocol::VarRequest>(context->request)
+          ->subcmd()};
 
   switch (subcommand) {
   // Return info about one of the variables.
@@ -57,11 +59,12 @@ ErrorCode VarHandler::Process(Context *context) {
 ErrorCode VarHandler::GetVarInfo(Context *context) {
 
   // We expect a 16-bit ID to be passed
-  // A GetVarRequest with a subcommand and ID takes 20 bits 
+  // A GetVarRequest with a subcommand and ID takes 20 bits
   if (context->request_length < 24)
     return ErrorCode::MissingData;
 
-  auto context_req = flatbuffers::GetRoot<DebugProtocol::VarRequest>(context->request);
+  auto context_req =
+      flatbuffers::GetRoot<DebugProtocol::VarRequest>(context->request);
   auto cmddata = context_req->request_as_GetVarRequest();
 
   uint16_t var_id = cmddata->vid();
@@ -95,19 +98,14 @@ ErrorCode VarHandler::GetVarInfo(Context *context) {
 
   flatbuffers::FlatBufferBuilder builder(1024);
   auto res_builder = DebugProtocol::CreateGetVarInfoResponse(
-    builder,
-    static_cast<uint8_t>(var->GetType()),
-    static_cast<uint8_t>(var->GetAccess()),
-    0,
-    static_cast<uint8_t>(name_length),
-    static_cast<uint8_t>(format_length),
-    static_cast<uint8_t>(help_length),
-    static_cast<uint8_t>(unit_length),
-    builder.CreateString(var->GetName()),
-    builder.CreateString(var->GetFormat()),
-    builder.CreateString(var->GetHelp()),
-    builder.CreateString(var->GetUnits())
-  );
+      builder, static_cast<uint8_t>(var->GetType()),
+      static_cast<uint8_t>(var->GetAccess()), 0,
+      static_cast<uint8_t>(name_length), static_cast<uint8_t>(format_length),
+      static_cast<uint8_t>(help_length), static_cast<uint8_t>(unit_length),
+      builder.CreateString(var->GetName()),
+      builder.CreateString(var->GetFormat()),
+      builder.CreateString(var->GetHelp()),
+      builder.CreateString(var->GetUnits()));
   builder.Finish(res_builder);
   uint8_t *res = builder.GetBufferPointer();
   uint32_t res_len = builder.GetSize();
@@ -120,11 +118,12 @@ ErrorCode VarHandler::GetVarInfo(Context *context) {
 
 ErrorCode VarHandler::GetVar(Context *context) {
   // We expect a 16-bit ID to be passed
-  // A GetVarRequest with a subcommand and ID takes 20 bits 
+  // A GetVarRequest with a subcommand and ID takes 20 bits
   if (context->request_length < 20)
     return ErrorCode::MissingData;
 
-  auto context_req = flatbuffers::GetRoot<DebugProtocol::VarRequest>(context->request);
+  auto context_req =
+      flatbuffers::GetRoot<DebugProtocol::VarRequest>(context->request);
   auto cmddata = context_req->request_as_GetVarRequest();
   uint16_t var_id = cmddata->vid();
 
@@ -136,10 +135,8 @@ ErrorCode VarHandler::GetVar(Context *context) {
     return ErrorCode::NoMemory;
 
   flatbuffers::FlatBufferBuilder builder(1024);
-  auto res_builder = DebugProtocol::CreateGetVarResponse(
-    builder,
-    var->GetValue()
-  );
+  auto res_builder =
+      DebugProtocol::CreateGetVarResponse(builder, var->GetValue());
   builder.Finish(res_builder);
   uint8_t *res = builder.GetBufferPointer();
   uint32_t res_len = builder.GetSize();
@@ -152,11 +149,12 @@ ErrorCode VarHandler::GetVar(Context *context) {
 
 ErrorCode VarHandler::SetVar(Context *context) {
   // We expect a 16-bit ID to be passed
-  // A SetVarRequest with a subcommand, ID, and value takes 28 bits 
+  // A SetVarRequest with a subcommand, ID, and value takes 28 bits
   if (context->request_length < 28)
     return ErrorCode::MissingData;
 
-  auto context_req = flatbuffers::GetRoot<DebugProtocol::VarRequest>(context->request);
+  auto context_req =
+      flatbuffers::GetRoot<DebugProtocol::VarRequest>(context->request);
   auto cmddata = context_req->request_as_SetVarRequest();
   uint16_t var_id = cmddata->vid();
 
@@ -179,9 +177,7 @@ ErrorCode VarHandler::GetVarCount(Context *context) {
 
   flatbuffers::FlatBufferBuilder builder(1024);
   auto res_builder = DebugProtocol::CreateGetVarCountResponse(
-    builder,
-    DebugVarBase::GetVarCount()
-  );
+      builder, DebugVarBase::GetVarCount());
   builder.Finish(res_builder);
   uint8_t *res = builder.GetBufferPointer();
   uint32_t res_len = builder.GetSize();

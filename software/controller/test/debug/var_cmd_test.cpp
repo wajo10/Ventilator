@@ -32,19 +32,12 @@ TEST(VarHandler, GetVarInfo) {
   // expected result is hand-built from format given in var_cmd.cpp
   flatbuffers::FlatBufferBuilder builder(1024);
   auto expected_builder = DebugProtocol::CreateGetVarInfoResponse(
-    builder,
-    static_cast<uint8_t>(VarType::UInt32),
-    static_cast<uint8_t>(VarAccess::ReadOnly),
-    0,
-    static_cast<uint8_t>(strlen(name)),
-    static_cast<uint8_t>(strlen(format)),
-    static_cast<uint8_t>(strlen(help)),
-    static_cast<uint8_t>(strlen(unit)),
-    builder.CreateString(name),
-    builder.CreateString(format),
-    builder.CreateString(help),
-    builder.CreateString(unit)
-  );
+      builder, static_cast<uint8_t>(VarType::UInt32),
+      static_cast<uint8_t>(VarAccess::ReadOnly), 0,
+      static_cast<uint8_t>(strlen(name)), static_cast<uint8_t>(strlen(format)),
+      static_cast<uint8_t>(strlen(help)), static_cast<uint8_t>(strlen(unit)),
+      builder.CreateString(name), builder.CreateString(format),
+      builder.CreateString(help), builder.CreateString(unit));
   builder.Finish(expected_builder);
   uint8_t *expected = builder.GetBufferPointer();
   uint32_t expected_len = builder.GetSize();
@@ -54,11 +47,8 @@ TEST(VarHandler, GetVarInfo) {
   auto cmddata_ = builder.CreateStruct(cmddata);
 
   auto req_builder = DebugProtocol::CreateVarRequest(
-    builder,
-    DebugProtocol::VarSubcmd::GetInfo,
-    DebugProtocol::Request::GetVarRequest,
-    cmddata_.Union()
-  );
+      builder, DebugProtocol::VarSubcmd::GetInfo,
+      DebugProtocol::Request::GetVarRequest, cmddata_.Union());
   builder.Finish(req_builder);
   uint8_t *req = builder.GetBufferPointer();
   uint32_t req_len = builder.GetSize();
@@ -84,10 +74,7 @@ TEST(VarHandler, GetVar) {
 
   // Test that a GET command obtains the variable's value.
   flatbuffers::FlatBufferBuilder builder(1024);
-  auto expected_builder = DebugProtocol::CreateGetVarResponse(
-    builder,
-    value
-  );
+  auto expected_builder = DebugProtocol::CreateGetVarResponse(builder, value);
   builder.Finish(expected_builder);
   uint8_t *expected = builder.GetBufferPointer();
   uint32_t expected_len = builder.GetSize();
@@ -98,11 +85,8 @@ TEST(VarHandler, GetVar) {
   auto cmddata_ = builder.CreateStruct(cmddata);
 
   auto req_builder = DebugProtocol::CreateVarRequest(
-    builder,
-    DebugProtocol::VarSubcmd::Get,
-    DebugProtocol::Request::GetVarRequest,
-    cmddata_.Union()
-  );
+      builder, DebugProtocol::VarSubcmd::Get,
+      DebugProtocol::Request::GetVarRequest, cmddata_.Union());
   builder.Finish(req_builder);
   uint8_t *req = builder.GetBufferPointer();
   uint32_t req_len = builder.GetSize();
@@ -135,18 +119,13 @@ TEST(VarHandler, SetVar) {
   uint16_t id = var.GetId();
 
   flatbuffers::FlatBufferBuilder builder(1024);
-  DebugProtocol::SetVarRequest cmddata = DebugProtocol::SetVarRequest(
-    id,
-    new_value
-  );
+  DebugProtocol::SetVarRequest cmddata =
+      DebugProtocol::SetVarRequest(id, new_value);
   auto cmddata_ = builder.CreateStruct(cmddata);
 
   auto req_builder = DebugProtocol::CreateVarRequest(
-    builder,
-    DebugProtocol::VarSubcmd::Set,
-    DebugProtocol::Request::SetVarRequest,
-    cmddata_.Union()
-  );
+      builder, DebugProtocol::VarSubcmd::Set,
+      DebugProtocol::Request::SetVarRequest, cmddata_.Union());
   builder.Finish(req_builder);
   uint8_t *req = builder.GetBufferPointer();
   uint32_t req_len = builder.GetSize();
@@ -163,7 +142,6 @@ TEST(VarHandler, SetVar) {
   EXPECT_TRUE(processed);
   EXPECT_EQ(0, context.response_length);
 
-
   EXPECT_EQ(new_value, value);
 }
 
@@ -175,17 +153,13 @@ TEST(VarHandler, GetVarCount) {
   // Test that GetVarCount command obtains the number of defined variables
   flatbuffers::FlatBufferBuilder builder(1024);
   auto expected_builder = DebugProtocol::CreateGetVarCountResponse(
-    builder,
-    DebugVarBase::GetVarCount()
-  );
+      builder, DebugVarBase::GetVarCount());
   builder.Finish(expected_builder);
   uint8_t *expected = builder.GetBufferPointer();
   uint32_t expected_len = builder.GetSize();
-  
+
   auto req_builder = DebugProtocol::CreateVarRequest(
-    builder,
-    DebugProtocol::VarSubcmd::GetCount
-  );
+      builder, DebugProtocol::VarSubcmd::GetCount);
   builder.Finish(req_builder);
   uint8_t *req = builder.GetBufferPointer();
   uint32_t req_len = builder.GetSize();
@@ -233,11 +207,8 @@ TEST(VarHandler, GetInfoUnknownVariable) {
   DebugProtocol::GetVarRequest cmddata = DebugProtocol::GetVarRequest(0xFF);
   auto cmddata_ = builder.CreateStruct(cmddata);
   auto req_builder = DebugProtocol::CreateVarRequest(
-    builder,
-    DebugProtocol::VarSubcmd::GetInfo,
-    DebugProtocol::Request::GetVarRequest,
-    cmddata_.Union()
-  );
+      builder, DebugProtocol::VarSubcmd::GetInfo,
+      DebugProtocol::Request::GetVarRequest, cmddata_.Union());
   builder.Finish(req_builder);
   uint8_t *req = builder.GetBufferPointer();
   uint32_t req_len = builder.GetSize();
@@ -260,11 +231,8 @@ TEST(VarHandler, GetUnknownVariable) {
   DebugProtocol::GetVarRequest cmddata = DebugProtocol::GetVarRequest(0xFF);
   auto cmddata_ = builder.CreateStruct(cmddata);
   auto req_builder = DebugProtocol::CreateVarRequest(
-    builder,
-    DebugProtocol::VarSubcmd::Get,
-    DebugProtocol::Request::GetVarRequest,
-    cmddata_.Union()
-  );
+      builder, DebugProtocol::VarSubcmd::Get,
+      DebugProtocol::Request::GetVarRequest, cmddata_.Union());
   builder.Finish(req_builder);
   uint8_t *req = builder.GetBufferPointer();
   uint32_t req_len = builder.GetSize();
@@ -284,14 +252,12 @@ TEST(VarHandler, GetUnknownVariable) {
 // Tests SetVar with an unknown variable
 TEST(VarHandler, SetUnknownVariable) {
   flatbuffers::FlatBufferBuilder builder(1024);
-  DebugProtocol::SetVarRequest cmddata = DebugProtocol::SetVarRequest(0xFF, 0xFF);
+  DebugProtocol::SetVarRequest cmddata =
+      DebugProtocol::SetVarRequest(0xFF, 0xFF);
   auto cmddata_ = builder.CreateStruct(cmddata);
   auto req_builder = DebugProtocol::CreateVarRequest(
-    builder,
-    DebugProtocol::VarSubcmd::Set,
-    DebugProtocol::Request::SetVarRequest,
-    cmddata_.Union()
-  );
+      builder, DebugProtocol::VarSubcmd::Set,
+      DebugProtocol::Request::SetVarRequest, cmddata_.Union());
   builder.Finish(req_builder);
   uint8_t *req = builder.GetBufferPointer();
   uint32_t req_len = builder.GetSize();
@@ -318,11 +284,8 @@ TEST(VarHandler, GetVarInfoNoMemory) {
   DebugProtocol::GetVarRequest cmddata = DebugProtocol::GetVarRequest(id);
   auto cmddata_ = builder.CreateStruct(cmddata);
   auto req_builder = DebugProtocol::CreateVarRequest(
-    builder,
-    DebugProtocol::VarSubcmd::GetInfo,
-    DebugProtocol::Request::GetVarRequest,
-    cmddata_.Union()
-  );
+      builder, DebugProtocol::VarSubcmd::GetInfo,
+      DebugProtocol::Request::GetVarRequest, cmddata_.Union());
   builder.Finish(req_builder);
   uint8_t *req = builder.GetBufferPointer();
   uint32_t req_len = builder.GetSize();
@@ -331,7 +294,8 @@ TEST(VarHandler, GetVarInfoNoMemory) {
   Context context = {.request = req,
                      .request_length = req_len,
                      .response = nullptr,
-                     .max_response_length = 0, // TODO: Choose an appropriate length
+                     .max_response_length =
+                         0, // TODO: Choose an appropriate length
                      .response_length = 0,
                      .processed = &processed};
   EXPECT_EQ(ErrorCode::NoMemory, VarHandler().Process(&context));
@@ -349,11 +313,8 @@ TEST(VarHandler, GetVarNoMemory) {
   DebugProtocol::GetVarRequest cmddata = DebugProtocol::GetVarRequest(id);
   auto cmddata_ = builder.CreateStruct(cmddata);
   auto req_builder = DebugProtocol::CreateVarRequest(
-    builder,
-    DebugProtocol::VarSubcmd::Get,
-    DebugProtocol::Request::GetVarRequest,
-    cmddata_.Union()
-  );
+      builder, DebugProtocol::VarSubcmd::Get,
+      DebugProtocol::Request::GetVarRequest, cmddata_.Union());
   builder.Finish(req_builder);
   uint8_t *req = builder.GetBufferPointer();
   uint32_t req_len = builder.GetSize();
@@ -362,7 +323,8 @@ TEST(VarHandler, GetVarNoMemory) {
   Context context = {.request = req,
                      .request_length = req_len,
                      .response = nullptr,
-                     .max_response_length = 0, // TODO: Choose an appropriate length
+                     .max_response_length =
+                         0, // TODO: Choose an appropriate length
                      .response_length = 0,
                      .processed = &processed};
   EXPECT_EQ(ErrorCode::NoMemory, VarHandler().Process(&context));
@@ -378,9 +340,7 @@ TEST(VarHandler, GetVarCountNoMemory) {
 
   flatbuffers::FlatBufferBuilder builder(1024);
   auto req_builder = DebugProtocol::CreateVarRequest(
-    builder,
-    DebugProtocol::VarSubcmd::GetCount
-  );
+      builder, DebugProtocol::VarSubcmd::GetCount);
   builder.Finish(req_builder);
   uint8_t *req = builder.GetBufferPointer();
   uint32_t req_len = builder.GetSize();
@@ -405,17 +365,12 @@ TEST(VarHandler, VarReadOnly) {
   uint16_t id_readonly = var_readonly.GetId();
 
   flatbuffers::FlatBufferBuilder builder(1024);
-  DebugProtocol::SetVarRequest cmddata = DebugProtocol::SetVarRequest(
-    id_readonly, 
-    0xFF
-  );
+  DebugProtocol::SetVarRequest cmddata =
+      DebugProtocol::SetVarRequest(id_readonly, 0xFF);
   auto cmddata_ = builder.CreateStruct(cmddata);
   auto req_builder = DebugProtocol::CreateVarRequest(
-    builder,
-    DebugProtocol::VarSubcmd::Set,
-    DebugProtocol::Request::SetVarRequest,
-    cmddata_.Union()
-  );
+      builder, DebugProtocol::VarSubcmd::Set,
+      DebugProtocol::Request::SetVarRequest, cmddata_.Union());
   builder.Finish(req_builder);
   uint8_t *req = builder.GetBufferPointer();
   uint32_t req_len = builder.GetSize();
@@ -433,7 +388,9 @@ TEST(VarHandler, VarReadOnly) {
   EXPECT_EQ(context.response_length, 0);
 }
 
-// NOTE 1: The SetVarRequest buffer object has a 32-bit unsigned int storing the 32-bit set value, receiving fewer than 4 bytes is an invalid case.
-// NOTE 2: Since we're using a DebugProtocol::VarSubcmd enum instead of raw subcommand codes, an invalid subcommand is not a valid case
+// NOTE 1: The SetVarRequest buffer object has a 32-bit unsigned int storing the
+// 32-bit set value, receiving fewer than 4 bytes is an invalid case. NOTE 2:
+// Since we're using a DebugProtocol::VarSubcmd enum instead of raw subcommand
+// codes, an invalid subcommand is not a valid case
 
 } // namespace Debug::Command

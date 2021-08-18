@@ -17,10 +17,10 @@ limitations under the License.
 #define COMMAND_H
 
 #include "binary_utils.h"
+#include "debug_protocol_generated.h"
 #include "eeprom.h"
 #include "hal.h"
 #include "interface.h"
-#include "debug_protocol_generated.h"
 
 namespace Debug::Command {
 
