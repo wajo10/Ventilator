@@ -11,13 +11,15 @@ struct GetVarRequest;
 
 struct SetVarRequest;
 
-struct VarRequest;
+struct Request;
 
 struct GetVarInfoResponse;
 
 struct GetVarResponse;
 
 struct GetVarCountResponse;
+
+struct Command;
 
 enum class CmdCode : int8_t {
   Mode = 0,
@@ -80,7 +82,7 @@ inline const char *EnumNameVarSubcmd(VarSubcmd e) {
   return EnumNamesVarSubcmd()[index];
 }
 
-enum class Request : uint8_t {
+enum class VarRequest : uint8_t {
   NONE = 0,
   GetVarRequest = 1,
   SetVarRequest = 2,
@@ -88,40 +90,40 @@ enum class Request : uint8_t {
   MAX = SetVarRequest
 };
 
-inline const Request (&EnumValuesRequest())[3] {
-  static const Request values[] = {Request::NONE, Request::GetVarRequest,
-                                   Request::SetVarRequest};
+inline const VarRequest (&EnumValuesVarRequest())[3] {
+  static const VarRequest values[] = {
+      VarRequest::NONE, VarRequest::GetVarRequest, VarRequest::SetVarRequest};
   return values;
 }
 
-inline const char *const *EnumNamesRequest() {
+inline const char *const *EnumNamesVarRequest() {
   static const char *const names[] = {"NONE", "GetVarRequest", "SetVarRequest",
                                       nullptr};
   return names;
 }
 
-inline const char *EnumNameRequest(Request e) {
-  if (e < Request::NONE || e > Request::SetVarRequest)
+inline const char *EnumNameVarRequest(VarRequest e) {
+  if (e < VarRequest::NONE || e > VarRequest::SetVarRequest)
     return "";
   const size_t index = static_cast<size_t>(e);
-  return EnumNamesRequest()[index];
+  return EnumNamesVarRequest()[index];
 }
 
-template <typename T> struct RequestTraits {
-  static const Request enum_value = Request::NONE;
+template <typename T> struct VarRequestTraits {
+  static const VarRequest enum_value = VarRequest::NONE;
 };
 
-template <> struct RequestTraits<GetVarRequest> {
-  static const Request enum_value = Request::GetVarRequest;
+template <> struct VarRequestTraits<GetVarRequest> {
+  static const VarRequest enum_value = VarRequest::GetVarRequest;
 };
 
-template <> struct RequestTraits<SetVarRequest> {
-  static const Request enum_value = Request::SetVarRequest;
+template <> struct VarRequestTraits<SetVarRequest> {
+  static const VarRequest enum_value = VarRequest::SetVarRequest;
 };
 
-bool VerifyRequest(flatbuffers::Verifier &verifier, const void *obj,
-                   Request type);
-bool VerifyRequestVector(
+bool VerifyVarRequest(flatbuffers::Verifier &verifier, const void *obj,
+                      VarRequest type);
+bool VerifyVarRequestVector(
     flatbuffers::Verifier &verifier,
     const flatbuffers::Vector<flatbuffers::Offset<void>> *values,
     const flatbuffers::Vector<uint8_t> *types);
@@ -159,85 +161,92 @@ public:
 };
 FLATBUFFERS_STRUCT_END(SetVarRequest, 8);
 
-struct VarRequest FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct Request FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_SUBCMD = 4,
-    VT_REQUEST_TYPE = 6,
-    VT_REQUEST = 8
+    VT_CMD = 4,
+    VT_SUBCMD = 6,
+    VT_REQUEST_TYPE = 8,
+    VT_REQUEST = 10
   };
+  CmdCode cmd() const {
+    return static_cast<CmdCode>(GetField<int8_t>(VT_CMD, 0));
+  }
   VarSubcmd subcmd() const {
     return static_cast<VarSubcmd>(GetField<int8_t>(VT_SUBCMD, 0));
   }
-  Request request_type() const {
-    return static_cast<Request>(GetField<uint8_t>(VT_REQUEST_TYPE, 0));
+  VarRequest request_type() const {
+    return static_cast<VarRequest>(GetField<uint8_t>(VT_REQUEST_TYPE, 0));
   }
   const void *request() const { return GetPointer<const void *>(VT_REQUEST); }
   template <typename T> const T *request_as() const;
   const GetVarRequest *request_as_GetVarRequest() const {
-    return request_type() == Request::GetVarRequest
+    return request_type() == VarRequest::GetVarRequest
                ? static_cast<const GetVarRequest *>(request())
                : nullptr;
   }
   const SetVarRequest *request_as_SetVarRequest() const {
-    return request_type() == Request::SetVarRequest
+    return request_type() == VarRequest::SetVarRequest
                ? static_cast<const SetVarRequest *>(request())
                : nullptr;
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
+           VerifyField<int8_t>(verifier, VT_CMD) &&
            VerifyField<int8_t>(verifier, VT_SUBCMD) &&
            VerifyField<uint8_t>(verifier, VT_REQUEST_TYPE) &&
            VerifyOffset(verifier, VT_REQUEST) &&
-           VerifyRequest(verifier, request(), request_type()) &&
+           VerifyVarRequest(verifier, request(), request_type()) &&
            verifier.EndTable();
   }
 };
 
 template <>
-inline const GetVarRequest *VarRequest::request_as<GetVarRequest>() const {
+inline const GetVarRequest *Request::request_as<GetVarRequest>() const {
   return request_as_GetVarRequest();
 }
 
 template <>
-inline const SetVarRequest *VarRequest::request_as<SetVarRequest>() const {
+inline const SetVarRequest *Request::request_as<SetVarRequest>() const {
   return request_as_SetVarRequest();
 }
 
-struct VarRequestBuilder {
+struct RequestBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_subcmd(VarSubcmd subcmd) {
-    fbb_.AddElement<int8_t>(VarRequest::VT_SUBCMD, static_cast<int8_t>(subcmd),
-                            0);
+  void add_cmd(CmdCode cmd) {
+    fbb_.AddElement<int8_t>(Request::VT_CMD, static_cast<int8_t>(cmd), 0);
   }
-  void add_request_type(Request request_type) {
-    fbb_.AddElement<uint8_t>(VarRequest::VT_REQUEST_TYPE,
+  void add_subcmd(VarSubcmd subcmd) {
+    fbb_.AddElement<int8_t>(Request::VT_SUBCMD, static_cast<int8_t>(subcmd), 0);
+  }
+  void add_request_type(VarRequest request_type) {
+    fbb_.AddElement<uint8_t>(Request::VT_REQUEST_TYPE,
                              static_cast<uint8_t>(request_type), 0);
   }
   void add_request(flatbuffers::Offset<void> request) {
-    fbb_.AddOffset(VarRequest::VT_REQUEST, request);
+    fbb_.AddOffset(Request::VT_REQUEST, request);
   }
-  explicit VarRequestBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-      : fbb_(_fbb) {
+  explicit RequestBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  VarRequestBuilder &operator=(const VarRequestBuilder &);
-  flatbuffers::Offset<VarRequest> Finish() {
+  RequestBuilder &operator=(const RequestBuilder &);
+  flatbuffers::Offset<Request> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<VarRequest>(end);
+    auto o = flatbuffers::Offset<Request>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<VarRequest>
-CreateVarRequest(flatbuffers::FlatBufferBuilder &_fbb,
-                 VarSubcmd subcmd = VarSubcmd::GetInfo,
-                 Request request_type = Request::NONE,
-                 flatbuffers::Offset<void> request = 0) {
-  VarRequestBuilder builder_(_fbb);
+inline flatbuffers::Offset<Request>
+CreateRequest(flatbuffers::FlatBufferBuilder &_fbb, CmdCode cmd = CmdCode::Mode,
+              VarSubcmd subcmd = VarSubcmd::GetInfo,
+              VarRequest request_type = VarRequest::NONE,
+              flatbuffers::Offset<void> request = 0) {
+  RequestBuilder builder_(_fbb);
   builder_.add_request(request);
   builder_.add_request_type(request_type);
   builder_.add_subcmd(subcmd);
+  builder_.add_cmd(cmd);
   return builder_.Finish();
 }
 
@@ -452,16 +461,64 @@ CreateGetVarCountResponse(flatbuffers::FlatBufferBuilder &_fbb,
   return builder_.Finish();
 }
 
-inline bool VerifyRequest(flatbuffers::Verifier &verifier, const void *obj,
-                          Request type) {
+struct Command FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_CODE = 4,
+    VT_SUBCMD = 6
+  };
+  CmdCode code() const {
+    return static_cast<CmdCode>(GetField<int8_t>(VT_CODE, 0));
+  }
+  VarSubcmd subcmd() const {
+    return static_cast<VarSubcmd>(GetField<int8_t>(VT_SUBCMD, 0));
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int8_t>(verifier, VT_CODE) &&
+           VerifyField<int8_t>(verifier, VT_SUBCMD) && verifier.EndTable();
+  }
+};
+
+struct CommandBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_code(CmdCode code) {
+    fbb_.AddElement<int8_t>(Command::VT_CODE, static_cast<int8_t>(code), 0);
+  }
+  void add_subcmd(VarSubcmd subcmd) {
+    fbb_.AddElement<int8_t>(Command::VT_SUBCMD, static_cast<int8_t>(subcmd), 0);
+  }
+  explicit CommandBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  CommandBuilder &operator=(const CommandBuilder &);
+  flatbuffers::Offset<Command> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<Command>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<Command>
+CreateCommand(flatbuffers::FlatBufferBuilder &_fbb,
+              CmdCode code = CmdCode::Mode,
+              VarSubcmd subcmd = VarSubcmd::GetInfo) {
+  CommandBuilder builder_(_fbb);
+  builder_.add_subcmd(subcmd);
+  builder_.add_code(code);
+  return builder_.Finish();
+}
+
+inline bool VerifyVarRequest(flatbuffers::Verifier &verifier, const void *obj,
+                             VarRequest type) {
   switch (type) {
-  case Request::NONE: {
+  case VarRequest::NONE: {
     return true;
   }
-  case Request::GetVarRequest: {
+  case VarRequest::GetVarRequest: {
     return verifier.Verify<GetVarRequest>(static_cast<const uint8_t *>(obj), 0);
   }
-  case Request::SetVarRequest: {
+  case VarRequest::SetVarRequest: {
     return verifier.Verify<SetVarRequest>(static_cast<const uint8_t *>(obj), 0);
   }
   default:
@@ -469,7 +526,7 @@ inline bool VerifyRequest(flatbuffers::Verifier &verifier, const void *obj,
   }
 }
 
-inline bool VerifyRequestVector(
+inline bool VerifyVarRequestVector(
     flatbuffers::Verifier &verifier,
     const flatbuffers::Vector<flatbuffers::Offset<void>> *values,
     const flatbuffers::Vector<uint8_t> *types) {
@@ -478,7 +535,8 @@ inline bool VerifyRequestVector(
   if (values->size() != types->size())
     return false;
   for (flatbuffers::uoffset_t i = 0; i < values->size(); ++i) {
-    if (!VerifyRequest(verifier, values->Get(i), types->GetEnum<Request>(i))) {
+    if (!VerifyVarRequest(verifier, values->Get(i),
+                          types->GetEnum<VarRequest>(i))) {
       return false;
     }
   }

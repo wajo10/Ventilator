@@ -16,6 +16,7 @@
 
 namespace DebugProtocol;
 
+// COMMAND CODES
 // Debug command code
 enum CmdCode : byte {
   Mode = 0x00,         // Return the current firmware mode
@@ -35,6 +36,10 @@ enum VarSubcmd : byte {
     GetCount = 0x03    // Get count of active vars
 }
 
+
+// REQUESTS
+union VarRequest { GetVarRequest, SetVarRequest }
+
 // Variable access Get/GetInfo request data
 // This data is deserialized from the request_ buffer of the debugging interface
 struct GetVarRequest {
@@ -48,13 +53,14 @@ struct SetVarRequest {
     value : uint;        // New variable value
 }
 
-union Request { GetVarRequest, SetVarRequest }
-
-table VarRequest {
-    subcmd : VarSubcmd;  // Variable access subcommand code
-    request : Request;
+table Request {
+    cmd : CmdCode;          // Command code
+    subcmd : VarSubcmd;     // Variable access subcommand code
+    request : VarRequest;   // Variable access subcommand data
 }
 
+
+// RESPONSES
 // Get variable info access response data
 table GetVarInfoResponse {
     type : byte;         // variable type code

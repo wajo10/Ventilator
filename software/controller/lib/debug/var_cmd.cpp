@@ -28,8 +28,7 @@ ErrorCode VarHandler::Process(Context *context) {
     return ErrorCode::MissingData;
 
   DebugProtocol::VarSubcmd subcommand{
-      flatbuffers::GetRoot<DebugProtocol::VarRequest>(context->request)
-          ->subcmd()};
+      flatbuffers::GetRoot<DebugProtocol::Request>(context->request)->subcmd()};
 
   switch (subcommand) {
   // Return info about one of the variables.
@@ -64,7 +63,7 @@ ErrorCode VarHandler::GetVarInfo(Context *context) {
     return ErrorCode::MissingData;
 
   auto context_req =
-      flatbuffers::GetRoot<DebugProtocol::VarRequest>(context->request);
+      flatbuffers::GetRoot<DebugProtocol::Request>(context->request);
   auto cmddata = context_req->request_as_GetVarRequest();
 
   uint16_t var_id = cmddata->vid();
@@ -123,7 +122,7 @@ ErrorCode VarHandler::GetVar(Context *context) {
     return ErrorCode::MissingData;
 
   auto context_req =
-      flatbuffers::GetRoot<DebugProtocol::VarRequest>(context->request);
+      flatbuffers::GetRoot<DebugProtocol::Request>(context->request);
   auto cmddata = context_req->request_as_GetVarRequest();
   uint16_t var_id = cmddata->vid();
 
@@ -154,7 +153,7 @@ ErrorCode VarHandler::SetVar(Context *context) {
     return ErrorCode::MissingData;
 
   auto context_req =
-      flatbuffers::GetRoot<DebugProtocol::VarRequest>(context->request);
+      flatbuffers::GetRoot<DebugProtocol::Request>(context->request);
   auto cmddata = context_req->request_as_SetVarRequest();
   uint16_t var_id = cmddata->vid();
 
