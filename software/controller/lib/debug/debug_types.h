@@ -15,6 +15,8 @@ limitations under the License.
 
 #pragma once
 
+#include "debug_flatbuf_generated.h"
+#include "flatbuffers/flatbuffers.h"
 #include <stdint.h>
 
 namespace Debug {
@@ -73,7 +75,14 @@ class Handler {
 
   // Returns an error code.  For any non-zero error, the values returned in
   // response_length and response will be ignored.
-  [[nodiscard]] virtual ErrorCode Process(Context *context) { return ErrorCode::UnknownCommand; }
+  [[nodiscard]] virtual ErrorCode Process(Context *context) {
+    return ErrorCode::UnknownCommand;
+  }
+
+  [[nodiscard]] virtual ErrorCode Process(Context *context,
+                                          flatbuffers::FlatBufferBuilder &b) {
+    return ErrorCode::UnknownCommand;
+  }
 };
 
 }  // namespace Command
