@@ -16,6 +16,10 @@
 
 namespace DebugFlatbuf;
 
+struct Int { val : int }
+struct Uint { val : uint }
+struct Float { val : float }
+
 // REQUEST
 // Command Codes
 enum CmdCode : byte {
@@ -55,9 +59,6 @@ table Request {
 
 // RESPONSE
 // Some responses are single-valued and can share a generic data structure
-struct Int { val : int }
-struct Uint { val : uint }
-struct Float { val : float }
 union GenericValResponse { Int, Uint, Float}
 
 // Some responses need their own tables because they're more complex.
