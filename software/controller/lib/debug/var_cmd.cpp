@@ -29,8 +29,8 @@ ErrorCode VarHandler::Process(Context *context,
   const DebugFlatbuf::VarAccessData *cmddata{req->cmddata_as_VarAccessData()};
 
   // We expect a sub-command.
-  if (flatbuffers::IsFieldPresent(cmddata,
-                                  DebugFlatbuf::VarAccessData::VT_SUBCMD))
+  if (!flatbuffers::IsFieldPresent(cmddata,
+                                   DebugFlatbuf::VarAccessData::VT_SUBCMD))
     return ErrorCode::MissingData;
 
   DebugFlatbuf::VarSubcmd subcommand{cmddata->subcmd()};
@@ -47,7 +47,7 @@ ErrorCode VarHandler::Process(Context *context,
     return SetVar(context, b);
 
   case DebugFlatbuf::VarSubcmd::GetCount:
-    return GetVarCount(context);
+    return GetVarCount(context, b);
 
     default:
       return ErrorCode::InvalidData;
@@ -68,7 +68,8 @@ ErrorCode VarHandler::GetVarInfo(Context *context,
   const DebugFlatbuf::VarAccessData *cmddata{req->cmddata_as_VarAccessData()};
 
   // We expect a 16-bit ID to be passed
-  if (flatbuffers::IsFieldPresent(cmddata, DebugFlatbuf::VarAccessData::VT_VID))
+  if (!flatbuffers::IsFieldPresent(cmddata,
+                                   DebugFlatbuf::VarAccessData::VT_VID))
     return ErrorCode::MissingData;
 
   uint16_t var_id{cmddata->vid()};
@@ -106,49 +107,77 @@ ErrorCode VarHandler::GetVarInfo(Context *context,
 
 ErrorCode VarHandler::GetVar(Context *context,
                              flatbuffers::FlatBufferBuilder &b) {
-  // We expect a 16-bit ID to be passed
-  if (context->request_length < 3) return ErrorCode::MissingData;
+  const DebugFlatbuf::Request *req{
+      flatbuffers::GetRoot<DebugFlatbuf::Request>(context->request)};
+  const DebugFlatbuf::VarAccessData *cmddata{req->cmddata_as_VarAccessData()};
 
-  uint16_t var_id = u8_to_u16(&context->request[1]);
+  // We expect a 16-bit ID to be passed
+  if (!flatbuffers::IsFieldPresent(cmddata,
+                                   DebugFlatbuf::VarAccessData::VT_VID))
+    return ErrorCode::MissingData;
+
+  uint16_t var_id{cmddata->vid()};
 
   auto *var = Variable::Registry::singleton().find(var_id);
   if (!var) return ErrorCode::UnknownVariable;
 
   if (context->max_response_length < 4) return ErrorCode::NoMemory;
 
-  u32_to_u8(var->get_value(), context->response);
-  context->response_length = 4;
+  auto res = DebugFlatbuf::CreateInt(b, var->GetValue());
+  b.Finish(res);
+  uint8_t *buff = b.GetBufferPointer();
+  uint32_t buff_size = b.GetSize();
+  b.Clear();
+
+  // Fail if the strings are too large to fit.
+  if (context->max_response_length < buff_size)
+    return ErrorCode::NoMemory;
+
+  context->response = buff;
   *(context->processed) = true;
   return ErrorCode::None;
 }
 
 ErrorCode VarHandler::SetVar(Context *context,
                              flatbuffers::FlatBufferBuilder &b) {
-  // We expect a 16-bit ID to be passed
-  if (context->request_length < 3) return ErrorCode::MissingData;
+  const DebugFlatbuf::Request *req{
+      flatbuffers::GetRoot<DebugFlatbuf::Request>(context->request)};
+  const DebugFlatbuf::VarAccessData *cmddata{req->cmddata_as_VarAccessData()};
 
-  uint16_t var_id = u8_to_u16(&context->request[1]);
+  // We expect a 16-bit ID to be passed
+  if (!flatbuffers::IsFieldPresent(cmddata,
+                                   DebugFlatbuf::VarAccessData::VT_VID))
+    return ErrorCode::MissingData;
+
+  uint16_t var_id{cmddata->vid()};
 
   auto *var = Variable::Registry::singleton().find(var_id);
   if (!var) return ErrorCode::UnknownVariable;
 
-  uint32_t count = context->request_length - 3;
-
-  if (count < 4) return ErrorCode::MissingData;
+  // We expect a value to write to the variable
+  if (!flatbuffers::IsFieldPresent(cmddata,
+                                   DebugFlatbuf::VarAccessData::VT_VAL))
+    return ErrorCode::MissingData;
 
   if (!var->write_allowed()) return ErrorCode::InternalError;
 
-  var->set_value(u8_to_u32(context->request + 3));
-  context->response_length = 0;
+  var->SetValue(cmddata->val());
   *(context->processed) = true;
   return ErrorCode::None;
 }
 
-ErrorCode VarHandler::GetVarCount(Context *context) {
-  if (context->max_response_length < 4) return ErrorCode::NoMemory;
+ErrorCode VarHandler::GetVarCount(Context *context,
+                                  flatbuffers::FlatBufferBuilder &b) {
+  auto res = DebugFlatbuf::CreateInt(b, DebugVarBase::GetVarCount());
+  b.Finish(res);
+  uint8_t *buff = b.GetBufferPointer();
+  uint32_t buff_size = b.GetSize();
+  b.Clear();
 
-  u32_to_u8(Variable::Registry::singleton().count(), context->response);
-  context->response_length = 4;
+  if (context->max_response_length < buff_size)
+    return ErrorCode::NoMemory;
+
+  context->response = buff;
   *(context->processed) = true;
   return ErrorCode::None;
 }

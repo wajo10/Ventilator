@@ -163,7 +163,7 @@ class VarHandler : public Handler {
 
   ErrorCode SetVar(Context *context, flatbuffers::FlatBufferBuilder &b);
 
-  ErrorCode GetVarCount(Context *context);
+  ErrorCode GetVarCount(Context *context, flatbuffers::FlatBufferBuilder &b);
 };
 
 // Eeprom command.
