@@ -69,6 +69,8 @@ public:
 private:
   State state_{State::AwaitingCommand};
 
+  flatbuffers::FlatBufferBuilder builder;
+
   // Buffer into which request data is written in AwaitingCommand state
   uint8_t request_[500] = {0};
   uint32_t request_size_{0};

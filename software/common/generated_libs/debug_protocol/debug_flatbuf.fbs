@@ -1,0 +1,70 @@
+// # Overview
+//
+// This file defines messages sent between the ventilator's microcontroller's
+// debugging interface and the host computer interfacing with it via the Python
+// debugging interface.
+//
+// Commands from the host are serialized and sent over the serial port to the
+// microcontroller, which evaluates the corresponding functions in its debugging
+// interface and responds with the requested information or an error.
+//
+// Flatbuffer is strongly typed, so we split the metadata of the debug variable
+// from the actual value for each type (int32, uint32, float)
+//
+// # Regenerate C++ flatbuffers (flatc version 1.11.0)
+// $ flatc --cpp --scoped-enums debug_flatbuf.fbs
+
+namespace DebugFlatbuf;
+
+// REQUEST
+// Command Codes
+enum CmdCode : byte {
+  Mode = 0x00,               // Return the current firmware mode
+  Peek = 0x01,               // Peek into RAM
+  Poke = 0x02,               // Poke values into RAM
+  Console = 0x03,            // Read strings from the print buffer - deprecated
+  Variable = 0x04,           // Variable access
+  Trace = 0x05,              // Data trace commands
+  EepromAccess = 0x06        // Read/Write in I2C EEPROM
+}
+
+// Subcommand Codes
+// Variable access subcommand code
+enum VarSubcmd : byte {
+    GetInfo = 0x00,          // Get variable info (name, type, help string)
+    Get = 0x01,              // Get variable value
+    Set = 0x02,              // Set variable value
+    GetCount = 0x03          // Get count of active vars
+}
+
+// Command data
+// Variable access command data
+table VarAccessData {
+    subcmd : VarSubcmd;      // Variable subcommand
+    vid : ushort;            // Variable ID
+    val : uint;              // Variable value (used in SetVar)
+}
+
+// TODO: Command data for other debug commands
+union CmdData { VarAccessData }
+
+table Request {
+    cmd : CmdCode;           // Command code
+    cmddata : CmdData;       // Command data
+}
+
+// RESPONSE
+// Some responses are single-valued and can share a generic data structure
+struct Int { val : int }
+struct Uint { val : uint }
+struct Float { val : float }
+union GenericValResponse { Int, Uint, Float}
+
+// Some responses need their own tables because they're more complex.
+table GetVarInfo {
+    access : byte;
+    name : string;
+    fmt : string;
+    help : string;
+    unit : string;
+}

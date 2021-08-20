@@ -142,7 +142,8 @@ private:
 class VarHandler : public Handler {
 public:
   VarHandler() = default;
-  ErrorCode Process(Context *context) override;
+  ErrorCode Process(Context *context,
+                    flatbuffers::FlatBufferBuilder &b) override;
 
   enum class Subcommand : uint8_t {
     GetInfo = 0x00,  // get variable info (name, type, help string)
@@ -157,11 +158,11 @@ private:
   // the system starting with 0.
   // The Python code can read them all out until it gets an error code
   // indicating that the passed ID is invalid.
-  ErrorCode GetVarInfo(Context *context);
+  ErrorCode GetVarInfo(Context *context, flatbuffers::FlatBufferBuilder &b);
 
-  ErrorCode GetVar(Context *context);
+  ErrorCode GetVar(Context *context, flatbuffers::FlatBufferBuilder &b);
 
-  ErrorCode SetVar(Context *context);
+  ErrorCode SetVar(Context *context, flatbuffers::FlatBufferBuilder &b);
 
   ErrorCode GetVarCount(Context *context);
 };
