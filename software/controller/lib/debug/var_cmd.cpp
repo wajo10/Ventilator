@@ -87,7 +87,7 @@ ErrorCode VarHandler::GetVarInfo(Context *context,
   // <unit> - variable length unit string
   // The strings are not null terminated.
 
-  auto res = DebugFlatbuf::CreateGetVarInfo(
+  auto res = DebugFlatbuf::CreateGetVarInfoResponse(
       b, static_cast<uint8_t>(var->GetAccess()), b.CreateString(var->GetName()),
       b.CreateString(var->GetFormat()), b.CreateString(var->GetHelp()),
       b.CreateString(var->GetUnits()));
@@ -100,7 +100,7 @@ ErrorCode VarHandler::GetVarInfo(Context *context,
   if (context->max_response_length < buff_size)
     return ErrorCode::NoMemory;
 
-  context->response = buff;
+  memcpy(context->response, buff, buff_size);
   *(context->processed) = true;
   return ErrorCode::None;
 }
@@ -121,19 +121,17 @@ ErrorCode VarHandler::GetVar(Context *context,
   auto *var = Variable::Registry::singleton().find(var_id);
   if (!var) return ErrorCode::UnknownVariable;
 
-  if (context->max_response_length < 4) return ErrorCode::NoMemory;
-
-  auto res = DebugFlatbuf::CreateInt(b, var->GetValue());
+  auto res = DebugFlatbuf::CreateUInt(b, var->GetValue());
   b.Finish(res);
   uint8_t *buff = b.GetBufferPointer();
   uint32_t buff_size = b.GetSize();
-  b.Clear();
 
   // Fail if the strings are too large to fit.
   if (context->max_response_length < buff_size)
     return ErrorCode::NoMemory;
 
-  context->response = buff;
+  memcpy(context->response, buff, buff_size);
+  context->response_length = buff_size;
   *(context->processed) = true;
   return ErrorCode::None;
 }
@@ -168,7 +166,7 @@ ErrorCode VarHandler::SetVar(Context *context,
 
 ErrorCode VarHandler::GetVarCount(Context *context,
                                   flatbuffers::FlatBufferBuilder &b) {
-  auto res = DebugFlatbuf::CreateInt(b, DebugVarBase::GetVarCount());
+  auto res = DebugFlatbuf::CreateUInt(b, DebugVarBase::GetVarCount());
   b.Finish(res);
   uint8_t *buff = b.GetBufferPointer();
   uint32_t buff_size = b.GetSize();
@@ -177,7 +175,7 @@ ErrorCode VarHandler::GetVarCount(Context *context,
   if (context->max_response_length < buff_size)
     return ErrorCode::NoMemory;
 
-  context->response = buff;
+  memcpy(context->response, buff, buff_size);
   *(context->processed) = true;
   return ErrorCode::None;
 }

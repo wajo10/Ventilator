@@ -7,17 +7,17 @@
 
 namespace DebugFlatbuf {
 
-struct VarAccessData;
-
-struct Request;
-
-struct GetVarInfo;
-
 struct Int;
 
 struct UInt;
 
 struct Float;
+
+struct VarAccessData;
+
+struct Request;
+
+struct GetVarInfoResponse;
 
 enum class CmdCode : int8_t {
   Mode = 0,
@@ -119,73 +119,205 @@ bool VerifyCmdDataVector(
     const flatbuffers::Vector<flatbuffers::Offset<void>> *values,
     const flatbuffers::Vector<uint8_t> *types);
 
-enum class VarAccess : int8_t {
-  ReadOnly = 0,
-  ReadWrite = 1,
-  MIN = ReadOnly,
-  MAX = ReadWrite
+enum class ErrorCode : int8_t {
+  None = 0,
+  CrcError = 1,
+  UnknownCommand = 2,
+  MissingData = 3,
+  NoMemory = 4,
+  InternalError = 5,
+  UnknownVariable = 6,
+  InvalidData = 7,
+  Timeout = 8,
+  MIN = None,
+  MAX = Timeout
 };
 
-inline const VarAccess (&EnumValuesVarAccess())[2] {
-  static const VarAccess values[] = {VarAccess::ReadOnly, VarAccess::ReadWrite};
+inline const ErrorCode (&EnumValuesErrorCode())[9] {
+  static const ErrorCode values[] = {ErrorCode::None,
+                                     ErrorCode::CrcError,
+                                     ErrorCode::UnknownCommand,
+                                     ErrorCode::MissingData,
+                                     ErrorCode::NoMemory,
+                                     ErrorCode::InternalError,
+                                     ErrorCode::UnknownVariable,
+                                     ErrorCode::InvalidData,
+                                     ErrorCode::Timeout};
   return values;
 }
 
-inline const char *const *EnumNamesVarAccess() {
-  static const char *const names[] = {"ReadOnly", "ReadWrite", nullptr};
+inline const char *const *EnumNamesErrorCode() {
+  static const char *const names[] = {
+      "None",     "CrcError",      "UnknownCommand",  "MissingData",
+      "NoMemory", "InternalError", "UnknownVariable", "InvalidData",
+      "Timeout",  nullptr};
   return names;
 }
 
-inline const char *EnumNameVarAccess(VarAccess e) {
-  if (e < VarAccess::ReadOnly || e > VarAccess::ReadWrite)
+inline const char *EnumNameErrorCode(ErrorCode e) {
+  if (e < ErrorCode::None || e > ErrorCode::Timeout)
     return "";
   const size_t index = static_cast<size_t>(e);
-  return EnumNamesVarAccess()[index];
+  return EnumNamesErrorCode()[index];
 }
 
-enum class Val : uint8_t {
+enum class ResponseData : uint8_t {
   NONE = 0,
   Int = 1,
   UInt = 2,
   Float = 3,
+  GetVarInfoResponse = 4,
   MIN = NONE,
-  MAX = Float
+  MAX = GetVarInfoResponse
 };
 
-inline const Val (&EnumValuesVal())[4] {
-  static const Val values[] = {Val::NONE, Val::Int, Val::UInt, Val::Float};
+inline const ResponseData (&EnumValuesResponseData())[5] {
+  static const ResponseData values[] = {ResponseData::NONE, ResponseData::Int,
+                                        ResponseData::UInt, ResponseData::Float,
+                                        ResponseData::GetVarInfoResponse};
   return values;
 }
 
-inline const char *const *EnumNamesVal() {
-  static const char *const names[] = {"NONE", "Int", "UInt", "Float", nullptr};
+inline const char *const *EnumNamesResponseData() {
+  static const char *const names[] = {
+      "NONE", "Int", "UInt", "Float", "GetVarInfoResponse", nullptr};
   return names;
 }
 
-inline const char *EnumNameVal(Val e) {
-  if (e < Val::NONE || e > Val::Float)
+inline const char *EnumNameResponseData(ResponseData e) {
+  if (e < ResponseData::NONE || e > ResponseData::GetVarInfoResponse)
     return "";
   const size_t index = static_cast<size_t>(e);
-  return EnumNamesVal()[index];
+  return EnumNamesResponseData()[index];
 }
 
-template <typename T> struct ValTraits {
-  static const Val enum_value = Val::NONE;
+template <typename T> struct ResponseDataTraits {
+  static const ResponseData enum_value = ResponseData::NONE;
 };
 
-template <> struct ValTraits<Int> { static const Val enum_value = Val::Int; };
-
-template <> struct ValTraits<UInt> { static const Val enum_value = Val::UInt; };
-
-template <> struct ValTraits<Float> {
-  static const Val enum_value = Val::Float;
+template <> struct ResponseDataTraits<Int> {
+  static const ResponseData enum_value = ResponseData::Int;
 };
 
-bool VerifyVal(flatbuffers::Verifier &verifier, const void *obj, Val type);
-bool VerifyValVector(
+template <> struct ResponseDataTraits<UInt> {
+  static const ResponseData enum_value = ResponseData::UInt;
+};
+
+template <> struct ResponseDataTraits<Float> {
+  static const ResponseData enum_value = ResponseData::Float;
+};
+
+template <> struct ResponseDataTraits<GetVarInfoResponse> {
+  static const ResponseData enum_value = ResponseData::GetVarInfoResponse;
+};
+
+bool VerifyResponseData(flatbuffers::Verifier &verifier, const void *obj,
+                        ResponseData type);
+bool VerifyResponseDataVector(
     flatbuffers::Verifier &verifier,
     const flatbuffers::Vector<flatbuffers::Offset<void>> *values,
     const flatbuffers::Vector<uint8_t> *types);
+
+struct Int FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_VAL = 4
+  };
+  int32_t val() const { return GetField<int32_t>(VT_VAL, 0); }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int32_t>(verifier, VT_VAL) && verifier.EndTable();
+  }
+};
+
+struct IntBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_val(int32_t val) { fbb_.AddElement<int32_t>(Int::VT_VAL, val, 0); }
+  explicit IntBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  IntBuilder &operator=(const IntBuilder &);
+  flatbuffers::Offset<Int> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<Int>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<Int> CreateInt(flatbuffers::FlatBufferBuilder &_fbb,
+                                          int32_t val = 0) {
+  IntBuilder builder_(_fbb);
+  builder_.add_val(val);
+  return builder_.Finish();
+}
+
+struct UInt FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_VAL = 4
+  };
+  uint32_t val() const { return GetField<uint32_t>(VT_VAL, 0); }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<uint32_t>(verifier, VT_VAL) && verifier.EndTable();
+  }
+};
+
+struct UIntBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_val(uint32_t val) {
+    fbb_.AddElement<uint32_t>(UInt::VT_VAL, val, 0);
+  }
+  explicit UIntBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  UIntBuilder &operator=(const UIntBuilder &);
+  flatbuffers::Offset<UInt> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<UInt>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<UInt>
+CreateUInt(flatbuffers::FlatBufferBuilder &_fbb, uint32_t val = 0) {
+  UIntBuilder builder_(_fbb);
+  builder_.add_val(val);
+  return builder_.Finish();
+}
+
+struct Float FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_VAL = 4
+  };
+  float val() const { return GetField<float>(VT_VAL, 0.0f); }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) && VerifyField<float>(verifier, VT_VAL) &&
+           verifier.EndTable();
+  }
+};
+
+struct FloatBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_val(float val) { fbb_.AddElement<float>(Float::VT_VAL, val, 0.0f); }
+  explicit FloatBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  FloatBuilder &operator=(const FloatBuilder &);
+  flatbuffers::Offset<Float> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<Float>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<Float>
+CreateFloat(flatbuffers::FlatBufferBuilder &_fbb, float val = 0.0f) {
+  FloatBuilder builder_(_fbb);
+  builder_.add_val(val);
+  return builder_.Finish();
+}
 
 struct VarAccessData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
@@ -196,8 +328,8 @@ struct VarAccessData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   VarSubcmd subcmd() const {
     return static_cast<VarSubcmd>(GetField<int8_t>(VT_SUBCMD, 0));
   }
-  uint16_t vid() const { return GetField<uint16_t>(VT_VID, 0); }
-  uint32_t val() const { return GetField<uint32_t>(VT_VAL, 0); }
+  uint16_t vid() const { return GetField<uint16_t>(VT_VID, 65535); }
+  uint32_t val() const { return GetField<uint32_t>(VT_VAL, 4294967295); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<int8_t>(verifier, VT_SUBCMD) &&
@@ -214,10 +346,10 @@ struct VarAccessDataBuilder {
                             static_cast<int8_t>(subcmd), 0);
   }
   void add_vid(uint16_t vid) {
-    fbb_.AddElement<uint16_t>(VarAccessData::VT_VID, vid, 0);
+    fbb_.AddElement<uint16_t>(VarAccessData::VT_VID, vid, 65535);
   }
   void add_val(uint32_t val) {
-    fbb_.AddElement<uint32_t>(VarAccessData::VT_VAL, val, 0);
+    fbb_.AddElement<uint32_t>(VarAccessData::VT_VAL, val, 4294967295);
   }
   explicit VarAccessDataBuilder(flatbuffers::FlatBufferBuilder &_fbb)
       : fbb_(_fbb) {
@@ -233,8 +365,8 @@ struct VarAccessDataBuilder {
 
 inline flatbuffers::Offset<VarAccessData>
 CreateVarAccessData(flatbuffers::FlatBufferBuilder &_fbb,
-                    VarSubcmd subcmd = VarSubcmd::GetInfo, uint16_t vid = 0,
-                    uint32_t val = 0) {
+                    VarSubcmd subcmd = VarSubcmd::GetInfo, uint16_t vid = 65535,
+                    uint32_t val = 4294967295) {
   VarAccessDataBuilder builder_(_fbb);
   builder_.add_val(val);
   builder_.add_vid(vid);
@@ -311,7 +443,7 @@ CreateRequest(flatbuffers::FlatBufferBuilder &_fbb, CmdCode cmd = CmdCode::Mode,
   return builder_.Finish();
 }
 
-struct GetVarInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct GetVarInfoResponse FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_ACCESS = 4,
     VT_NAME = 6,
@@ -343,43 +475,44 @@ struct GetVarInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
 };
 
-struct GetVarInfoBuilder {
+struct GetVarInfoResponseBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
   void add_access(int8_t access) {
-    fbb_.AddElement<int8_t>(GetVarInfo::VT_ACCESS, access, 0);
+    fbb_.AddElement<int8_t>(GetVarInfoResponse::VT_ACCESS, access, 0);
   }
   void add_name(flatbuffers::Offset<flatbuffers::String> name) {
-    fbb_.AddOffset(GetVarInfo::VT_NAME, name);
+    fbb_.AddOffset(GetVarInfoResponse::VT_NAME, name);
   }
   void add_fmt(flatbuffers::Offset<flatbuffers::String> fmt) {
-    fbb_.AddOffset(GetVarInfo::VT_FMT, fmt);
+    fbb_.AddOffset(GetVarInfoResponse::VT_FMT, fmt);
   }
   void add_help(flatbuffers::Offset<flatbuffers::String> help) {
-    fbb_.AddOffset(GetVarInfo::VT_HELP, help);
+    fbb_.AddOffset(GetVarInfoResponse::VT_HELP, help);
   }
   void add_unit(flatbuffers::Offset<flatbuffers::String> unit) {
-    fbb_.AddOffset(GetVarInfo::VT_UNIT, unit);
+    fbb_.AddOffset(GetVarInfoResponse::VT_UNIT, unit);
   }
-  explicit GetVarInfoBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit GetVarInfoResponseBuilder(flatbuffers::FlatBufferBuilder &_fbb)
       : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  GetVarInfoBuilder &operator=(const GetVarInfoBuilder &);
-  flatbuffers::Offset<GetVarInfo> Finish() {
+  GetVarInfoResponseBuilder &operator=(const GetVarInfoResponseBuilder &);
+  flatbuffers::Offset<GetVarInfoResponse> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<GetVarInfo>(end);
+    auto o = flatbuffers::Offset<GetVarInfoResponse>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<GetVarInfo>
-CreateGetVarInfo(flatbuffers::FlatBufferBuilder &_fbb, int8_t access = 0,
-                 flatbuffers::Offset<flatbuffers::String> name = 0,
-                 flatbuffers::Offset<flatbuffers::String> fmt = 0,
-                 flatbuffers::Offset<flatbuffers::String> help = 0,
-                 flatbuffers::Offset<flatbuffers::String> unit = 0) {
-  GetVarInfoBuilder builder_(_fbb);
+inline flatbuffers::Offset<GetVarInfoResponse>
+CreateGetVarInfoResponse(flatbuffers::FlatBufferBuilder &_fbb,
+                         int8_t access = 0,
+                         flatbuffers::Offset<flatbuffers::String> name = 0,
+                         flatbuffers::Offset<flatbuffers::String> fmt = 0,
+                         flatbuffers::Offset<flatbuffers::String> help = 0,
+                         flatbuffers::Offset<flatbuffers::String> unit = 0) {
+  GetVarInfoResponseBuilder builder_(_fbb);
   builder_.add_unit(unit);
   builder_.add_help(help);
   builder_.add_fmt(fmt);
@@ -388,121 +521,16 @@ CreateGetVarInfo(flatbuffers::FlatBufferBuilder &_fbb, int8_t access = 0,
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<GetVarInfo>
-CreateGetVarInfoDirect(flatbuffers::FlatBufferBuilder &_fbb, int8_t access = 0,
-                       const char *name = nullptr, const char *fmt = nullptr,
-                       const char *help = nullptr, const char *unit = nullptr) {
+inline flatbuffers::Offset<GetVarInfoResponse> CreateGetVarInfoResponseDirect(
+    flatbuffers::FlatBufferBuilder &_fbb, int8_t access = 0,
+    const char *name = nullptr, const char *fmt = nullptr,
+    const char *help = nullptr, const char *unit = nullptr) {
   auto name__ = name ? _fbb.CreateString(name) : 0;
   auto fmt__ = fmt ? _fbb.CreateString(fmt) : 0;
   auto help__ = help ? _fbb.CreateString(help) : 0;
   auto unit__ = unit ? _fbb.CreateString(unit) : 0;
-  return DebugFlatbuf::CreateGetVarInfo(_fbb, access, name__, fmt__, help__,
-                                        unit__);
-}
-
-struct Int FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_VALUE = 4
-  };
-  int32_t value() const { return GetField<int32_t>(VT_VALUE, 0); }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<int32_t>(verifier, VT_VALUE) && verifier.EndTable();
-  }
-};
-
-struct IntBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_value(int32_t value) {
-    fbb_.AddElement<int32_t>(Int::VT_VALUE, value, 0);
-  }
-  explicit IntBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  IntBuilder &operator=(const IntBuilder &);
-  flatbuffers::Offset<Int> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<Int>(end);
-    return o;
-  }
-};
-
-inline flatbuffers::Offset<Int> CreateInt(flatbuffers::FlatBufferBuilder &_fbb,
-                                          int32_t value = 0) {
-  IntBuilder builder_(_fbb);
-  builder_.add_value(value);
-  return builder_.Finish();
-}
-
-struct UInt FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_VALUE = 4
-  };
-  uint32_t value() const { return GetField<uint32_t>(VT_VALUE, 0); }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<uint32_t>(verifier, VT_VALUE) && verifier.EndTable();
-  }
-};
-
-struct UIntBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_value(uint32_t value) {
-    fbb_.AddElement<uint32_t>(UInt::VT_VALUE, value, 0);
-  }
-  explicit UIntBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  UIntBuilder &operator=(const UIntBuilder &);
-  flatbuffers::Offset<UInt> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<UInt>(end);
-    return o;
-  }
-};
-
-inline flatbuffers::Offset<UInt>
-CreateUInt(flatbuffers::FlatBufferBuilder &_fbb, uint32_t value = 0) {
-  UIntBuilder builder_(_fbb);
-  builder_.add_value(value);
-  return builder_.Finish();
-}
-
-struct Float FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_VALUE = 4
-  };
-  float value() const { return GetField<float>(VT_VALUE, 0.0f); }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<float>(verifier, VT_VALUE) && verifier.EndTable();
-  }
-};
-
-struct FloatBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_value(float value) {
-    fbb_.AddElement<float>(Float::VT_VALUE, value, 0.0f);
-  }
-  explicit FloatBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  FloatBuilder &operator=(const FloatBuilder &);
-  flatbuffers::Offset<Float> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<Float>(end);
-    return o;
-  }
-};
-
-inline flatbuffers::Offset<Float>
-CreateFloat(flatbuffers::FlatBufferBuilder &_fbb, float value = 0.0f) {
-  FloatBuilder builder_(_fbb);
-  builder_.add_value(value);
-  return builder_.Finish();
+  return DebugFlatbuf::CreateGetVarInfoResponse(_fbb, access, name__, fmt__,
+                                                help__, unit__);
 }
 
 inline bool VerifyCmdData(flatbuffers::Verifier &verifier, const void *obj,
@@ -536,22 +564,26 @@ inline bool VerifyCmdDataVector(
   return true;
 }
 
-inline bool VerifyVal(flatbuffers::Verifier &verifier, const void *obj,
-                      Val type) {
+inline bool VerifyResponseData(flatbuffers::Verifier &verifier, const void *obj,
+                               ResponseData type) {
   switch (type) {
-  case Val::NONE: {
+  case ResponseData::NONE: {
     return true;
   }
-  case Val::Int: {
+  case ResponseData::Int: {
     auto ptr = reinterpret_cast<const Int *>(obj);
     return verifier.VerifyTable(ptr);
   }
-  case Val::UInt: {
+  case ResponseData::UInt: {
     auto ptr = reinterpret_cast<const UInt *>(obj);
     return verifier.VerifyTable(ptr);
   }
-  case Val::Float: {
+  case ResponseData::Float: {
     auto ptr = reinterpret_cast<const Float *>(obj);
+    return verifier.VerifyTable(ptr);
+  }
+  case ResponseData::GetVarInfoResponse: {
+    auto ptr = reinterpret_cast<const GetVarInfoResponse *>(obj);
     return verifier.VerifyTable(ptr);
   }
   default:
@@ -559,16 +591,17 @@ inline bool VerifyVal(flatbuffers::Verifier &verifier, const void *obj,
   }
 }
 
-inline bool
-VerifyValVector(flatbuffers::Verifier &verifier,
-                const flatbuffers::Vector<flatbuffers::Offset<void>> *values,
-                const flatbuffers::Vector<uint8_t> *types) {
+inline bool VerifyResponseDataVector(
+    flatbuffers::Verifier &verifier,
+    const flatbuffers::Vector<flatbuffers::Offset<void>> *values,
+    const flatbuffers::Vector<uint8_t> *types) {
   if (!values || !types)
     return !values && !types;
   if (values->size() != types->size())
     return false;
   for (flatbuffers::uoffset_t i = 0; i < values->size(); ++i) {
-    if (!VerifyVal(verifier, values->Get(i), types->GetEnum<Val>(i))) {
+    if (!VerifyResponseData(verifier, values->Get(i),
+                            types->GetEnum<ResponseData>(i))) {
       return false;
     }
   }

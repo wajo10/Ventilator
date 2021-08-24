@@ -36,7 +36,7 @@ TEST(VarHandler, GetVarInfo) {
   b.ForceDefaults(true);
 
   // expected result is hand-built from format given in var_cmd.cpp
-  auto exp_builder = DebugFlatbuf::CreateGetVarInfo(
+  auto exp_builder = DebugFlatbuf::CreateGetVarInfoResponse(
       b, static_cast<uint8_t>(Debug::Variable::Access::ReadOnly), b.CreateString("name"),
       b.CreateString("format"), b.CreateString("help string"),
       b.CreateString("unit"));
@@ -54,16 +54,16 @@ TEST(VarHandler, GetVarInfo) {
   uint8_t *req = b.GetBufferPointer();
   b.Clear();
 
-  std::array<uint8_t, 50> response;
+  std::array<uint8_t, 100> response;
   bool processed{false};
   Context context = {.request = req,
                      .response = response.data(),
-                     .max_response_length = exp_size + 1,
+                     .max_response_length = std::size(response),
                      .processed = &processed};
   EXPECT_EQ(ErrorCode::None, VarHandler().Process(&context, b));
   EXPECT_TRUE(processed);
   for (size_t i = 0; i < exp_size; i++) {
-    EXPECT_EQ(context.response[i], exp[i]);
+    EXPECT_EQ(response[i], exp[i]);
   }
 }
 
@@ -75,7 +75,7 @@ TEST(VarHandler, GetVar) {
 
   // Test that a GET command obtains the variable's value.
   flatbuffers::FlatBufferBuilder b;
-  auto exp_builder = DebugFlatbuf::CreateInt(b, value);
+  auto exp_builder = DebugFlatbuf::CreateUInt(b, value);
   b.Finish(exp_builder);
   uint8_t *exp = b.GetBufferPointer();
   uint32_t exp_size = b.GetSize();
@@ -90,11 +90,11 @@ TEST(VarHandler, GetVar) {
   uint8_t *req = b.GetBufferPointer();
   b.Clear();
 
-  std::array<uint8_t, 4> response;
+  std::array<uint8_t, 100> response;
   bool processed{false};
   Context context = {.request = req,
                      .response = response.data(),
-                     .max_response_length = exp_size,
+                     .max_response_length = std::size(response),
                      .processed = &processed};
 
   EXPECT_EQ(ErrorCode::None, VarHandler().Process(&context, b));
@@ -144,7 +144,7 @@ TEST(VarHandler, GetVarCount) {
 
   // Test that GetVarCount command obtains the number of defined variables
   flatbuffers::FlatBufferBuilder b;
-  auto exp_builder = DebugFlatbuf::CreateInt(b, VarHandler::Subcommand::GetCount);
+  auto exp_builder = DebugFlatbuf::CreateInt(b, Debug::Variable::Registry::singleton().count());
   b.Finish(exp_builder);
   uint8_t *exp = b.GetBufferPointer();
   uint32_t exp_size = b.GetSize();
@@ -159,18 +159,18 @@ TEST(VarHandler, GetVarCount) {
   uint8_t *req = b.GetBufferPointer();
   b.Clear();
 
-  std::array<uint8_t, 4> response;
+  std::array<uint8_t, 100> response;
   bool processed{false};
   Context context = {.request = req,
                      .response = response.data(),
-                     .max_response_length = exp_size,
+                     .max_response_length = std::size(response),
                      .processed = &processed};
 
   EXPECT_EQ(ErrorCode::None, VarHandler().Process(&context, b));
   EXPECT_TRUE(processed);
 
   for (size_t i = 0; i < exp_size; i++) {
-    EXPECT_EQ(context.response[i], exp[i]);
+    EXPECT_EQ(response[i], exp[i]);
   }
 }
 /*

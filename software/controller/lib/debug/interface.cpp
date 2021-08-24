@@ -29,7 +29,7 @@ Interface::Interface(Trace *trace, int count, ...) {
   va_list valist;
   va_start(valist, count);
   for (int i = 0; i < count / 2; ++i) {
-    Command::Code code = va_arg(valist, Command::Code);
+    DebugFlatbuf::CmdCode code = va_arg(valist, DebugFlatbuf::CmdCode);
     Command::Handler *handler = va_arg(valist, Command::Handler *);
     registry_[static_cast<uint8_t>(code)] = handler;
   }
@@ -117,9 +117,8 @@ bool Interface::ReadNextByte() {
 // Returns false if no more data will fit in the output buffer,
 // or if the entire response has been sent.
 bool Interface::SendNextByte() {
-  // To simplify things below, I require at least 3 bytes
-  // in the output buffer to continue
-  if (hal.DebugBytesAvailableForWrite() < 3) return false;
+  if (hal.DebugBytesAvailableForWrite() < response_size_)
+    return false;
 
   // See what the next character to send is.
   char next_char = response_[response_bytes_sent_++];
@@ -157,7 +156,11 @@ void Interface::ProcessCommand() {
   // waiting for the next one.
   // This means we can send EndTransfer characters to synchronize
   // communication if necessary
-  if (request_size_ < 3) {
+
+  // TODO: Verify flatbuffer integrity
+  const DebugFlatbuf::Request *req =
+      flatbuffers::GetRoot<DebugFlatbuf::Request>(request_);
+  if (!req) {
     request_size_ = 0;
     state_ = State::AwaitingCommand;
     return;
@@ -170,7 +173,8 @@ void Interface::ProcessCommand() {
     return;
   }
 
-  Command::Handler *cmd_handler = registry_[request_[0]];
+  DebugFlatbuf::CmdCode cmdcode = req->cmd();
+  Command::Handler *cmd_handler = registry_[static_cast<uint8_t>(cmdcode)];
   if (!cmd_handler) {
     SendError(ErrorCode::UnknownCommand);
     return;
@@ -181,14 +185,12 @@ void Interface::ProcessCommand() {
   // include the command code or CRC.  The max size is also reduced
   // by 3 to make sure we can add the error code and CRC.
   Command::Context context = {
-      .request = &request_[1],
-      .request_length = request_size_ - 3,
+      .request = request_,
       .response = &response_[1],
       .max_response_length = sizeof(response_) - 3,
-      .response_length = 0,
       .processed = &command_processed_,
   };
-  ErrorCode error = cmd_handler->Process(&context);
+  ErrorCode error = cmd_handler->Process(&context, builder);
 
   if (error != ErrorCode::None) {
     SendError(error);
@@ -202,7 +204,6 @@ void Interface::ProcessCommand() {
 
 void Interface::SendResponse(ErrorCode error, uint32_t response_length) {
   response_[0] = static_cast<uint8_t>(error);
-
   // Calculate the CRC on the data and error code returned
   // and append this to the end of the response
   uint16_t crc = ComputeCRC(response_, response_length + 1);
