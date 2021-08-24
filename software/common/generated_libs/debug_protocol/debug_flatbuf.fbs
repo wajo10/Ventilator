@@ -16,9 +16,9 @@
 
 namespace DebugFlatbuf;
 
-struct Int { val : int }
-struct Uint { val : uint }
-struct Float { val : float }
+table Int   { val : int; }
+table UInt  { val : uint; }
+table Float { val : float; }
 
 // REQUEST
 // Command Codes
@@ -44,12 +44,11 @@ enum VarSubcmd : byte {
 // Command data
 // Variable access command data
 table VarAccessData {
-    subcmd : VarSubcmd;      // Variable subcommand
-    vid : ushort;            // Variable ID
-    val : uint;              // Variable value (used in SetVar)
+    subcmd : VarSubcmd;          // Variable subcommand
+    vid : ushort = 0xFFFF;       // Variable ID
+    val : uint = 0xFFFFFFFF;     // Variable value (used in SetVar)
 }
 
-// TODO: Command data for other debug commands
 union CmdData { VarAccessData }
 
 table Request {
@@ -58,14 +57,25 @@ table Request {
 }
 
 // RESPONSE
-// Some responses are single-valued and can share a generic data structure
-union GenericValResponse { Int, Uint, Float}
+enum ErrorCode : byte {
+  None = 0x00,            // No error (=success)
+  CrcError = 0x01,        // CRC error on command
+  UnknownCommand = 0x02,  // Unknown command code received
+  MissingData = 0x03,     // Not enough data passed with command
+  NoMemory = 0x04,        // Insufficient memory
+  InternalError = 0x05,   // Some type of internal error (aka bug)
+  UnknownVariable = 0x06, // The requested variable ID is invalid
+  InvalidData = 0x07,     // Data is out of range
+  Timeout = 0x08,         // Response timeout
+}
 
-// Some responses need their own tables because they're more complex.
-table GetVarInfo {
+// Some responses need their own tables because they're more complex. Others can be a generic Int, Uint, or Float.
+table GetVarInfoResponse {
     access : byte;
     name : string;
     fmt : string;
     help : string;
     unit : string;
 }
+
+union ResponseData { Int, UInt, Float, GetVarInfoResponse }
