@@ -35,16 +35,6 @@ TEST(VarHandler, GetVarInfo) {
   flatbuffers::FlatBufferBuilder b;
   b.ForceDefaults(true);
 
-  // expected result is hand-built from format given in var_cmd.cpp
-  auto exp_builder = DebugFlatbuf::CreateGetVarInfoResponse(
-      b, static_cast<uint8_t>(Debug::Variable::Access::ReadOnly), b.CreateString("name"),
-      b.CreateString("format"), b.CreateString("help string"),
-      b.CreateString("unit"));
-  b.Finish(exp_builder);
-  uint8_t *exp = b.GetBufferPointer();
-  uint32_t exp_size = b.GetSize();
-  b.Clear();
-
   auto varaccess_builder = DebugFlatbuf::CreateVarAccessData(
       b, DebugFlatbuf::VarSubcmd::GetInfo, id);
   auto req_builder = DebugFlatbuf::CreateRequest(
@@ -62,9 +52,13 @@ TEST(VarHandler, GetVarInfo) {
                      .processed = &processed};
   EXPECT_EQ(ErrorCode::None, VarHandler().Process(&context, b));
   EXPECT_TRUE(processed);
-  for (size_t i = 0; i < exp_size; i++) {
-    EXPECT_EQ(response[i], exp[i]);
-  }
+
+  const DebugFlatbuf::GetVarInfoResponse *res =
+      flatbuffers::GetRoot<DebugFlatbuf::GetVarInfoResponse>(response.data());
+  EXPECT_EQ(res->name()->str(), name);
+  EXPECT_EQ(res->help()->str(), help);
+  EXPECT_EQ(res->fmt()->str(), format);
+  EXPECT_EQ(res->unit()->str(), unit);
 }
 
 TEST(VarHandler, GetVar) {
@@ -75,11 +69,7 @@ TEST(VarHandler, GetVar) {
 
   // Test that a GET command obtains the variable's value.
   flatbuffers::FlatBufferBuilder b;
-  auto exp_builder = DebugFlatbuf::CreateUInt(b, value);
-  b.Finish(exp_builder);
-  uint8_t *exp = b.GetBufferPointer();
-  uint32_t exp_size = b.GetSize();
-  b.Clear();
+  b.ForceDefaults(true);
 
   auto varaccess_builder =
       DebugFlatbuf::CreateVarAccessData(b, DebugFlatbuf::VarSubcmd::Get, id);
@@ -100,9 +90,9 @@ TEST(VarHandler, GetVar) {
   EXPECT_EQ(ErrorCode::None, VarHandler().Process(&context, b));
   EXPECT_TRUE(processed);
 
-  for (size_t i = 0; i < exp_size; i++) {
-    EXPECT_EQ(context.response[i], exp[i]);
-  }
+  const DebugFlatbuf::UInt *res =
+      flatbuffers::GetRoot<DebugFlatbuf::UInt>(response.data());
+  EXPECT_EQ(res->val(), value);
 }
 
 TEST(VarHandler, SetVar) {
@@ -115,27 +105,49 @@ TEST(VarHandler, SetVar) {
 
   // Test that a SET command changes the variable's value.
   flatbuffers::FlatBufferBuilder b;
-  auto varaccess_builder = DebugFlatbuf::CreateVarAccessData(
+  auto varaccess_builder_set = DebugFlatbuf::CreateVarAccessData(
       b, DebugFlatbuf::VarSubcmd::Set, id, new_value);
   auto req_builder = DebugFlatbuf::CreateRequest(
       b, DebugFlatbuf::CmdCode::Variable, DebugFlatbuf::CmdData::VarAccessData,
-      varaccess_builder.Union());
+      varaccess_builder_set.Union());
   b.Finish(req_builder);
   uint8_t *req = b.GetBufferPointer();
   b.Clear();
 
-  std::array<uint8_t, 0> response;
+  std::array<uint8_t, 0> response_set;
   bool processed{false};
-  Context context = {.request = req,
-                     .response = response.data(),
-                     .max_response_length = std::size(response),
-                     .processed = &processed};
+  Context context_set = {.request = req,
+                         .response = response_set.data(),
+                         .max_response_length = std::size(response_set),
+                         .processed = &processed};
 
-  EXPECT_EQ(ErrorCode::None, VarHandler().Process(&context, b));
+  EXPECT_EQ(ErrorCode::None, VarHandler().Process(&context_set, b));
   EXPECT_TRUE(processed);
-  EXPECT_EQ(0, context.response_length);
+  EXPECT_EQ(0, context_set.response_length);
 
-  EXPECT_EQ(new_value, value);
+  // Use Get to check if the value was correctly updated
+  auto varaccess_builder_get =
+      DebugFlatbuf::CreateVarAccessData(b, DebugFlatbuf::VarSubcmd::Get, id);
+  auto req_builder_get = DebugFlatbuf::CreateRequest(
+      b, DebugFlatbuf::CmdCode::Variable, DebugFlatbuf::CmdData::VarAccessData,
+      varaccess_builder_get.Union());
+  b.Finish(req_builder_get);
+  req = b.GetBufferPointer();
+  b.Clear();
+
+  std::array<uint8_t, 100> response_get;
+  processed = false;
+  Context context_get = {.request = req,
+                         .response = response_get.data(),
+                         .max_response_length = std::size(response_get),
+                         .processed = &processed};
+
+  EXPECT_EQ(ErrorCode::None, VarHandler().Process(&context_get, b));
+  EXPECT_TRUE(processed);
+
+  const DebugFlatbuf::UInt *res =
+      flatbuffers::GetRoot<DebugFlatbuf::UInt>(response_get.data());
+  EXPECT_EQ(res->val(), new_value);
 }
 
 TEST(VarHandler, GetVarCount) {
@@ -144,12 +156,6 @@ TEST(VarHandler, GetVarCount) {
 
   // Test that GetVarCount command obtains the number of defined variables
   flatbuffers::FlatBufferBuilder b;
-  auto exp_builder = DebugFlatbuf::CreateInt(b, Debug::Variable::Registry::singleton().count());
-  b.Finish(exp_builder);
-  uint8_t *exp = b.GetBufferPointer();
-  uint32_t exp_size = b.GetSize();
-  b.Clear();
-
   auto varaccess_builder =
       DebugFlatbuf::CreateVarAccessData(b, DebugFlatbuf::VarSubcmd::GetCount);
   auto req_builder = DebugFlatbuf::CreateRequest(
@@ -169,9 +175,9 @@ TEST(VarHandler, GetVarCount) {
   EXPECT_EQ(ErrorCode::None, VarHandler().Process(&context, b));
   EXPECT_TRUE(processed);
 
-  for (size_t i = 0; i < exp_size; i++) {
-    EXPECT_EQ(response[i], exp[i]);
-  }
+  const DebugFlatbuf::UInt *res =
+      flatbuffers::GetRoot<DebugFlatbuf::UInt>(response.data());
+  EXPECT_EQ(res->val(), Debug::Variable::Registry::singleton().count());
 }
 /*
 TODO: Refactor error test with flatbuffer implementation

@@ -11,8 +11,9 @@
 // Flatbuffer is strongly typed, so we split the metadata of the debug variable
 // from the actual value for each type (int32, uint32, float)
 //
-// # Regenerate C++ flatbuffers (flatc version 1.11.0)
-// $ flatc --cpp --scoped-enums debug_flatbuf.fbs
+// # Regenerate C++ and Python flatbuffers (flatc version 1.11.0)
+// $ flatc --cpp --scoped-enums debug_flatbuf.fbs &
+\\      flatc --python --scoped-enums -o ../../../utils/debug/ debug_flatbuf.fbs
 
 namespace DebugFlatbuf;
 
