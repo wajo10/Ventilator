@@ -10,7 +10,7 @@ myClient = pymongo.MongoClient(
 )
 
 myDB = myClient["sampleData"]
-myColl = myDB["dataFiles"]
+myColl = myDB["oldDataFiles"]
 metaDataFileName = "meta-data.json"
 # testInsertion()
 deleteAllCollectionData(
@@ -138,5 +138,5 @@ def downloadAllFiles(tmppath, level, onlyUploadBaseDirectory):
     loopThroughFilesAndUpload(tmppath, dataFiles)
 
 
-uploadFile(mypath, "gui-sample-data.dat")  # upload a specific example
-# downloadAllFiles(mypath, 0, False)  # switch to false!
+# uploadFile(mypath, "gui-sample-data.dat")  # upload a specific example
+downloadAllFiles(mypath, 0, False)  # switch to false!

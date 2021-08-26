@@ -5,7 +5,7 @@ myClient = pymongo.MongoClient(
 )
 
 myDB = myClient["sampleData"]
-myColl = myDB["dataFiles"]
+myColl = myDB["oldDataFiles"]
 
 
 def testInsertion():
