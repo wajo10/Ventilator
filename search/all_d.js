@@ -20,5 +20,6 @@ var searchData=
   ['pressure_79',['Pressure',['../classPressure.html',1,'']]],
   ['pressureassistfsm_80',['PressureAssistFsm',['../classPressureAssistFsm.html',1,'']]],
   ['pressurecontrolfsm_81',['PressureControlFsm',['../classPressureControlFsm.html',1,'']]],
-  ['prototraits_82',['ProtoTraits',['../structProtoTraits.html',1,'']]]
+  ['primitive32_82',['Primitive32',['../classDebug_1_1Variable_1_1Primitive32.html',1,'Debug::Variable']]],
+  ['prototraits_83',['ProtoTraits',['../structProtoTraits.html',1,'']]]
 ];

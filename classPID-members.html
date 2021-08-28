@@ -68,13 +68,17 @@ $(function() {
 
 <p>This is the complete list of members for <a class="el" href="classPID.html">PID</a>, including all inherited members.</p>
 <table class="directory">
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>Compute</b>(Time now, float input, float setpoint) (defined in <a class="el" href="classPID.html">PID</a>)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>Observe</b>(Time now, float input, float setpoint, float actual_output) (defined in <a class="el" href="classPID.html">PID</a>)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>PID</b>(float kp, float ki, float kd, ProportionalTerm p_term, DifferentialTerm d_term, float output_min, float output_max) (defined in <a class="el" href="classPID.html">PID</a>)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>Reset</b>() (defined in <a class="el" href="classPID.html">PID</a>)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>SetKD</b>(float kd) (defined in <a class="el" href="classPID.html">PID</a>)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>SetKI</b>(float ki) (defined in <a class="el" href="classPID.html">PID</a>)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>SetKP</b>(float kp) (defined in <a class="el" href="classPID.html">PID</a>)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>compute</b>(Time now, float input, float set_point) (defined in <a class="el" href="classPID.html">PID</a>)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>kd</b>(float) (defined in <a class="el" href="classPID.html">PID</a>)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>kd</b>() const (defined in <a class="el" href="classPID.html">PID</a>)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>ki</b>(float) (defined in <a class="el" href="classPID.html">PID</a>)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>ki</b>() const (defined in <a class="el" href="classPID.html">PID</a>)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>kp</b>(float) (defined in <a class="el" href="classPID.html">PID</a>)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>kp</b>() const (defined in <a class="el" href="classPID.html">PID</a>)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>observe</b>(Time now, float input, float set_point, float actual_output) (defined in <a class="el" href="classPID.html">PID</a>)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>PID</b>(const char *name, const char *help_supplement, float initial_kp, float initial_ki, float initial_kd, TermApplication p_term, TermApplication d_term, float output_min, float output_max) (defined in <a class="el" href="classPID.html">PID</a>)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>reset</b>() (defined in <a class="el" href="classPID.html">PID</a>)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>TermApplication</b> enum name (defined in <a class="el" href="classPID.html">PID</a>)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
