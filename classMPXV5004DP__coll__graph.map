@@ -1,0 +1,12 @@
+<map id="MPXV5004DP" name="MPXV5004DP">
+<area shape="rect" id="node1" title=" " alt="" coords="267,456,378,483"/>
+<area shape="rect" id="node2" href="$classAnalogPressureSensor.html" title=" " alt="" coords="167,352,334,379"/>
+<area shape="rect" id="node3" href="$classPressureSensor.html" title=" " alt="" coords="48,269,171,295"/>
+<area shape="rect" id="node4" href="$classDebug_1_1Variable_1_1Float.html" title=" " alt="" coords="26,165,193,191"/>
+<area shape="rect" id="node5" href="$classDebug_1_1Variable_1_1Primitive32.html" title=" " alt="" coords="5,81,213,108"/>
+<area shape="rect" id="node6" href="$classDebug_1_1Variable_1_1Base.html" title="Abstract base class for debug variables." alt="" coords="27,5,192,32"/>
+<area shape="rect" id="node7" href="$classAnalogSensor.html" title=" " alt="" coords="195,269,306,295"/>
+<area shape="rect" id="node8" href="$classPressure.html" title=" " alt="" coords="367,352,446,379"/>
+<area shape="rect" id="node9" href="$classUnitsDetail_1_1ArithScalar.html" title=" " alt="" coords="330,261,505,303"/>
+<area shape="rect" id="node10" href="$classUnitsDetail_1_1Scalar.html" title=" " alt="" coords="345,157,490,199"/>
+</map>
