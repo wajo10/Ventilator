@@ -29,17 +29,15 @@ TEST(VarHandler, GetVarInfo) {
   const char *help = "help string";
   const char *format = "format";
   const char *unit = "unit";
-  Debug::Variable::Primitive32 var(name, Debug::Variable::Access::ReadOnly, &value, unit, help, format);
+  Debug::Variable::Primitive32 var(name, DebugFB::VarAccess::ReadOnly, &value, unit, help, format);
   uint16_t id = var.id();
 
   flatbuffers::FlatBufferBuilder b;
   b.ForceDefaults(true);
 
-  auto varaccess_builder = DebugFlatbuf::CreateVarAccessData(
-      b, DebugFlatbuf::VarSubcmd::GetInfo, id);
-  auto req_builder = DebugFlatbuf::CreateRequest(
-      b, DebugFlatbuf::CmdCode::Variable, DebugFlatbuf::CmdData::VarAccessData,
-      varaccess_builder.Union());
+  auto varaccess_builder = DebugFB::CreateVarAccessData(b, DebugFB::VarSubcmd::GetInfo, id);
+  auto req_builder = DebugFB::CreateRequest(
+      b, DebugFB::CmdCode::Variable, DebugFB::CmdData::VarAccessData, varaccess_builder.Union());
   b.Finish(req_builder);
   uint8_t *req = b.GetBufferPointer();
   b.Clear();
@@ -53,8 +51,8 @@ TEST(VarHandler, GetVarInfo) {
   EXPECT_EQ(ErrorCode::None, VarHandler().Process(&context, b));
   EXPECT_TRUE(processed);
 
-  const DebugFlatbuf::GetVarInfoResponse *res =
-      flatbuffers::GetRoot<DebugFlatbuf::GetVarInfoResponse>(response.data());
+  const DebugFB::GetVarInfoResponse *res =
+      flatbuffers::GetRoot<DebugFB::GetVarInfoResponse>(response.data());
   EXPECT_EQ(res->name()->str(), name);
   EXPECT_EQ(res->help()->str(), help);
   EXPECT_EQ(res->fmt()->str(), format);
@@ -63,19 +61,16 @@ TEST(VarHandler, GetVarInfo) {
 
 TEST(VarHandler, GetVar) {
   uint32_t value = 0xDEADBEEF;
-  Debug::Variable::Primitive32 var("name", Debug::Variable::Access::ReadWrite, &value, "units",
-                                   "help");
+  Debug::Variable::Primitive32 var("name", DebugFB::VarAccess::ReadWrite, &value, "units", "help");
   uint16_t id = var.id();
 
   // Test that a GET command obtains the variable's value.
   flatbuffers::FlatBufferBuilder b;
   b.ForceDefaults(true);
 
-  auto varaccess_builder =
-      DebugFlatbuf::CreateVarAccessData(b, DebugFlatbuf::VarSubcmd::Get, id);
-  auto req_builder = DebugFlatbuf::CreateRequest(
-      b, DebugFlatbuf::CmdCode::Variable, DebugFlatbuf::CmdData::VarAccessData,
-      varaccess_builder.Union());
+  auto varaccess_builder = DebugFB::CreateVarAccessData(b, DebugFB::VarSubcmd::Get, id);
+  auto req_builder = DebugFB::CreateRequest(
+      b, DebugFB::CmdCode::Variable, DebugFB::CmdData::VarAccessData, varaccess_builder.Union());
   b.Finish(req_builder);
   uint8_t *req = b.GetBufferPointer();
   b.Clear();
@@ -90,26 +85,24 @@ TEST(VarHandler, GetVar) {
   EXPECT_EQ(ErrorCode::None, VarHandler().Process(&context, b));
   EXPECT_TRUE(processed);
 
-  const DebugFlatbuf::UInt *res =
-      flatbuffers::GetRoot<DebugFlatbuf::UInt>(response.data());
+  const DebugFB::UInt *res = flatbuffers::GetRoot<DebugFB::UInt>(response.data());
   EXPECT_EQ(res->val(), value);
 }
 
 TEST(VarHandler, SetVar) {
   uint32_t value = 0xDEADBEEF;
-  Debug::Variable::Primitive32 var("name", Debug::Variable::Access::ReadWrite, &value, "units",
-                                   "help");
+  Debug::Variable::Primitive32 var("name", DebugFB::VarAccess::ReadWrite, &value, "units", "help");
   uint16_t id = var.id();
 
   uint32_t new_value = 0xCAFEBABE;
 
   // Test that a SET command changes the variable's value.
   flatbuffers::FlatBufferBuilder b;
-  auto varaccess_builder_set = DebugFlatbuf::CreateVarAccessData(
-      b, DebugFlatbuf::VarSubcmd::Set, id, new_value);
-  auto req_builder = DebugFlatbuf::CreateRequest(
-      b, DebugFlatbuf::CmdCode::Variable, DebugFlatbuf::CmdData::VarAccessData,
-      varaccess_builder_set.Union());
+  auto varaccess_builder_set =
+      DebugFB::CreateVarAccessData(b, DebugFB::VarSubcmd::Set, id, new_value);
+  auto req_builder =
+      DebugFB::CreateRequest(b, DebugFB::CmdCode::Variable, DebugFB::CmdData::VarAccessData,
+                             varaccess_builder_set.Union());
   b.Finish(req_builder);
   uint8_t *req = b.GetBufferPointer();
   b.Clear();
@@ -126,11 +119,10 @@ TEST(VarHandler, SetVar) {
   EXPECT_EQ(0, context_set.response_length);
 
   // Use Get to check if the value was correctly updated
-  auto varaccess_builder_get =
-      DebugFlatbuf::CreateVarAccessData(b, DebugFlatbuf::VarSubcmd::Get, id);
-  auto req_builder_get = DebugFlatbuf::CreateRequest(
-      b, DebugFlatbuf::CmdCode::Variable, DebugFlatbuf::CmdData::VarAccessData,
-      varaccess_builder_get.Union());
+  auto varaccess_builder_get = DebugFB::CreateVarAccessData(b, DebugFB::VarSubcmd::Get, id);
+  auto req_builder_get =
+      DebugFB::CreateRequest(b, DebugFB::CmdCode::Variable, DebugFB::CmdData::VarAccessData,
+                             varaccess_builder_get.Union());
   b.Finish(req_builder_get);
   req = b.GetBufferPointer();
   b.Clear();
@@ -145,22 +137,19 @@ TEST(VarHandler, SetVar) {
   EXPECT_EQ(ErrorCode::None, VarHandler().Process(&context_get, b));
   EXPECT_TRUE(processed);
 
-  const DebugFlatbuf::UInt *res =
-      flatbuffers::GetRoot<DebugFlatbuf::UInt>(response_get.data());
+  const DebugFB::UInt *res = flatbuffers::GetRoot<DebugFB::UInt>(response_get.data());
   EXPECT_EQ(res->val(), new_value);
 }
 
 TEST(VarHandler, GetVarCount) {
   uint32_t value = 0xDEADBEEF;
-  Debug::Variable::Primitive32 dummy("name", Debug::Variable::Access::ReadWrite, &value, "units");
+  Debug::Variable::Primitive32 dummy("name", DebugFB::VarAccess::ReadWrite, &value, "units");
 
   // Test that GetVarCount command obtains the number of defined variables
   flatbuffers::FlatBufferBuilder b;
-  auto varaccess_builder =
-      DebugFlatbuf::CreateVarAccessData(b, DebugFlatbuf::VarSubcmd::GetCount);
-  auto req_builder = DebugFlatbuf::CreateRequest(
-      b, DebugFlatbuf::CmdCode::Variable, DebugFlatbuf::CmdData::VarAccessData,
-      varaccess_builder.Union());
+  auto varaccess_builder = DebugFB::CreateVarAccessData(b, DebugFB::VarSubcmd::GetCount);
+  auto req_builder = DebugFB::CreateRequest(
+      b, DebugFB::CmdCode::Variable, DebugFB::CmdData::VarAccessData, varaccess_builder.Union());
   b.Finish(req_builder);
   uint8_t *req = b.GetBufferPointer();
   b.Clear();
@@ -175,8 +164,7 @@ TEST(VarHandler, GetVarCount) {
   EXPECT_EQ(ErrorCode::None, VarHandler().Process(&context, b));
   EXPECT_TRUE(processed);
 
-  const DebugFlatbuf::UInt *res =
-      flatbuffers::GetRoot<DebugFlatbuf::UInt>(response.data());
+  const DebugFB::UInt *res = flatbuffers::GetRoot<DebugFB::UInt>(response.data());
   EXPECT_EQ(res->val(), Debug::Variable::Registry::singleton().count());
 }
 /*
@@ -223,4 +211,4 @@ TEST(VarHandler, Errors) {
   }
 }
 */
-} // namespace Debug::Command
+}  // namespace Debug::Command

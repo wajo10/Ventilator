@@ -29,7 +29,7 @@ Interface::Interface(Trace *trace, int count, ...) {
   va_list valist;
   va_start(valist, count);
   for (int i = 0; i < count / 2; ++i) {
-    DebugFlatbuf::CmdCode code = va_arg(valist, DebugFlatbuf::CmdCode);
+    DebugFB::CmdCode code = va_arg(valist, DebugFB::CmdCode);
     Command::Handler *handler = va_arg(valist, Command::Handler *);
     registry_[static_cast<uint8_t>(code)] = handler;
   }
@@ -117,8 +117,7 @@ bool Interface::ReadNextByte() {
 // Returns false if no more data will fit in the output buffer,
 // or if the entire response has been sent.
 bool Interface::SendNextByte() {
-  if (hal.DebugBytesAvailableForWrite() < response_size_)
-    return false;
+  if (hal.DebugBytesAvailableForWrite() < response_size_) return false;
 
   // See what the next character to send is.
   char next_char = response_[response_bytes_sent_++];
@@ -158,8 +157,7 @@ void Interface::ProcessCommand() {
   // communication if necessary
 
   // TODO: Verify flatbuffer integrity
-  const DebugFlatbuf::Request *req =
-      flatbuffers::GetRoot<DebugFlatbuf::Request>(request_);
+  const DebugFB::Request *req = flatbuffers::GetRoot<DebugFB::Request>(request_);
   if (!req) {
     request_size_ = 0;
     state_ = State::AwaitingCommand;
@@ -173,7 +171,7 @@ void Interface::ProcessCommand() {
     return;
   }
 
-  DebugFlatbuf::CmdCode cmdcode = req->cmd();
+  DebugFB::CmdCode cmdcode = req->cmd();
   Command::Handler *cmd_handler = registry_[static_cast<uint8_t>(cmdcode)];
   if (!cmd_handler) {
     SendError(ErrorCode::UnknownCommand);

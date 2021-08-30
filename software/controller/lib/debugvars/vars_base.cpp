@@ -19,8 +19,8 @@ limitations under the License.
 
 namespace Debug::Variable {
 
-Base::Base(Type type, const char *name, Access access, const char *units, const char *help,
-           const char *fmt)
+Base::Base(DebugFB::VarType type, const char *name, DebugFB::VarAccess access, const char *units,
+           const char *help, const char *fmt)
     : type_(type), access_(access) {
   // \todo use stricpy instead?
   strcpy(name_, name);
@@ -50,12 +50,12 @@ const char *Base::help() const { return help_; }
 
 const char *Base::units() const { return units_; }
 
-Type Base::type() const { return type_; }
+DebugFB::VarType Base::type() const { return type_; }
 
 uint16_t Base::id() const { return id_; }
 
-Access Base::access() const { return access_; }
+DebugFB::VarAccess Base::access() const { return access_; }
 
-bool Base::write_allowed() const { return (access_ == Access::ReadWrite); }
+bool Base::write_allowed() const { return (access_ == DebugFB::VarAccess::ReadWrite); }
 
 }  // namespace Debug::Variable

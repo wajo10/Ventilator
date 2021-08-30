@@ -26,9 +26,9 @@ limitations under the License.
 PID::PID(const char *name, const char *help_supplement, float initial_kp, float initial_ki,
          float initial_kd, TermApplication p_term, TermApplication d_term, float output_min,
          float output_max)
-    : kp_("kp", Debug::Variable::Access::ReadWrite, initial_kp, "", "Proportional gain"),
-      ki_("ki", Debug::Variable::Access::ReadWrite, initial_ki, "", "Integral gain"),
-      kd_("kd", Debug::Variable::Access::ReadWrite, initial_kd, "", "Derivative gain"),
+    : kp_("kp", DebugFB::VarAccess::ReadWrite, initial_kp, "", "Proportional gain"),
+      ki_("ki", DebugFB::VarAccess::ReadWrite, initial_ki, "", "Integral gain"),
+      kd_("kd", DebugFB::VarAccess::ReadWrite, initial_kd, "", "Derivative gain"),
       proportional_term_(p_term),
       differential_term_(d_term),
       out_min_(output_min),

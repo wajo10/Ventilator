@@ -21,33 +21,29 @@ limitations under the License.
 
 namespace Debug::Command {
 
-ErrorCode VarHandler::Process(Context *context,
-                              flatbuffers::FlatBufferBuilder &b) {
-
-  const DebugFlatbuf::Request *req{
-      flatbuffers::GetRoot<DebugFlatbuf::Request>(context->request)};
-  const DebugFlatbuf::VarAccessData *cmddata{req->cmddata_as_VarAccessData()};
+ErrorCode VarHandler::Process(Context *context, flatbuffers::FlatBufferBuilder &b) {
+  const DebugFB::Request *req{flatbuffers::GetRoot<DebugFB::Request>(context->request)};
+  const DebugFB::VarAccessData *cmddata{req->cmddata_as_VarAccessData()};
 
   // We expect a sub-command.
-  if (!flatbuffers::IsFieldPresent(cmddata,
-                                   DebugFlatbuf::VarAccessData::VT_SUBCMD))
+  if (!flatbuffers::IsFieldPresent(cmddata, DebugFB::VarAccessData::VT_SUBCMD))
     return ErrorCode::MissingData;
 
-  DebugFlatbuf::VarSubcmd subcommand{cmddata->subcmd()};
+  DebugFB::VarSubcmd subcommand{cmddata->subcmd()};
 
   switch (subcommand) {
-  // Return info about one of the variables.
-  case DebugFlatbuf::VarSubcmd::GetInfo:
-    return GetVarInfo(context, b);
+    // Return info about one of the variables.
+    case DebugFB::VarSubcmd::GetInfo:
+      return GetVarInfo(context, b);
 
-  case DebugFlatbuf::VarSubcmd::Get:
-    return GetVar(context, b);
+    case DebugFB::VarSubcmd::Get:
+      return GetVar(context, b);
 
-  case DebugFlatbuf::VarSubcmd::Set:
-    return SetVar(context, b);
+    case DebugFB::VarSubcmd::Set:
+      return SetVar(context, b);
 
-  case DebugFlatbuf::VarSubcmd::GetCount:
-    return GetVarCount(context, b);
+    case DebugFB::VarSubcmd::GetCount:
+      return GetVarCount(context, b);
 
     default:
       return ErrorCode::InvalidData;
@@ -60,16 +56,12 @@ ErrorCode VarHandler::Process(Context *context,
 // system starting with 0.  The Python code can read them
 // all out until it gets an error code indicating that the
 // passed ID is invalid.
-ErrorCode VarHandler::GetVarInfo(Context *context,
-                                 flatbuffers::FlatBufferBuilder &b) {
-
-  const DebugFlatbuf::Request *req{
-      flatbuffers::GetRoot<DebugFlatbuf::Request>(context->request)};
-  const DebugFlatbuf::VarAccessData *cmddata{req->cmddata_as_VarAccessData()};
+ErrorCode VarHandler::GetVarInfo(Context *context, flatbuffers::FlatBufferBuilder &b) {
+  const DebugFB::Request *req{flatbuffers::GetRoot<DebugFB::Request>(context->request)};
+  const DebugFB::VarAccessData *cmddata{req->cmddata_as_VarAccessData()};
 
   // We expect a 16-bit ID to be passed
-  if (!flatbuffers::IsFieldPresent(cmddata,
-                                   DebugFlatbuf::VarAccessData::VT_VID))
+  if (!flatbuffers::IsFieldPresent(cmddata, DebugFB::VarAccessData::VT_VID))
     return ErrorCode::MissingData;
 
   uint16_t var_id{cmddata->vid()};
@@ -87,33 +79,28 @@ ErrorCode VarHandler::GetVarInfo(Context *context,
   // <unit> - variable length unit string
   // The strings are not null terminated.
 
-  auto res = DebugFlatbuf::CreateGetVarInfoResponse(
-      b, static_cast<uint8_t>(var->GetAccess()), b.CreateString(var->GetName()),
-      b.CreateString(var->GetFormat()), b.CreateString(var->GetHelp()),
-      b.CreateString(var->GetUnits()));
+  auto res = DebugFB::CreateGetVarInfoResponse(
+      b, var->type(), var->access(), b.CreateString(var->name()), b.CreateString(var->format()),
+      b.CreateString(var->help()), b.CreateString(var->units()));
   b.Finish(res);
   uint8_t *buff = b.GetBufferPointer();
   uint32_t buff_size = b.GetSize();
   b.Clear();
 
   // Fail if the strings are too large to fit.
-  if (context->max_response_length < buff_size)
-    return ErrorCode::NoMemory;
+  if (context->max_response_length < buff_size) return ErrorCode::NoMemory;
 
   memcpy(context->response, buff, buff_size);
   *(context->processed) = true;
   return ErrorCode::None;
 }
 
-ErrorCode VarHandler::GetVar(Context *context,
-                             flatbuffers::FlatBufferBuilder &b) {
-  const DebugFlatbuf::Request *req{
-      flatbuffers::GetRoot<DebugFlatbuf::Request>(context->request)};
-  const DebugFlatbuf::VarAccessData *cmddata{req->cmddata_as_VarAccessData()};
+ErrorCode VarHandler::GetVar(Context *context, flatbuffers::FlatBufferBuilder &b) {
+  const DebugFB::Request *req{flatbuffers::GetRoot<DebugFB::Request>(context->request)};
+  const DebugFB::VarAccessData *cmddata{req->cmddata_as_VarAccessData()};
 
   // We expect a 16-bit ID to be passed
-  if (!flatbuffers::IsFieldPresent(cmddata,
-                                   DebugFlatbuf::VarAccessData::VT_VID))
+  if (!flatbuffers::IsFieldPresent(cmddata, DebugFB::VarAccessData::VT_VID))
     return ErrorCode::MissingData;
 
   uint16_t var_id{cmddata->vid()};
@@ -121,14 +108,13 @@ ErrorCode VarHandler::GetVar(Context *context,
   auto *var = Variable::Registry::singleton().find(var_id);
   if (!var) return ErrorCode::UnknownVariable;
 
-  auto res = DebugFlatbuf::CreateUInt(b, var->GetValue());
+  auto res = DebugFB::CreateUInt(b, var->get_value());
   b.Finish(res);
   uint8_t *buff = b.GetBufferPointer();
   uint32_t buff_size = b.GetSize();
 
   // Fail if the strings are too large to fit.
-  if (context->max_response_length < buff_size)
-    return ErrorCode::NoMemory;
+  if (context->max_response_length < buff_size) return ErrorCode::NoMemory;
 
   memcpy(context->response, buff, buff_size);
   context->response_length = buff_size;
@@ -136,15 +122,12 @@ ErrorCode VarHandler::GetVar(Context *context,
   return ErrorCode::None;
 }
 
-ErrorCode VarHandler::SetVar(Context *context,
-                             flatbuffers::FlatBufferBuilder &b) {
-  const DebugFlatbuf::Request *req{
-      flatbuffers::GetRoot<DebugFlatbuf::Request>(context->request)};
-  const DebugFlatbuf::VarAccessData *cmddata{req->cmddata_as_VarAccessData()};
+ErrorCode VarHandler::SetVar(Context *context, flatbuffers::FlatBufferBuilder &b) {
+  const DebugFB::Request *req{flatbuffers::GetRoot<DebugFB::Request>(context->request)};
+  const DebugFB::VarAccessData *cmddata{req->cmddata_as_VarAccessData()};
 
   // We expect a 16-bit ID to be passed
-  if (!flatbuffers::IsFieldPresent(cmddata,
-                                   DebugFlatbuf::VarAccessData::VT_VID))
+  if (!flatbuffers::IsFieldPresent(cmddata, DebugFB::VarAccessData::VT_VID))
     return ErrorCode::MissingData;
 
   uint16_t var_id{cmddata->vid()};
@@ -153,27 +136,24 @@ ErrorCode VarHandler::SetVar(Context *context,
   if (!var) return ErrorCode::UnknownVariable;
 
   // We expect a value to write to the variable
-  if (!flatbuffers::IsFieldPresent(cmddata,
-                                   DebugFlatbuf::VarAccessData::VT_VAL))
+  if (!flatbuffers::IsFieldPresent(cmddata, DebugFB::VarAccessData::VT_VAL))
     return ErrorCode::MissingData;
 
   if (!var->write_allowed()) return ErrorCode::InternalError;
 
-  var->SetValue(cmddata->val());
+  var->set_value(cmddata->val());
   *(context->processed) = true;
   return ErrorCode::None;
 }
 
-ErrorCode VarHandler::GetVarCount(Context *context,
-                                  flatbuffers::FlatBufferBuilder &b) {
-  auto res = DebugFlatbuf::CreateUInt(b, DebugVarBase::GetVarCount());
+ErrorCode VarHandler::GetVarCount(Context *context, flatbuffers::FlatBufferBuilder &b) {
+  auto res = DebugFB::CreateUInt(b, Debug::Variable::Registry::singleton().count());
   b.Finish(res);
   uint8_t *buff = b.GetBufferPointer();
   uint32_t buff_size = b.GetSize();
   b.Clear();
 
-  if (context->max_response_length < buff_size)
-    return ErrorCode::NoMemory;
+  if (context->max_response_length < buff_size) return ErrorCode::NoMemory;
 
   memcpy(context->response, buff, buff_size);
   *(context->processed) = true;

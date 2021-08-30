@@ -19,7 +19,7 @@ limitations under the License.
 
 TEST(DebugVar, DebugVarInt32) {
   int32_t value = 5;
-  Debug::Variable::Primitive32 var("var", Debug::Variable::Access::ReadOnly, &value, "unit", "help",
+  Debug::Variable::Primitive32 var("var", DebugFB::VarAccess::ReadOnly, &value, "unit", "help",
                                    "fmt");
   EXPECT_STREQ("var", var.name());
   var.prepend_name("pre_");
@@ -27,10 +27,10 @@ TEST(DebugVar, DebugVarInt32) {
   EXPECT_STREQ("help", var.help());
   var.append_help(" so much help");
   EXPECT_STREQ("help so much help", var.help());
-  EXPECT_EQ(Debug::Variable::Type::Int32, var.type());
+  EXPECT_EQ(DebugFB::VarType::Int32, var.type());
   EXPECT_STREQ("fmt", var.format());
   EXPECT_STREQ("unit", var.units());
-  EXPECT_EQ(Debug::Variable::Access::ReadOnly, var.access());
+  EXPECT_EQ(DebugFB::VarAccess::ReadOnly, var.access());
   EXPECT_EQ(&var, Debug::Variable::Registry::singleton().find(var.id()));
 
   EXPECT_EQ(uint32_t{5}, var.get_value());
@@ -45,8 +45,7 @@ TEST(DebugVar, DebugVarInt32) {
   EXPECT_EQ(static_cast<int32_t>(max), value);
 
   // All default arguments
-  Debug::Variable::Primitive32 var_default("var", Debug::Variable::Access::ReadWrite, &value,
-                                           "unit");
+  Debug::Variable::Primitive32 var_default("var", DebugFB::VarAccess::ReadWrite, &value, "unit");
   EXPECT_STREQ("", var_default.help());
   EXPECT_STREQ("%d", var_default.format());
 }
@@ -54,21 +53,21 @@ TEST(DebugVar, DebugVarInt32) {
 TEST(DebugVar, DebugVarUint32Defaults) {
   uint32_t value = 5;
   // All default arguments
-  Debug::Variable::Primitive32 var("var", Debug::Variable::Access::ReadWrite, &value, "unit");
+  Debug::Variable::Primitive32 var("var", DebugFB::VarAccess::ReadWrite, &value, "unit");
   EXPECT_EQ(uint32_t{5}, var.get_value());
   EXPECT_STREQ("", var.help());
   EXPECT_STREQ("%u", var.format());
-  EXPECT_EQ(Debug::Variable::Type::UInt32, var.type());
+  EXPECT_EQ(DebugFB::VarType::UInt32, var.type());
 }
 
 TEST(DebugVar, DebugVarFloatDefaults) {
   float value = 5.0f;
   // All default arguments
-  Debug::Variable::Primitive32 var("var", Debug::Variable::Access::ReadWrite, &value, "unit");
+  Debug::Variable::Primitive32 var("var", DebugFB::VarAccess::ReadWrite, &value, "unit");
 
   EXPECT_STREQ("", var.help());
   EXPECT_STREQ("%.3f", var.format());
-  EXPECT_EQ(Debug::Variable::Type::Float, var.type());
+  EXPECT_EQ(DebugFB::VarType::Float, var.type());
 
   // Rountrip through uint32 should not change value.
   uint32_t uint_value = var.get_value();
@@ -80,13 +79,12 @@ TEST(DebugVar, DebugVarFloatDefaults) {
 TEST(DebugVar, Registration) {
   uint32_t num_vars = Debug::Variable::Registry::singleton().count();
   int32_t int_value = 5;
-  Debug::Variable::Primitive32 var1("var1", Debug::Variable::Access::ReadWrite, &int_value, "unit");
+  Debug::Variable::Primitive32 var1("var1", DebugFB::VarAccess::ReadWrite, &int_value, "unit");
 
   EXPECT_EQ(Debug::Variable::Registry::singleton().count(), num_vars + 1);
 
   float float_value = 7;
-  Debug::Variable::Primitive32 var2("var2", Debug::Variable::Access::ReadWrite, &float_value,
-                                    "unit");
+  Debug::Variable::Primitive32 var2("var2", DebugFB::VarAccess::ReadWrite, &float_value, "unit");
 
   EXPECT_EQ(Debug::Variable::Registry::singleton().count(), num_vars + 2);
 

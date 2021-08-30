@@ -19,8 +19,8 @@ limitations under the License.
 
 AnalogSensor::AnalogSensor(const char *name, const char *help_supplement, AnalogPin pin)
     : pin_(pin),
-      dbg_zero_("zero", Debug::Variable::Access::ReadOnly, 0.f, "V", "Voltage offset "),
-      dbg_voltage_("voltage", Debug::Variable::Access::ReadOnly, 0.f, "V", "Voltage reading ") {
+      dbg_zero_("zero", DebugFB::VarAccess::ReadOnly, 0.f, "V", "Voltage offset "),
+      dbg_voltage_("voltage", DebugFB::VarAccess::ReadOnly, 0.f, "V", "Voltage reading ") {
   dbg_zero_.prepend_name(name);
   dbg_zero_.append_help(help_supplement);
 
@@ -40,20 +40,19 @@ float AnalogSensor::read_diff_volts(HalApi &hal_api) const {
 }
 
 PressureSensor::PressureSensor(const char *name, const char *help_supplement)
-    : dbg_pressure_("dp", Debug::Variable::Access::ReadOnly, 0.f, "cmH2O",
-                    "Differential pressure ") {
+    : dbg_pressure_("dp", DebugFB::VarAccess::ReadOnly, 0.f, "cmH2O", "Differential pressure ") {
   dbg_pressure_.prepend_name(name);
   dbg_pressure_.append_help(help_supplement);
 }
 
 FlowSensor::FlowSensor(const char *name, const char *help_supplement)
-    : dbg_flow_("flow", Debug::Variable::Access::ReadOnly, 0.f, "mL/s", "Volumetric flow ") {
+    : dbg_flow_("flow", DebugFB::VarAccess::ReadOnly, 0.f, "mL/s", "Volumetric flow ") {
   dbg_flow_.prepend_name(name);
   dbg_flow_.append_help(help_supplement);
 }
 
 OxygenSensor::OxygenSensor(const char *name, const char *help_supplement)
-    : dbg_fio2_("fio2", Debug::Variable::Access::ReadOnly, 0.f, "ratio", "Fraction of oxygen ") {
+    : dbg_fio2_("fio2", DebugFB::VarAccess::ReadOnly, 0.f, "ratio", "Fraction of oxygen ") {
   dbg_fio2_.prepend_name(name);
   dbg_fio2_.append_help(help_supplement);
 }

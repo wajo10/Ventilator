@@ -17,21 +17,9 @@ limitations under the License.
 
 #include <cstdint>
 
+#include "debug_flatbuf_generated.h"
+
 namespace Debug::Variable {
-
-// \todo should we have an `Invalid` type?
-// Defines the type of variable
-enum class Type {
-  Int32 = 1,
-  UInt32 = 2,
-  Float = 3,
-};
-
-// Defines the possible access to variable
-enum class Access {
-  ReadOnly = 0,
-  ReadWrite = 1,
-};
 
 static constexpr uint16_t MaxVariableCount{100};
 
@@ -60,8 +48,8 @@ class Base {
    *  \param fmt printf style format string, hint for debug client on how to display variable data.
    *  \post Variable will add itself to the Registry and receive a unique ID.
    */
-  Base(Type type, const char *name, Access access, const char *units, const char *help,
-       const char *fmt = "");
+  Base(DebugFB::VarType type, const char *name, DebugFB::VarAccess access, const char *units,
+       const char *help, const char *fmt = "");
 
   virtual uint32_t get_value() = 0;
   virtual void set_value(uint32_t value) = 0;
@@ -73,15 +61,15 @@ class Base {
   const char *format() const;
   const char *help() const;
   const char *units() const;
-  Type type() const;
+  DebugFB::VarType type() const;
   uint16_t id() const;
-  Access access() const;
+  DebugFB::VarAccess access() const;
   bool write_allowed() const;
 
  private:
   uint16_t id_{InvalidID};
-  const Type type_;
-  const Access access_;
+  const DebugFB::VarType type_;
+  const DebugFB::VarAccess access_;
   char name_[50]{0};
   char units_[20]{0};
   char help_[300]{0};

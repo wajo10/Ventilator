@@ -28,11 +28,11 @@ using namespace Debug;
 TEST(Trace, MaybeSampleTwoVars) {
   uint32_t i = 0;
   Debug::Variable::FnVar var_x(
-      Debug::Variable::Type::UInt32, "x", Debug::Variable::Access::ReadOnly, "units",
-      [&] { return i; }, [&](uint32_t value) { (void)value; }, "");
+      DebugFB::VarType::UInt32, "x", DebugFB::VarAccess::ReadOnly, "units", [&] { return i; },
+      [&](uint32_t value) { (void)value; }, "");
   Debug::Variable::FnVar var_y(
-      Debug::Variable::Type::UInt32, "y", Debug::Variable::Access::ReadOnly, "units",
-      [&] { return 10 * i; }, [&](uint32_t value) { (void)value; }, "");
+      DebugFB::VarType::UInt32, "y", DebugFB::VarAccess::ReadOnly, "units", [&] { return 10 * i; },
+      [&](uint32_t value) { (void)value; }, "");
 
   Trace trace;
   trace.SetPeriod(3);  // Trace every 3 cycles.
@@ -87,7 +87,7 @@ TEST(Trace, MaybeSampleTwoVars) {
 TEST(Trace, TracesEveryCycleByDefault) {
   Trace trace;
   uint32_t x = 42;
-  Debug::Variable::Primitive32 var_x("x", Debug::Variable::Access::ReadOnly, &x, "units");
+  Debug::Variable::Primitive32 var_x("x", DebugFB::VarAccess::ReadOnly, &x, "units");
   trace.SetTracedVarId<0>(var_x.id());
   trace.Start();
   // Do not set period
@@ -100,7 +100,7 @@ TEST(Trace, TracesEveryCycleByDefault) {
 
 TEST(Trace, BufferFull) {
   uint32_t x = 42;
-  Debug::Variable::Primitive32 var_x("x", Debug::Variable::Access::ReadOnly, &x, "units");
+  Debug::Variable::Primitive32 var_x("x", DebugFB::VarAccess::ReadOnly, &x, "units");
   Trace trace;
   trace.SetTracedVarId<0>(var_x.id());
   trace.Start();
@@ -134,8 +134,8 @@ TEST(Trace, BufferFull) {
 
 TEST(Trace, FlushOnSetVar) {
   uint32_t x = 42, y = 37;
-  Debug::Variable::Primitive32 var_x("x", Debug::Variable::Access::ReadOnly, &x, "units");
-  Debug::Variable::Primitive32 var_y("y", Debug::Variable::Access::ReadOnly, &y, "units");
+  Debug::Variable::Primitive32 var_x("x", DebugFB::VarAccess::ReadOnly, &x, "units");
+  Debug::Variable::Primitive32 var_y("y", DebugFB::VarAccess::ReadOnly, &y, "units");
   Trace trace;
   trace.SetTracedVarId<0>(var_x.id());
   trace.Start();

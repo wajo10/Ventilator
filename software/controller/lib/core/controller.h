@@ -115,7 +115,7 @@ class Controller {
   // Debug variables
   using DbgFloat = Debug::Variable::Float;
   using DbgUint32 = Debug::Variable::UInt32;
-  using DbgAccess = Debug::Variable::Access;
+  using DbgAccess = DebugFB::VarAccess;
 
   DbgFloat forced_blower_power_{
       "forced_blower_power", DbgAccess::ReadWrite, -1.f, "ratio",

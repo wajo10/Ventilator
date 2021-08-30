@@ -87,9 +87,8 @@ std::vector<uint8_t> ProcessCmd(Interface *serial, std::vector<uint8_t> req,
   }
 
   std::vector<uint8_t> escaped_resp(500);
-  uint16_t resp_len = hal.TESTDebugGetOutgoingData(
-      reinterpret_cast<char *>(escaped_resp.data()),
-      static_cast<uint16_t>(escaped_resp.size()));
+  uint16_t resp_len = hal.TESTDebugGetOutgoingData(reinterpret_cast<char *>(escaped_resp.data()),
+                                                   static_cast<uint16_t>(escaped_resp.size()));
 
   escaped_resp.erase(escaped_resp.begin() + resp_len, escaped_resp.end());
   EXPECT_GE(escaped_resp.size(), size_t{3} /* err code + crc */);
@@ -127,13 +126,10 @@ TEST(Interface, Mode) {
   EXPECT_THAT(resp, testing::ElementsAre(static_cast<uint8_t>(0)));
 }
 */
-uint32_t GetVarViaCmd(Interface *serial, uint16_t id,
-                      flatbuffers::FlatBufferBuilder &b) {
-  auto varaccess_builder =
-      DebugFlatbuf::CreateVarAccessData(b, DebugFlatbuf::VarSubcmd::Get, id);
-  auto req_builder = DebugFlatbuf::CreateRequest(
-      b, DebugFlatbuf::CmdCode::Variable, DebugFlatbuf::CmdData::VarAccessData,
-      varaccess_builder.Union());
+uint32_t GetVarViaCmd(Interface *serial, uint16_t id, flatbuffers::FlatBufferBuilder &b) {
+  auto varaccess_builder = DebugFB::CreateVarAccessData(b, DebugFB::VarSubcmd::Get, id);
+  auto req_builder = DebugFB::CreateRequest(
+      b, DebugFB::CmdCode::Variable, DebugFB::CmdData::VarAccessData, varaccess_builder.Union());
   b.Finish(req_builder);
   uint8_t *req = b.GetBufferPointer();
   uint32_t req_size = b.GetSize();
@@ -142,26 +138,25 @@ uint32_t GetVarViaCmd(Interface *serial, uint16_t id,
   std::vector<uint8_t> req_vec(req, req + req_size);
   std::vector<uint8_t> resp = ProcessCmd(serial, req_vec);
 
-  const DebugFlatbuf::UInt *r =
-      flatbuffers::GetRoot<DebugFlatbuf::UInt>(resp.data());
+  const DebugFB::UInt *r = flatbuffers::GetRoot<DebugFB::UInt>(resp.data());
   return r->val();
 }
 
 TEST(Interface, GetVar) {
   flatbuffers::FlatBufferBuilder b;
   uint32_t foo = 0xDEADBEEF;
-  Debug::Variable::Primitive32 var_foo("foo", Debug::Variable::Access::ReadOnly, &foo, "unit");
+  Debug::Variable::Primitive32 var_foo("foo", DebugFB::VarAccess::ReadOnly, &foo, "unit");
   uint32_t bar = 0xC0DEBABE;
-  Debug::Variable::Primitive32 var_bar("bar", Debug::Variable::Access::ReadOnly, &bar, "unit");
+  Debug::Variable::Primitive32 var_bar("bar", DebugFB::VarAccess::ReadOnly, &bar, "unit");
 
   Trace trace;
   Command::VarHandler var_command;
-  Interface serial(&trace, 2, DebugFlatbuf::CmdCode::Variable, &var_command);
+  Interface serial(&trace, 2, DebugFB::CmdCode::Variable, &var_command);
   // Run a bunch of times with different expected results
   // to exercise buffer management.
   for (int i = 0; i < 1; ++i, ++foo, ++bar) {
-    EXPECT_EQ(foo, GetVarViaCmd(&serial, var_foo.GetId(), b));
-    EXPECT_EQ(bar, GetVarViaCmd(&serial, var_bar.GetId(), b));
+    EXPECT_EQ(foo, GetVarViaCmd(&serial, var_foo.id(), b));
+    EXPECT_EQ(bar, GetVarViaCmd(&serial, var_bar.id(), b));
   }
 }
 /*
@@ -239,4 +234,4 @@ TEST(Interface, Errors) {
   uint16_t resp_len = hal.TESTDebugGetOutgoingData(reinterpret_cast<char *>(resp.data()), 10);
   EXPECT_EQ(resp_len, 0);
 } */
-} // namespace Debug
+}  // namespace Debug
