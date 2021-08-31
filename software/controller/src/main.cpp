@@ -17,6 +17,7 @@ limitations under the License.
 #include "commands.h"
 #include "comms.h"
 #include "controller.h"
+#include "debug_flatbuf_generated.h"
 #include "eeprom.h"
 #include "hal.h"
 #include "interface.h"
@@ -29,24 +30,24 @@ limitations under the License.
 // the GUI.  But you can also command the controller by setting the gui_foo
 // DebugVars below.
 static Debug::Variable::UInt32 forced_mode(
-    "forced_mode", Debug::Variable::Access::ReadWrite, _VentMode_MAX + 1, "",
+    "forced_mode", DebugFB::VarAccess::ReadWrite, _VentMode_MAX + 1, "",
     "Overrides ventilation mode as commanded by GUI; see VentMode enum in network_protocol.proto."
     " If out of range, this and all of the other gui_foo variables are ignored.",
     "%s");
 static Debug::Variable::UInt32 forced_breath_rate(
-    "forced_breath_rate", Debug::Variable::Access::ReadWrite, 15, "breaths/min",
+    "forced_breath_rate", DebugFB::VarAccess::ReadWrite, 15, "breaths/min",
     "Target breath rate; overrides GUI setting when forced_mode is valid");
 static Debug::Variable::UInt32 forced_peep(
-    "forced_peep", Debug::Variable::Access::ReadWrite, 5, "cmH2O",
+    "forced_peep", DebugFB::VarAccess::ReadWrite, 5, "cmH2O",
     "Target PEEP; overrides GUI setting when forced_mode is valid");
 static Debug::Variable::UInt32 forced_pip(
-    "forced_pip", Debug::Variable::Access::ReadWrite, 15, "cmH2O",
+    "forced_pip", DebugFB::VarAccess::ReadWrite, 15, "cmH2O",
     "Target PIP; overrides GUI setting when forced_mode is valid");
 static Debug::Variable::Float forced_ie_ratio(
-    "forced_ie_ratio", Debug::Variable::Access::ReadWrite, 0.66f, "ratio",
+    "forced_ie_ratio", DebugFB::VarAccess::ReadWrite, 0.66f, "ratio",
     "Target I:E ratio; overrides GUI setting when forced_mode is valid");
 static Debug::Variable::Float forced_fio2(
-    "forced_fio2", Debug::Variable::Access::ReadWrite, 21, "%",
+    "forced_fio2", DebugFB::VarAccess::ReadWrite, 21, "%",
     "Target percent oxygen [21, 100]; overrides GUI setting when forced_mode is valid");
 
 static Controller controller;

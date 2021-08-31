@@ -12,10 +12,10 @@
 // from the actual value for each type (int32, uint32, float)
 //
 // # Regenerate C++ and Python flatbuffers (flatc version 1.11.0)
-// $ flatc --cpp --scoped-enums debug_flatbuf.fbs &
-\\      flatc --python --scoped-enums -o ../../../utils/debug/ debug_flatbuf.fbs
+// $ flatc --cpp --scoped-enums debug_flatbuf.fbs &&
+//      flatc --python --scoped-enums -o ../../../utils/debug/ debug_flatbuf.fbs
 
-namespace DebugFlatbuf;
+namespace DebugFB;
 
 table Int   { val : int; }
 table UInt  { val : uint; }
@@ -40,6 +40,19 @@ enum VarSubcmd : byte {
     Get = 0x01,              // Get variable value
     Set = 0x02,              // Set variable value
     GetCount = 0x03          // Get count of active vars
+}
+
+// Variable type for variable get info function
+enum VarType : byte {
+    Int32 = 0x00,
+    UInt32 = 0x01,
+    Float = 0x02
+}
+
+// Variable access for variable get info function
+enum VarAccess : byte {
+    ReadOnly = 0x00,
+    ReadWrite = 0x01,
 }
 
 // Command data
@@ -72,11 +85,13 @@ enum ErrorCode : byte {
 
 // Some responses need their own tables because they're more complex. Others can be a generic Int, Uint, or Float.
 table GetVarInfoResponse {
-    access : byte;
+    type: VarType;
+    access : VarAccess;
     name : string;
     fmt : string;
     help : string;
     unit : string;
 }
 
+// Generic response data union
 union ResponseData { Int, UInt, Float, GetVarInfoResponse }

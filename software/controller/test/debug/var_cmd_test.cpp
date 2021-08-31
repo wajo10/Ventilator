@@ -171,10 +171,10 @@ TEST(VarHandler, GetVarCount) {
 TODO: Refactor error test with flatbuffer implementation
 TEST(VarHandler, Errors) {
   uint32_t value = 0xDEADBEEF;
-  Debug::Variable::UInt32 var("name", Debug::Variable::Access::ReadWrite, value, "units", "help");
+  Debug::Variable::UInt32 var("name", DebugFB::VarAccess::ReadWrite, value, "units", "help");
   uint8_t id[2];
   u16_to_u8(var.id(), id);
-  Debug::Variable::UInt32 var_readonly("name", Debug::Variable::Access::ReadOnly, value, "units",
+  Debug::Variable::UInt32 var_readonly("name", DebugFB::VarAccess::ReadOnly, value, "units",
                                        "help");
   uint8_t id_readonly[2];
   u16_to_u8(var_readonly.id(), id_readonly);

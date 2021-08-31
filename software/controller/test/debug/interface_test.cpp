@@ -152,12 +152,8 @@ TEST(Interface, GetVar) {
   Trace trace;
   Command::VarHandler var_command;
   Interface serial(&trace, 2, DebugFB::CmdCode::Variable, &var_command);
-  // Run a bunch of times with different expected results
-  // to exercise buffer management.
-  for (int i = 0; i < 1; ++i, ++foo, ++bar) {
-    EXPECT_EQ(foo, GetVarViaCmd(&serial, var_foo.id(), b));
-    EXPECT_EQ(bar, GetVarViaCmd(&serial, var_bar.id(), b));
-  }
+  EXPECT_EQ(foo, GetVarViaCmd(&serial, var_foo.id(), b));
+  EXPECT_EQ(bar, GetVarViaCmd(&serial, var_bar.id(), b));
 }
 /*
 TEST(Interface, AwaitingResponseState) {
