@@ -21,8 +21,9 @@ limitations under the License.
 namespace Debug {
 // Initialize interface handler with variable list of
 // Command::Code, Command::Handler pairs and a trace
-Interface::Interface(Trace *trace, int count, ...) {
+Interface::Interface(Trace *trace, flatbuffers::FlatBufferBuilder *b, int count, ...) {
   trace_ = trace;
+  builder = b;
 
   // Add the provided handlers to the registry, unless an odd number of
   // arguments have been provided
@@ -188,7 +189,7 @@ void Interface::ProcessCommand() {
       .max_response_length = sizeof(response_) - 3,
       .processed = &command_processed_,
   };
-  ErrorCode error = cmd_handler->Process(&context, builder);
+  ErrorCode error = cmd_handler->Process(&context, *builder);
 
   if (error != ErrorCode::None) {
     SendError(error);

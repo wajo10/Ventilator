@@ -151,7 +151,11 @@ TEST(Interface, GetVar) {
 
   Trace trace;
   Command::VarHandler var_command;
-  Interface serial(&trace, 2, DebugFB::CmdCode::Variable, &var_command);
+  uint8_t stack_buffer[1024];
+  Debug::StackAllocator stack_alloc(stack_buffer);
+  flatbuffers::FlatBufferBuilder builder(1024, &stack_alloc);
+
+  Interface serial(&trace, &builder, 2, DebugFB::CmdCode::Variable, &var_command);
   EXPECT_EQ(foo, GetVarViaCmd(&serial, var_foo.id(), b));
   EXPECT_EQ(bar, GetVarViaCmd(&serial, var_bar.id(), b));
 }

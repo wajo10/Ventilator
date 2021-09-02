@@ -23,7 +23,18 @@ limitations under the License.
 #include "trace.h"
 
 namespace Debug {
+class StackAllocator : public flatbuffers::Allocator {
+ public:
+  StackAllocator(uint8_t *buffer_in) { builder_buffer = buffer_in; }
+  uint8_t *allocate(size_t size) { return builder_buffer; }
 
+  void deallocate(uint8_t *p, size_t) { return; }
+
+  static void dealloc(void *p, size_t) { return; }
+
+ private:
+  uint8_t *builder_buffer;
+};
 // The debug serial port interface implements a very simple binary command
 // structure.  Commands are sent using the following format:
 //
@@ -55,7 +66,7 @@ namespace Debug {
 // has a special value.
 class Interface {
  public:
-  explicit Interface(Trace *trace, int count, ...);
+  explicit Interface(Trace *trace, flatbuffers::FlatBufferBuilder *b, int count, ...);
 
   // This function is called from the main loop to handle debug commands.
   // Returns true if this call has finished sending the response for a command,
@@ -68,8 +79,7 @@ class Interface {
 
  private:
   State state_{State::AwaitingCommand};
-
-  flatbuffers::FlatBufferBuilder builder;
+  flatbuffers::FlatBufferBuilder *builder;
 
   // Buffer into which request data is written in AwaitingCommand state
   uint8_t request_[500] = {0};
