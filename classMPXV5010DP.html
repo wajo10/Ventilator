@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RespiraWorks Ventilator: AnalogPressureSensor Class Reference</title>
+<title>RespiraWorks Ventilator: MPXV5010DP Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,45 +63,53 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="classAnalogPressureSensor-members.html">List of all members</a>  </div>
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
+<a href="classMPXV5010DP-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">AnalogPressureSensor Class Reference</div>  </div>
+<div class="title">MPXV5010DP Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="dynheader">
-Inheritance diagram for AnalogPressureSensor:</div>
+Inheritance diagram for MPXV5010DP:</div>
 <div class="dyncontent">
-<div class="center"><img src="classAnalogPressureSensor__inherit__graph.png" border="0" usemap="#AnalogPressureSensor_inherit__map" alt="Inheritance graph"/></div>
-<map name="AnalogPressureSensor_inherit__map" id="AnalogPressureSensor_inherit__map">
-<area shape="rect" title=" " alt="" coords="54,80,221,107"/>
-<area shape="rect" href="classMPXV5004DP.html" title=" " alt="" coords="15,155,126,181"/>
-<area shape="rect" href="classMPXV5010DP.html" title=" " alt="" coords="150,155,261,181"/>
+<div class="center"><img src="classMPXV5010DP__inherit__graph.png" border="0" usemap="#MPXV5010DP_inherit__map" alt="Inheritance graph"/></div>
+<map name="MPXV5010DP_inherit__map" id="MPXV5010DP_inherit__map">
+<area shape="rect" title=" " alt="" coords="82,155,193,181"/>
+<area shape="rect" href="classAnalogPressureSensor.html" title=" " alt="" coords="54,80,221,107"/>
 <area shape="rect" href="classPressureSensor.html" title=" " alt="" coords="5,5,128,32"/>
 <area shape="rect" href="classAnalogSensor.html" title=" " alt="" coords="153,5,263,32"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
-Collaboration diagram for AnalogPressureSensor:</div>
+Collaboration diagram for MPXV5010DP:</div>
 <div class="dyncontent">
-<div class="center"><img src="classAnalogPressureSensor__coll__graph.png" border="0" usemap="#AnalogPressureSensor_coll__map" alt="Collaboration graph"/></div>
-<map name="AnalogPressureSensor_coll__map" id="AnalogPressureSensor_coll__map">
-<area shape="rect" title=" " alt="" coords="97,323,263,349"/>
-<area shape="rect" href="classPressureSensor.html" title=" " alt="" coords="48,247,171,273"/>
-<area shape="rect" href="classDebug_1_1Variable_1_1Float.html" title=" " alt="" coords="26,157,193,184"/>
+<div class="center"><img src="classMPXV5010DP__coll__graph.png" border="0" usemap="#MPXV5010DP_coll__map" alt="Collaboration graph"/></div>
+<map name="MPXV5010DP_coll__map" id="MPXV5010DP_coll__map">
+<area shape="rect" title=" " alt="" coords="267,456,378,483"/>
+<area shape="rect" href="classAnalogPressureSensor.html" title=" " alt="" coords="167,352,334,379"/>
+<area shape="rect" href="classPressureSensor.html" title=" " alt="" coords="48,269,171,295"/>
+<area shape="rect" href="classDebug_1_1Variable_1_1Float.html" title=" " alt="" coords="26,165,193,191"/>
 <area shape="rect" href="classDebug_1_1Variable_1_1Primitive32.html" title=" " alt="" coords="5,81,213,108"/>
 <area shape="rect" href="classDebug_1_1Variable_1_1Base.html" title="Abstract base class for debug variables." alt="" coords="27,5,192,32"/>
-<area shape="rect" href="classAnalogSensor.html" title=" " alt="" coords="195,247,306,273"/>
+<area shape="rect" href="classAnalogSensor.html" title=" " alt="" coords="195,269,306,295"/>
+<area shape="rect" href="classPressure.html" title=" " alt="" coords="367,352,446,379"/>
+<area shape="rect" href="classUnitsDetail_1_1ArithScalar.html" title=" " alt="" coords="330,261,505,303"/>
+<area shape="rect" href="classUnitsDetail_1_1Scalar.html" title=" " alt="" coords="345,157,490,199"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:abbf04af44c2e47a6540e41703775683a"><td class="memItemLeft" align="right" valign="top"><a id="abbf04af44c2e47a6540e41703775683a"></a>
+<tr class="memitem:a699c119ebda5e22002372f68cd051581"><td class="memItemLeft" align="right" valign="top"><a id="a699c119ebda5e22002372f68cd051581"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>MPXV5010DP</b> (const char *name, const char *help_supplement, AnalogPin pin, float voltage_range)</td></tr>
+<tr class="separator:a699c119ebda5e22002372f68cd051581"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classAnalogPressureSensor"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classAnalogPressureSensor')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classAnalogPressureSensor.html">AnalogPressureSensor</a></td></tr>
+<tr class="memitem:abbf04af44c2e47a6540e41703775683a inherit pub_methods_classAnalogPressureSensor"><td class="memItemLeft" align="right" valign="top"><a id="abbf04af44c2e47a6540e41703775683a"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>AnalogPressureSensor</b> (const char *name, const char *help_supplement, AnalogPin pin, float voltage_to_kPa)</td></tr>
-<tr class="separator:abbf04af44c2e47a6540e41703775683a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8c54e061a53d8117d9a69684ef42405"><td class="memItemLeft" align="right" valign="top"><a id="ad8c54e061a53d8117d9a69684ef42405"></a>
+<tr class="separator:abbf04af44c2e47a6540e41703775683a inherit pub_methods_classAnalogPressureSensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8c54e061a53d8117d9a69684ef42405 inherit pub_methods_classAnalogPressureSensor"><td class="memItemLeft" align="right" valign="top"><a id="ad8c54e061a53d8117d9a69684ef42405"></a>
 <a class="el" href="classPressure.html">Pressure</a>&#160;</td><td class="memItemRight" valign="bottom"><b>read</b> (<a class="el" href="classHalApi.html">HalApi</a> &amp;hal_api) const override</td></tr>
-<tr class="separator:ad8c54e061a53d8117d9a69684ef42405"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:ad8c54e061a53d8117d9a69684ef42405 inherit pub_methods_classAnalogPressureSensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classAnalogSensor"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classAnalogSensor')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classAnalogSensor.html">AnalogSensor</a></td></tr>
 <tr class="memitem:a57bb34652653a00e1731de54d14cdf5c inherit pub_methods_classAnalogSensor"><td class="memItemLeft" align="right" valign="top"><a id="a57bb34652653a00e1731de54d14cdf5c"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>AnalogSensor</b> (const char *name, const char *help_supplement, AnalogPin pin)</td></tr>
@@ -112,6 +120,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_zero</b> (<a clas
 <tr class="memitem:a7fc9018c7a94492de9dff557f1ce3b22 inherit pub_methods_classAnalogSensor"><td class="memItemLeft" align="right" valign="top"><a id="a7fc9018c7a94492de9dff557f1ce3b22"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><b>read_diff_volts</b> (<a class="el" href="classHalApi.html">HalApi</a> &amp;hal_api) const</td></tr>
 <tr class="separator:a7fc9018c7a94492de9dff557f1ce3b22 inherit pub_methods_classAnalogSensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:abb542a72fd2ffd7d4298351729ac4e5b"><td class="memItemLeft" align="right" valign="top"><a id="abb542a72fd2ffd7d4298351729ac4e5b"></a>
+constexpr static <a class="el" href="classPressure.html">Pressure</a>&#160;</td><td class="memItemRight" valign="bottom"><b>MinPressure</b> {kPa(0.0f)}</td></tr>
+<tr class="separator:abb542a72fd2ffd7d4298351729ac4e5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa390b32f29ca08e45e6f238bdb767867"><td class="memItemLeft" align="right" valign="top"><a id="aa390b32f29ca08e45e6f238bdb767867"></a>
+constexpr static <a class="el" href="classPressure.html">Pressure</a>&#160;</td><td class="memItemRight" valign="bottom"><b>MaxPressure</b> {kPa(10.0f)}</td></tr>
+<tr class="separator:aa390b32f29ca08e45e6f238bdb767867"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>

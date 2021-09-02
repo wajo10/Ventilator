@@ -1,6 +1,7 @@
 <map id="AnalogPressureSensor" name="AnalogPressureSensor">
 <area shape="rect" id="node1" title=" " alt="" coords="54,80,221,107"/>
-<area shape="rect" id="node4" href="$classMPXV5004DP.html" title=" " alt="" coords="82,155,193,181"/>
+<area shape="rect" id="node4" href="$classMPXV5004DP.html" title=" " alt="" coords="15,155,126,181"/>
+<area shape="rect" id="node5" href="$classMPXV5010DP.html" title=" " alt="" coords="150,155,261,181"/>
 <area shape="rect" id="node2" href="$classPressureSensor.html" title=" " alt="" coords="5,5,128,32"/>
 <area shape="rect" id="node3" href="$classAnalogSensor.html" title=" " alt="" coords="153,5,263,32"/>
 </map>
