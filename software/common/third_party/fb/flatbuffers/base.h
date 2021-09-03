@@ -29,18 +29,15 @@
 #endif
 
 #include <cstddef>
-#include <cstdlib>
+//#include <cstdlib>
 #include <cstring>
 
 #include <utility>
 
-#include <string>
 #include <type_traits>
-#include <vector>
-#include <set>
 #include <algorithm>
 #include <iterator>
-#include <memory>
+//#include <memory>
 
 #if defined(__unix__) && !defined(FLATBUFFERS_LOCALE_INDEPENDENT)
   #include <unistd.h>

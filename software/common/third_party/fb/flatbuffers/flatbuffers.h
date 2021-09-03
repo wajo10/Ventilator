@@ -698,7 +698,6 @@ static inline bool StringLessThan(const char *a_data, uoffset_t a_size,
 
 struct String : public Vector<char> {
   const char *c_str() const { return reinterpret_cast<const char *>(Data()); }
-  std::string str() const { return std::string(c_str(), size()); }
 
   // clang-format off
   #ifdef FLATBUFFERS_HAS_STRING_VIEW
@@ -712,12 +711,6 @@ struct String : public Vector<char> {
     return StringLessThan(this->data(), this->size(), o.data(), o.size());
   }
 };
-
-// Convenience function to get std::string from a String returning an empty
-// string on null pointer.
-static inline std::string GetString(const String *str) {
-  return str ? str->str() : "";
-}
 
 // Convenience function to get char* from a String returning an empty string on
 // null pointer.
@@ -1187,20 +1180,6 @@ inline voffset_t FieldIndexToOffset(voffset_t field_id) {
   return static_cast<voffset_t>((field_id + fixed_fields) * sizeof(voffset_t));
 }
 
-template<typename T, typename Alloc>
-const T *data(const std::vector<T, Alloc> &v) {
-  // Eventually the returned pointer gets passed down to memcpy, so
-  // we need it to be non-null to avoid undefined behavior.
-  static uint8_t t;
-  return v.empty() ? reinterpret_cast<const T *>(&t) : &v.front();
-}
-template<typename T, typename Alloc> T *data(std::vector<T, Alloc> &v) {
-  // Eventually the returned pointer gets passed down to memcpy, so
-  // we need it to be non-null to avoid undefined behavior.
-  static uint8_t t;
-  return v.empty() ? reinterpret_cast<T *>(&t) : &v.front();
-}
-
 /// @endcond
 
 /// @addtogroup flatbuffers_cpp_api
@@ -1236,8 +1215,7 @@ class FlatBufferBuilder {
         finished(false),
         minalign_(1),
         force_defaults_(false),
-        dedup_vtables_(true),
-        string_pool(nullptr) {
+        dedup_vtables_(true) {
     EndianCheck();
   }
 
@@ -1255,8 +1233,7 @@ class FlatBufferBuilder {
       finished(false),
       minalign_(1),
       force_defaults_(false),
-      dedup_vtables_(true),
-      string_pool(nullptr) {
+      dedup_vtables_(true) {
     EndianCheck();
     // Default construct and swap idiom.
     // Lack of delegating constructors in vs2010 makes it more verbose than needed.
@@ -1288,11 +1265,9 @@ class FlatBufferBuilder {
     swap(minalign_, other.minalign_);
     swap(force_defaults_, other.force_defaults_);
     swap(dedup_vtables_, other.dedup_vtables_);
-    swap(string_pool, other.string_pool);
   }
 
   ~FlatBufferBuilder() {
-    if (string_pool) delete string_pool;
   }
 
   void Reset() {
@@ -1308,7 +1283,6 @@ class FlatBufferBuilder {
     nested = false;
     finished = false;
     minalign_ = 1;
-    if (string_pool) string_pool->clear();
   }
 
   /// @brief The current size of the serialized buffer, counting from the end.
@@ -1636,13 +1610,6 @@ class FlatBufferBuilder {
     return CreateString(str, strlen(str));
   }
 
-  /// @brief Store a string in the buffer, which can contain any binary data.
-  /// @param[in] str A const reference to a std::string to store in the buffer.
-  /// @return Returns the offset in the buffer where the string starts.
-  Offset<String> CreateString(const std::string &str) {
-    return CreateString(str.c_str(), str.length());
-  }
-
   // clang-format off
   #ifdef FLATBUFFERS_HAS_STRING_VIEW
   /// @brief Store a string in the buffer, which can contain any binary data.
@@ -1667,75 +1634,6 @@ class FlatBufferBuilder {
   /// @return Returns the offset in the buffer where the string starts.
   template<typename T> Offset<String> CreateString(const T &str) {
     return CreateString(str.c_str(), str.length());
-  }
-
-  /// @brief Store a string in the buffer, which can contain any binary data.
-  /// If a string with this exact contents has already been serialized before,
-  /// instead simply returns the offset of the existing string. This uses a map
-  /// stored on the heap, but only stores the numerical offsets.
-  /// @param[in] str A const char pointer to the data to be stored as a string.
-  /// @param[in] len The number of bytes that should be stored from `str`.
-  /// @return Returns the offset in the buffer where the string starts.
-  Offset<String> CreateSharedString(const char *str, size_t len) {
-    FLATBUFFERS_ASSERT(FLATBUFFERS_GENERAL_HEAP_ALLOC_OK);
-    if (!string_pool)
-      string_pool = new StringOffsetMap(StringOffsetCompare(buf_));
-    auto size_before_string = buf_.size();
-    // Must first serialize the string, since the set is all offsets into
-    // buffer.
-    auto off = CreateString(str, len);
-    auto it = string_pool->find(off);
-    // If it exists we reuse existing serialized data!
-    if (it != string_pool->end()) {
-      // We can remove the string we serialized.
-      buf_.pop(buf_.size() - size_before_string);
-      return *it;
-    }
-    // Record this string for future use.
-    string_pool->insert(off);
-    return off;
-  }
-
-#ifdef FLATBUFFERS_HAS_STRING_VIEW
-  /// @brief Store a string in the buffer, which can contain any binary data.
-  /// If a string with this exact contents has already been serialized before,
-  /// instead simply returns the offset of the existing string. This uses a map
-  /// stored on the heap, but only stores the numerical offsets.
-  /// @param[in] str A const std::string_view to store in the buffer.
-  /// @return Returns the offset in the buffer where the string starts
-  Offset<String> CreateSharedString(const flatbuffers::string_view str) {
-    return CreateSharedString(str.data(), str.size());
-  }
-#else
-  /// @brief Store a string in the buffer, which null-terminated.
-  /// If a string with this exact contents has already been serialized before,
-  /// instead simply returns the offset of the existing string. This uses a map
-  /// stored on the heap, but only stores the numerical offsets.
-  /// @param[in] str A const char pointer to a C-string to add to the buffer.
-  /// @return Returns the offset in the buffer where the string starts.
-  Offset<String> CreateSharedString(const char *str) {
-    return CreateSharedString(str, strlen(str));
-  }
-
-  /// @brief Store a string in the buffer, which can contain any binary data.
-  /// If a string with this exact contents has already been serialized before,
-  /// instead simply returns the offset of the existing string. This uses a map
-  /// stored on the heap, but only stores the numerical offsets.
-  /// @param[in] str A const reference to a std::string to store in the buffer.
-  /// @return Returns the offset in the buffer where the string starts.
-  Offset<String> CreateSharedString(const std::string &str) {
-    return CreateSharedString(str.c_str(), str.length());
-  }
-#endif
-
-  /// @brief Store a string in the buffer, which can contain any binary data.
-  /// If a string with this exact contents has already been serialized before,
-  /// instead simply returns the offset of the existing string. This uses a map
-  /// stored on the heap, but only stores the numerical offsets.
-  /// @param[in] str A const pointer to a `String` struct to add to the buffer.
-  /// @return Returns the offset in the buffer where the string starts
-  Offset<String> CreateSharedString(const String *str) {
-    return CreateSharedString(str->c_str(), str->size());
   }
 
   /// @cond FLATBUFFERS_INTERNAL
@@ -1804,76 +1702,6 @@ class FlatBufferBuilder {
     StartVector(len, sizeof(Offset<T>));
     for (auto i = len; i > 0;) { PushElement(v[--i]); }
     return Offset<Vector<Offset<T>>>(EndVector(len));
-  }
-
-  /// @brief Serialize a `std::vector` into a FlatBuffer `vector`.
-  /// @tparam T The data type of the `std::vector` elements.
-  /// @param v A const reference to the `std::vector` to serialize into the
-  /// buffer as a `vector`.
-  /// @return Returns a typed `Offset` into the serialized data indicating
-  /// where the vector is stored.
-  template<typename T> Offset<Vector<T>> CreateVector(const std::vector<T> &v) {
-    return CreateVector(data(v), v.size());
-  }
-
-  // vector<bool> may be implemented using a bit-set, so we can't access it as
-  // an array. Instead, read elements manually.
-  // Background: https://isocpp.org/blog/2012/11/on-vectorbool
-  Offset<Vector<uint8_t>> CreateVector(const std::vector<bool> &v) {
-    StartVector(v.size(), sizeof(uint8_t));
-    for (auto i = v.size(); i > 0;) {
-      PushElement(static_cast<uint8_t>(v[--i]));
-    }
-    return Offset<Vector<uint8_t>>(EndVector(v.size()));
-  }
-
-  // clang-format off
-  #ifndef FLATBUFFERS_CPP98_STL
-  /// @brief Serialize values returned by a function into a FlatBuffer `vector`.
-  /// This is a convenience function that takes care of iteration for you.
-  /// @tparam T The data type of the `std::vector` elements.
-  /// @param f A function that takes the current iteration 0..vector_size-1 and
-  /// returns any type that you can construct a FlatBuffers vector out of.
-  /// @return Returns a typed `Offset` into the serialized data indicating
-  /// where the vector is stored.
-  template<typename T> Offset<Vector<T>> CreateVector(size_t vector_size,
-      const std::function<T (size_t i)> &f) {
-    FLATBUFFERS_ASSERT(FLATBUFFERS_GENERAL_HEAP_ALLOC_OK);
-    std::vector<T> elems(vector_size);
-    for (size_t i = 0; i < vector_size; i++) elems[i] = f(i);
-    return CreateVector(elems);
-  }
-  #endif // FLATBUFFERS_CPP98_STL
-  // clang-format on
-
-  /// @brief Serialize values returned by a function into a FlatBuffer `vector`.
-  /// This is a convenience function that takes care of iteration for you. This
-  /// uses a vector stored on the heap to store the intermediate results of the
-  /// iteration.
-  /// @tparam T The data type of the `std::vector` elements.
-  /// @param f A function that takes the current iteration 0..vector_size-1,
-  /// and the state parameter returning any type that you can construct a
-  /// FlatBuffers vector out of.
-  /// @param state State passed to f.
-  /// @return Returns a typed `Offset` into the serialized data indicating
-  /// where the vector is stored.
-  template<typename T, typename F, typename S>
-  Offset<Vector<T>> CreateVector(size_t vector_size, F f, S *state) {
-    FLATBUFFERS_ASSERT(FLATBUFFERS_GENERAL_HEAP_ALLOC_OK);
-    std::vector<T> elems(vector_size);
-    for (size_t i = 0; i < vector_size; i++) elems[i] = f(i, state);
-    return CreateVector(elems);
-  }
-
-  /// @brief Serialize a `std::vector<std::string>` into a FlatBuffer `vector`.
-  /// This is a convenience function for a common case.
-  /// @param v A const reference to the `std::vector` to serialize into the
-  /// buffer as a `vector`.
-  /// @return Returns a typed `Offset` into the serialized data indicating
-  /// where the vector is stored.
-  Offset<Vector<Offset<String>>> CreateVectorOfStrings(
-      const std::vector<std::string> &v) {
-    return CreateVectorOfStrings(v.cbegin(), v.cend());
   }
 
   /// @brief Serialize a collection of Strings into a FlatBuffer `vector`.
@@ -1996,48 +1824,6 @@ class FlatBufferBuilder {
     return EndVectorOfStructs<T>(vector_size);
   }
 
-  /// @brief Serialize a `std::vector` of structs into a FlatBuffer `vector`.
-  /// @tparam T The data type of the `std::vector` struct elements.
-  /// @param[in] v A const reference to the `std::vector` of structs to
-  /// serialize into the buffer as a `vector`.
-  /// @return Returns a typed `Offset` into the serialized data indicating
-  /// where the vector is stored.
-  template<typename T, typename Alloc>
-  Offset<Vector<const T *>> CreateVectorOfStructs(
-      const std::vector<T, Alloc> &v) {
-    return CreateVectorOfStructs(data(v), v.size());
-  }
-
-  /// @brief Serialize a `std::vector` of native structs into a FlatBuffer
-  /// `vector`.
-  /// @tparam T The data type of the `std::vector` struct elements.
-  /// @tparam S The data type of the `std::vector` native struct elements.
-  /// @param[in] v A const reference to the `std::vector` of structs to
-  /// serialize into the buffer as a `vector`.
-  /// @param[in] pack_func Pointer to a function to convert the native struct
-  /// to the FlatBuffer struct.
-  /// @return Returns a typed `Offset` into the serialized data indicating
-  /// where the vector is stored.
-  template<typename T, typename S>
-  Offset<Vector<const T *>> CreateVectorOfNativeStructs(
-      const std::vector<S> &v, T (*const pack_func)(const S &)) {
-    return CreateVectorOfNativeStructs<T, S>(data(v), v.size(), pack_func);
-  }
-
-  /// @brief Serialize a `std::vector` of native structs into a FlatBuffer
-  /// `vector`.
-  /// @tparam T The data type of the `std::vector` struct elements.
-  /// @tparam S The data type of the `std::vector` native struct elements.
-  /// @param[in] v A const reference to the `std::vector` of structs to
-  /// serialize into the buffer as a `vector`.
-  /// @return Returns a typed `Offset` into the serialized data indicating
-  /// where the vector is stored.
-  template<typename T, typename S>
-  Offset<Vector<const T *>> CreateVectorOfNativeStructs(
-      const std::vector<S> &v) {
-    return CreateVectorOfNativeStructs<T, S>(data(v), v.size());
-  }
-
   /// @cond FLATBUFFERS_INTERNAL
   template<typename T> struct StructKeyComparator {
     bool operator()(const T &a, const T &b) const {
@@ -2045,32 +1831,6 @@ class FlatBufferBuilder {
     }
   };
   /// @endcond
-
-  /// @brief Serialize a `std::vector` of structs into a FlatBuffer `vector`
-  /// in sorted order.
-  /// @tparam T The data type of the `std::vector` struct elements.
-  /// @param[in] v A const reference to the `std::vector` of structs to
-  /// serialize into the buffer as a `vector`.
-  /// @return Returns a typed `Offset` into the serialized data indicating
-  /// where the vector is stored.
-  template<typename T>
-  Offset<Vector<const T *>> CreateVectorOfSortedStructs(std::vector<T> *v) {
-    return CreateVectorOfSortedStructs(data(*v), v->size());
-  }
-
-  /// @brief Serialize a `std::vector` of native structs into a FlatBuffer
-  /// `vector` in sorted order.
-  /// @tparam T The data type of the `std::vector` struct elements.
-  /// @tparam S The data type of the `std::vector` native struct elements.
-  /// @param[in] v A const reference to the `std::vector` of structs to
-  /// serialize into the buffer as a `vector`.
-  /// @return Returns a typed `Offset` into the serialized data indicating
-  /// where the vector is stored.
-  template<typename T, typename S>
-  Offset<Vector<const T *>> CreateVectorOfSortedNativeStructs(
-      std::vector<S> *v) {
-    return CreateVectorOfSortedNativeStructs<T, S>(data(*v), v->size());
-  }
 
   /// @brief Serialize an array of structs into a FlatBuffer `vector` in sorted
   /// order.
@@ -2135,19 +1895,6 @@ class FlatBufferBuilder {
                                                        size_t len) {
     std::sort(v, v + len, TableKeyComparator<T>(buf_));
     return CreateVector(v, len);
-  }
-
-  /// @brief Serialize an array of `table` offsets as a `vector` in the buffer
-  /// in sorted order.
-  /// @tparam T The data type that the offset refers to.
-  /// @param[in] v An array of type `Offset<T>` that contains the `table`
-  /// offsets to store in the buffer in sorted order.
-  /// @return Returns a typed `Offset` into the serialized data indicating
-  /// where the vector is stored.
-  template<typename T>
-  Offset<Vector<Offset<T>>> CreateVectorOfSortedTables(
-      std::vector<Offset<T>> *v) {
-    return CreateVectorOfSortedTables(data(*v), v->size());
   }
 
   /// @brief Specialized version of `CreateVector` for non-copying use cases.
@@ -2296,10 +2043,6 @@ class FlatBufferBuilder {
     }
     const vector_downward *buf_;
   };
-
-  // For use with CreateSharedString. Instantiated on first use only.
-  typedef std::set<Offset<String>, StringOffsetCompare> StringOffsetMap;
-  StringOffsetMap *string_pool;
 
  private:
   // Allocates space for a vector of structures.

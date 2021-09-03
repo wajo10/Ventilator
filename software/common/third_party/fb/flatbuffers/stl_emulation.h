@@ -66,38 +66,6 @@
 // This header provides backwards compatibility for C++98 STLs like stlport.
 namespace flatbuffers {
 
-// Retrieve ::back() from a string in a way that is compatible with pre C++11
-// STLs (e.g stlport).
-inline char& string_back(std::string &value) {
-  return value[value.length() - 1];
-}
-
-inline char string_back(const std::string &value) {
-  return value[value.length() - 1];
-}
-
-// Helper method that retrieves ::data() from a vector in a way that is
-// compatible with pre C++11 STLs (e.g stlport).
-template <typename T> inline T *vector_data(std::vector<T> &vector) {
-  // In some debug environments, operator[] does bounds checking, so &vector[0]
-  // can't be used.
-  return vector.empty() ? nullptr : &vector[0];
-}
-
-template <typename T> inline const T *vector_data(
-    const std::vector<T> &vector) {
-  return vector.empty() ? nullptr : &vector[0];
-}
-
-template <typename T, typename V>
-inline void vector_emplace_back(std::vector<T> *vector, V &&data) {
-  #if defined(FLATBUFFERS_CPP98_STL)
-    vector->push_back(data);
-  #else
-    vector->emplace_back(std::forward<V>(data));
-  #endif  // defined(FLATBUFFERS_CPP98_STL)
-}
-
 #ifndef FLATBUFFERS_CPP98_STL
   #if defined(FLATBUFFERS_TEMPLATES_ALIASES)
     template <typename T>
