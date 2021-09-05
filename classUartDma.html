@@ -71,45 +71,45 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a332a28f25d83ffc06382e136930b5e30"><td class="memItemLeft" align="right" valign="top"><a id="a332a28f25d83ffc06382e136930b5e30"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>UartDma</b> (UartReg *const uart, DmaReg *const dma, uint8_t tx_chan, uint8_t rx_chan, <a class="el" href="classUartDmaRxListener.html">UartDmaRxListener</a> *rxl, <a class="el" href="classUartDmaTxListener.html">UartDmaTxListener</a> *txl, char match_char)</td></tr>
-<tr class="separator:a332a28f25d83ffc06382e136930b5e30"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae85d3e743255b518d7123095250ceac6"><td class="memItemLeft" align="right" valign="top"><a id="ae85d3e743255b518d7123095250ceac6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>Init</b> (int baud)</td></tr>
-<tr class="separator:ae85d3e743255b518d7123095250ceac6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6f6ce9662f334cc762abdf4c4b556e0"><td class="memItemLeft" align="right" valign="top"><a id="ac6f6ce9662f334cc762abdf4c4b556e0"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>TxInProgress</b> () const</td></tr>
-<tr class="separator:ac6f6ce9662f334cc762abdf4c4b556e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb9f3b9d2dc15b88b8b9283c38cc6753"><td class="memItemLeft" align="right" valign="top"><a id="adb9f3b9d2dc15b88b8b9283c38cc6753"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>RxInProgress</b> () const</td></tr>
-<tr class="separator:adb9f3b9d2dc15b88b8b9283c38cc6753"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a90be676f868a94c72b8c52f36c518368"><td class="memItemLeft" align="right" valign="top"><a id="a90be676f868a94c72b8c52f36c518368"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>StartTX</b> (char *buf, uint32_t length)</td></tr>
-<tr class="separator:a90be676f868a94c72b8c52f36c518368"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a632dfc0b959594ccc4273e03c39864b2"><td class="memItemLeft" align="right" valign="top"><a id="a632dfc0b959594ccc4273e03c39864b2"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>GetRxBytesLeft</b> ()</td></tr>
-<tr class="separator:a632dfc0b959594ccc4273e03c39864b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac881221240f3db7975e39cd6f0e6689e"><td class="memItemLeft" align="right" valign="top"><a id="ac881221240f3db7975e39cd6f0e6689e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>StopTX</b> ()</td></tr>
-<tr class="separator:ac881221240f3db7975e39cd6f0e6689e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6d6542cc97dc353b1a793b0a0f4ac8e"><td class="memItemLeft" align="right" valign="top"><a id="af6d6542cc97dc353b1a793b0a0f4ac8e"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>StartRX</b> (char *buf, uint32_t length, uint32_t timeout)</td></tr>
-<tr class="separator:af6d6542cc97dc353b1a793b0a0f4ac8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9168ed3d18b79ad05ec6c90a0624411e"><td class="memItemLeft" align="right" valign="top"><a id="a9168ed3d18b79ad05ec6c90a0624411e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>StopRX</b> ()</td></tr>
-<tr class="separator:a9168ed3d18b79ad05ec6c90a0624411e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06ba4ebcd3e273bb81cf498bf67645db"><td class="memItemLeft" align="right" valign="top"><a id="a06ba4ebcd3e273bb81cf498bf67645db"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>CharMatchEnable</b> ()</td></tr>
-<tr class="separator:a06ba4ebcd3e273bb81cf498bf67645db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1f8f8af18cfc2d6cc3703f99e19b3b2"><td class="memItemLeft" align="right" valign="top"><a id="aa1f8f8af18cfc2d6cc3703f99e19b3b2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>UartISR</b> ()</td></tr>
-<tr class="separator:aa1f8f8af18cfc2d6cc3703f99e19b3b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c24fa5e9de8b480e1b6796c5b12959e"><td class="memItemLeft" align="right" valign="top"><a id="a9c24fa5e9de8b480e1b6796c5b12959e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>DmaRxISR</b> ()</td></tr>
-<tr class="separator:a9c24fa5e9de8b480e1b6796c5b12959e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7b4635e595a281dc4351a68d264d7b7"><td class="memItemLeft" align="right" valign="top"><a id="ac7b4635e595a281dc4351a68d264d7b7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>DmaTxISR</b> ()</td></tr>
-<tr class="separator:ac7b4635e595a281dc4351a68d264d7b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac23fc1d6bed90b5359a1412fc2a1da71"><td class="memItemLeft" align="right" valign="top"><a id="ac23fc1d6bed90b5359a1412fc2a1da71"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>UartDma</b> (UartReg *const uart, DmaReg *const dma, uint8_t tx_channel, uint8_t rx_channel, char match_char)</td></tr>
+<tr class="separator:ac23fc1d6bed90b5359a1412fc2a1da71"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae384e51c095027bab8b419a018f49f5f"><td class="memItemLeft" align="right" valign="top"><a id="ae384e51c095027bab8b419a018f49f5f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (uint32_t baud)</td></tr>
+<tr class="separator:ae384e51c095027bab8b419a018f49f5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a80e597395e934d0dadc87603454181e2"><td class="memItemLeft" align="right" valign="top"><a id="a80e597395e934d0dadc87603454181e2"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>start_tx</b> (uint8_t *buf, uint32_t length, <a class="el" href="classTxListener.html">TxListener</a> *txl)</td></tr>
+<tr class="separator:a80e597395e934d0dadc87603454181e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10fbb6885713121f3b15e9db2d30e500"><td class="memItemLeft" align="right" valign="top"><a id="a10fbb6885713121f3b15e9db2d30e500"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>start_rx</b> (uint8_t *buf, uint32_t length, <a class="el" href="classRxListener.html">RxListener</a> *rxl)</td></tr>
+<tr class="separator:a10fbb6885713121f3b15e9db2d30e500"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53a03d43bc5fabf88ffc1acee367a9b9"><td class="memItemLeft" align="right" valign="top"><a id="a53a03d43bc5fabf88ffc1acee367a9b9"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>tx_in_progress</b> () const</td></tr>
+<tr class="separator:a53a03d43bc5fabf88ffc1acee367a9b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad881471a7b26537d25c4e7f1ec542c9"><td class="memItemLeft" align="right" valign="top"><a id="aad881471a7b26537d25c4e7f1ec542c9"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>rx_in_progress</b> () const</td></tr>
+<tr class="separator:aad881471a7b26537d25c4e7f1ec542c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a415d6c21fe940677b6f37da9c53f25fe"><td class="memItemLeft" align="right" valign="top"><a id="a415d6c21fe940677b6f37da9c53f25fe"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>stop_tx</b> ()</td></tr>
+<tr class="separator:a415d6c21fe940677b6f37da9c53f25fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39203e72966d3570ea0987ce5d2b2313"><td class="memItemLeft" align="right" valign="top"><a id="a39203e72966d3570ea0987ce5d2b2313"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>stop_rx</b> ()</td></tr>
+<tr class="separator:a39203e72966d3570ea0987ce5d2b2313"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8ad334902b2ff555defa9d863eb36db"><td class="memItemLeft" align="right" valign="top"><a id="ab8ad334902b2ff555defa9d863eb36db"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>rx_bytes_left</b> ()</td></tr>
+<tr class="separator:ab8ad334902b2ff555defa9d863eb36db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15983028b298eb2e5257dc35e1c8d89d"><td class="memItemLeft" align="right" valign="top"><a id="a15983028b298eb2e5257dc35e1c8d89d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>enable_character_match</b> ()</td></tr>
+<tr class="separator:a15983028b298eb2e5257dc35e1c8d89d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc5ea92531946bafda5ef9ee923a65ea"><td class="memItemLeft" align="right" valign="top"><a id="adc5ea92531946bafda5ef9ee923a65ea"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>UART_interrupt_handler</b> ()</td></tr>
+<tr class="separator:adc5ea92531946bafda5ef9ee923a65ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39996b061af3bef53879093d8e3c0373"><td class="memItemLeft" align="right" valign="top"><a id="a39996b061af3bef53879093d8e3c0373"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>DMA_rx_interrupt_handler</b> ()</td></tr>
+<tr class="separator:a39996b061af3bef53879093d8e3c0373"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a373cf2f1212ea87643c9e134668fda74"><td class="memItemLeft" align="right" valign="top"><a id="a373cf2f1212ea87643c9e134668fda74"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>DMA_tx_interrupt_handler</b> ()</td></tr>
+<tr class="separator:a373cf2f1212ea87643c9e134668fda74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>/home/runner/work/Ventilator/Ventilator/software/controller/lib/hal/uart_dma.h</li>
