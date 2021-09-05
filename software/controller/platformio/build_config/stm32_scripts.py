@@ -29,7 +29,7 @@ env.Append(
         "-mfpu=fpv4-sp-d16",
         "-mfloat-abi=hard",
         "-nostartfiles",
-        "-specs=nano.specs",
-        "-specs=nosys.specs",
+        # "-specs=nano.specs",
+        # "-specs=nosys.specs",
     ]
 )

@@ -20,10 +20,7 @@
 // clang-format off
 #include "flatbuffers/base.h"
 
-#include <string>
 #include <type_traits>
-#include <vector>
-#include <memory>
 #include <limits>
 
 #if defined(_STLPORT_VERSION) && !defined(FLATBUFFERS_CPP98_STL)
@@ -57,9 +54,6 @@
   // Disable non-trivial ctors if FLATBUFFERS_SPAN_MINIMAL defined.
   #if !defined(FLATBUFFERS_TEMPLATES_ALIASES) || defined(FLATBUFFERS_CPP98_STL)
     #define FLATBUFFERS_SPAN_MINIMAL
-  #else
-    // Enable implicit construction of a span<T,N> from a std::array<T,N>.
-    #include <array>
   #endif
 #endif // defined(FLATBUFFERS_USE_STD_SPAN)
 
@@ -182,125 +176,6 @@ namespace flatbuffers {
   typedef bool_constant<true>  true_type;
   typedef bool_constant<false> false_type;
 #endif  // defined(FLATBUFFERS_TEMPLATES_ALIASES)
-
-#ifndef FLATBUFFERS_CPP98_STL
-  #if defined(FLATBUFFERS_TEMPLATES_ALIASES)
-    template <class T> using unique_ptr = std::unique_ptr<T>;
-  #else
-    // MSVC 2010 doesn't support C++11 aliases.
-    // We're manually "aliasing" the class here as we want to bring unique_ptr
-    // into the flatbuffers namespace.  We have unique_ptr in the flatbuffers
-    // namespace we have a completely independent implementation (see below)
-    // for C++98 STL implementations.
-    template <class T> class unique_ptr : public std::unique_ptr<T> {
-     public:
-      unique_ptr() {}
-      explicit unique_ptr(T* p) : std::unique_ptr<T>(p) {}
-      unique_ptr(std::unique_ptr<T>&& u) { *this = std::move(u); }
-      unique_ptr(unique_ptr&& u) { *this = std::move(u); }
-      unique_ptr& operator=(std::unique_ptr<T>&& u) {
-        std::unique_ptr<T>::reset(u.release());
-        return *this;
-      }
-      unique_ptr& operator=(unique_ptr&& u) {
-        std::unique_ptr<T>::reset(u.release());
-        return *this;
-      }
-      unique_ptr& operator=(T* p) {
-        return std::unique_ptr<T>::operator=(p);
-      }
-    };
-  #endif  // defined(FLATBUFFERS_TEMPLATES_ALIASES)
-#else
-  // Very limited implementation of unique_ptr.
-  // This is provided simply to allow the C++ code generated from the default
-  // settings to function in C++98 environments with no modifications.
-  template <class T> class unique_ptr {
-   public:
-    typedef T element_type;
-
-    unique_ptr() : ptr_(nullptr) {}
-    explicit unique_ptr(T* p) : ptr_(p) {}
-    unique_ptr(unique_ptr&& u) : ptr_(nullptr) { reset(u.release()); }
-    unique_ptr(const unique_ptr& u) : ptr_(nullptr) {
-      reset(const_cast<unique_ptr*>(&u)->release());
-    }
-    ~unique_ptr() { reset(); }
-
-    unique_ptr& operator=(const unique_ptr& u) {
-      reset(const_cast<unique_ptr*>(&u)->release());
-      return *this;
-    }
-
-    unique_ptr& operator=(unique_ptr&& u) {
-      reset(u.release());
-      return *this;
-    }
-
-    unique_ptr& operator=(T* p) {
-      reset(p);
-      return *this;
-    }
-
-    const T& operator*() const { return *ptr_; }
-    T* operator->() const { return ptr_; }
-    T* get() const noexcept { return ptr_; }
-    explicit operator bool() const { return ptr_ != nullptr; }
-
-    // modifiers
-    T* release() {
-      T* value = ptr_;
-      ptr_ = nullptr;
-      return value;
-    }
-
-    void reset(T* p = nullptr) {
-      T* value = ptr_;
-      ptr_ = p;
-      if (value) delete value;
-    }
-
-    void swap(unique_ptr& u) {
-      T* temp_ptr = ptr_;
-      ptr_ = u.ptr_;
-      u.ptr_ = temp_ptr;
-    }
-
-   private:
-    T* ptr_;
-  };
-
-  template <class T> bool operator==(const unique_ptr<T>& x,
-                                     const unique_ptr<T>& y) {
-    return x.get() == y.get();
-  }
-
-  template <class T, class D> bool operator==(const unique_ptr<T>& x,
-                                              const D* y) {
-    return static_cast<D*>(x.get()) == y;
-  }
-
-  template <class T> bool operator==(const unique_ptr<T>& x, intptr_t y) {
-    return reinterpret_cast<intptr_t>(x.get()) == y;
-  }
-
-  template <class T> bool operator!=(const unique_ptr<T>& x, decltype(nullptr)) {
-    return !!x;
-  }
-
-  template <class T> bool operator!=(decltype(nullptr), const unique_ptr<T>& x) {
-    return !!x;
-  }
-
-  template <class T> bool operator==(const unique_ptr<T>& x, decltype(nullptr)) {
-    return !x;
-  }
-
-  template <class T> bool operator==(decltype(nullptr), const unique_ptr<T>& x) {
-    return !x;
-  }
-
-#endif  // !FLATBUFFERS_CPP98_STL
 
 #ifdef FLATBUFFERS_USE_STD_OPTIONAL
 template<class T>
@@ -605,20 +480,11 @@ class span FLATBUFFERS_FINAL_CLASS {
   FLATBUFFERS_CONSTEXPR_CPP11 span(element_type (&arr)[N]) FLATBUFFERS_NOEXCEPT
       : data_(arr), count_(N) {}
 
-  template<class U, std::size_t N,
-    typename internal::is_span_convertable<element_type, Extent, U, N>::type = 0>
-  FLATBUFFERS_CONSTEXPR_CPP11 span(std::array<U, N> &arr) FLATBUFFERS_NOEXCEPT
-     : data_(arr.data()), count_(N) {}
-
   //template<class U, std::size_t N,
   //  int = 0>
   //FLATBUFFERS_CONSTEXPR_CPP11 span(std::array<U, N> &arr) FLATBUFFERS_NOEXCEPT
   //   : data_(arr.data()), count_(N) {}
 
-  template<class U, std::size_t N,
-    typename internal::is_span_convertable<element_type, Extent, U, N>::type = 0>
-  FLATBUFFERS_CONSTEXPR_CPP11 span(const std::array<U, N> &arr) FLATBUFFERS_NOEXCEPT
-    : data_(arr.data()), count_(N) {}
 
   // Converting constructor from another span s;
   // the resulting span has size() == s.size() and data() == s.data().
@@ -650,18 +516,6 @@ flatbuffers::span<U, N> make_span(U(&arr)[N]) FLATBUFFERS_NOEXCEPT {
 template<class U, std::size_t N>
 FLATBUFFERS_CONSTEXPR_CPP11
 flatbuffers::span<const U, N> make_span(const U(&arr)[N]) FLATBUFFERS_NOEXCEPT {
-  return span<const U, N>(arr);
-}
-
-template<class U, std::size_t N>
-FLATBUFFERS_CONSTEXPR_CPP11
-flatbuffers::span<U, N> make_span(std::array<U, N> &arr) FLATBUFFERS_NOEXCEPT {
-  return span<U, N>(arr);
-}
-
-template<class U, std::size_t N>
-FLATBUFFERS_CONSTEXPR_CPP11
-flatbuffers::span<const U, N> make_span(const std::array<U, N> &arr) FLATBUFFERS_NOEXCEPT {
   return span<const U, N>(arr);
 }
 

@@ -9,8 +9,8 @@
   // The _CRTDBG_MAP_ALLOC inside <crtdbg.h> will replace
   // calloc/free (etc) to its debug version using #define directives.
   #define _CRTDBG_MAP_ALLOC
-  #include <stdlib.h>
-  #include <crtdbg.h>
+//  #include <stdlib.h>
+//  #include <crtdbg.h>
   // Replace operator new by trace-enabled version.
   #define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
   #define new DEBUG_NEW
@@ -28,20 +28,13 @@
 #include <cstdint>
 #endif
 
-#include <cstddef>
-//#include <cstdlib>
 #include <cstring>
 
-#include <utility>
-
 #include <type_traits>
-#include <algorithm>
-#include <iterator>
-//#include <memory>
 
-#if defined(__unix__) && !defined(FLATBUFFERS_LOCALE_INDEPENDENT)
-  #include <unistd.h>
-#endif
+//#if defined(__unix__) && !defined(FLATBUFFERS_LOCALE_INDEPENDENT)
+//  #include <unistd.h>
+//#endif
 
 #ifdef _STLPORT_VERSION
   #define FLATBUFFERS_CPP98_STL
@@ -51,9 +44,9 @@
   #include <android/api-level.h>
 #endif
 
-#if defined(__ICCARM__)
-#include <intrinsics.h>
-#endif
+//#if defined(__ICCARM__)
+//#include <intrinsics.h>
+//#endif
 
 // Note the __clang__ check is needed, because clang presents itself
 // as an older GNUC compiler (4.2).

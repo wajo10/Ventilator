@@ -20,10 +20,6 @@
 #include "flatbuffers/base.h"
 #include "flatbuffers/stl_emulation.h"
 
-#ifndef FLATBUFFERS_CPP98_STL
-#  include <functional>
-#endif
-
 #if defined(FLATBUFFERS_NAN_DEFAULTS)
 #  include <cmath>
 #endif
@@ -362,19 +358,6 @@ template<typename T> class Vector {
   // Similarly, but typed, much like std::vector::data
   const T *data() const { return reinterpret_cast<const T *>(Data()); }
   T *data() { return reinterpret_cast<T *>(Data()); }
-
-  template<typename K> return_type LookupByKey(K key) const {
-    void *search_result = std::bsearch(
-        &key, Data(), size(), IndirectHelper<T>::element_stride, KeyCompare<K>);
-
-    if (!search_result) {
-      return nullptr;  // Key not found.
-    }
-
-    const uint8_t *element = reinterpret_cast<const uint8_t *>(search_result);
-
-    return IndirectHelper<T>::Read(element, 0);
-  }
 
  protected:
   // This class is only used to access pre-existing data. Don't ever
@@ -768,41 +751,23 @@ class Allocator {
   }
 };
 
-// DefaultAllocator uses new/delete to allocate memory regions
-class DefaultAllocator : public Allocator {
- public:
-  uint8_t *allocate(size_t size) FLATBUFFERS_OVERRIDE {
-    return new uint8_t[size];
-  }
-
-  void deallocate(uint8_t *p, size_t) FLATBUFFERS_OVERRIDE { delete[] p; }
-
-  static void dealloc(void *p, size_t) { delete[] static_cast<uint8_t *>(p); }
-};
-
 // These functions allow for a null allocator to mean use the default allocator,
 // as used by DetachedBuffer and vector_downward below.
 // This is to avoid having a statically or dynamically allocated default
 // allocator, or having to move it between the classes that may own it.
 inline uint8_t *Allocate(Allocator *allocator, size_t size) {
-  return allocator ? allocator->allocate(size)
-                   : DefaultAllocator().allocate(size);
+  return allocator->allocate(size);
 }
 
 inline void Deallocate(Allocator *allocator, uint8_t *p, size_t size) {
-  if (allocator)
-    allocator->deallocate(p, size);
-  else
-    DefaultAllocator().deallocate(p, size);
+  allocator->deallocate(p, size);
 }
 
 inline uint8_t *ReallocateDownward(Allocator *allocator, uint8_t *old_p,
                                    size_t old_size, size_t new_size,
                                    size_t in_use_back, size_t in_use_front) {
-  return allocator ? allocator->reallocate_downward(old_p, old_size, new_size,
-                                                    in_use_back, in_use_front)
-                   : DefaultAllocator().reallocate_downward(
-                         old_p, old_size, new_size, in_use_back, in_use_front);
+  return allocator->reallocate_downward(old_p, old_size, new_size,
+                                                    in_use_back, in_use_front);
 }
 
 // DetachedBuffer is a finished flatbuffer memory region, detached from its
@@ -915,7 +880,6 @@ class DetachedBuffer {
 
   inline void destroy() {
     if (buf_) Deallocate(allocator_, buf_, reserved_);
-    if (own_allocator_ && allocator_) { delete allocator_; }
     reset();
   }
 
@@ -1009,7 +973,6 @@ class vector_downward {
   void clear_scratch() { scratch_ = buf_; }
 
   void clear_allocator() {
-    if (own_allocator_ && allocator_) { delete allocator_; }
     allocator_ = nullptr;
     own_allocator_ = false;
   }
@@ -1782,28 +1745,6 @@ class FlatBufferBuilder {
     return CreateVectorOfNativeStructs(v, len, Pack);
   }
 
-  // clang-format off
-  #ifndef FLATBUFFERS_CPP98_STL
-  /// @brief Serialize an array of structs into a FlatBuffer `vector`.
-  /// @tparam T The data type of the struct array elements.
-  /// @param[in] filler A function that takes the current iteration 0..vector_size-1
-  /// and a pointer to the struct that must be filled.
-  /// @return Returns a typed `Offset` into the serialized data indicating
-  /// where the vector is stored.
-  /// This is mostly useful when flatbuffers are generated with mutation
-  /// accessors.
-  template<typename T> Offset<Vector<const T *>> CreateVectorOfStructs(
-      size_t vector_size, const std::function<void(size_t i, T *)> &filler) {
-    T* structs = StartVectorOfStructs<T>(vector_size);
-    for (size_t i = 0; i < vector_size; i++) {
-      filler(i, structs);
-      structs++;
-    }
-    return EndVectorOfStructs<T>(vector_size);
-  }
-  #endif
-  // clang-format on
-
   /// @brief Serialize an array of structs into a FlatBuffer `vector`.
   /// @tparam T The data type of the struct array elements.
   /// @param[in] f A function that takes the current iteration 0..vector_size-1,
@@ -1832,39 +1773,6 @@ class FlatBufferBuilder {
   };
   /// @endcond
 
-  /// @brief Serialize an array of structs into a FlatBuffer `vector` in sorted
-  /// order.
-  /// @tparam T The data type of the struct array elements.
-  /// @param[in] v A pointer to the array of type `T` to serialize into the
-  /// buffer as a `vector`.
-  /// @param[in] len The number of elements to serialize.
-  /// @return Returns a typed `Offset` into the serialized data indicating
-  /// where the vector is stored.
-  template<typename T>
-  Offset<Vector<const T *>> CreateVectorOfSortedStructs(T *v, size_t len) {
-    std::sort(v, v + len, StructKeyComparator<T>());
-    return CreateVectorOfStructs(v, len);
-  }
-
-  /// @brief Serialize an array of native structs into a FlatBuffer `vector` in
-  /// sorted order.
-  /// @tparam T The data type of the struct array elements.
-  /// @tparam S The data type of the native struct array elements.
-  /// @param[in] v A pointer to the array of type `S` to serialize into the
-  /// buffer as a `vector`.
-  /// @param[in] len The number of elements to serialize.
-  /// @return Returns a typed `Offset` into the serialized data indicating
-  /// where the vector is stored.
-  template<typename T, typename S>
-  Offset<Vector<const T *>> CreateVectorOfSortedNativeStructs(S *v,
-                                                              size_t len) {
-    extern T Pack(const S &);
-    auto structs = StartVectorOfStructs<T>(len);
-    for (size_t i = 0; i < len; i++) { structs[i] = Pack(v[i]); }
-    std::sort(structs, structs + len, StructKeyComparator<T>());
-    return EndVectorOfStructs<T>(len);
-  }
-
   /// @cond FLATBUFFERS_INTERNAL
   template<typename T> struct TableKeyComparator {
     TableKeyComparator(vector_downward &buf) : buf_(buf) {}
@@ -1881,21 +1789,6 @@ class FlatBufferBuilder {
         TableKeyComparator &operator=(const TableKeyComparator &other));
   };
   /// @endcond
-
-  /// @brief Serialize an array of `table` offsets as a `vector` in the buffer
-  /// in sorted order.
-  /// @tparam T The data type that the offset refers to.
-  /// @param[in] v An array of type `Offset<T>` that contains the `table`
-  /// offsets to store in the buffer in sorted order.
-  /// @param[in] len The number of elements to store in the `vector`.
-  /// @return Returns a typed `Offset` into the serialized data indicating
-  /// where the vector is stored.
-  template<typename T>
-  Offset<Vector<Offset<T>>> CreateVectorOfSortedTables(Offset<T> *v,
-                                                       size_t len) {
-    std::sort(v, v + len, TableKeyComparator<T>(buf_));
-    return CreateVector(v, len);
-  }
 
   /// @brief Specialized version of `CreateVector` for non-copying use cases.
   /// Write the data any time later to the returned buffer pointer `buf`.
@@ -2346,31 +2239,6 @@ class Verifier FLATBUFFERS_FINAL_CLASS {
   bool check_alignment_;
 };
 
-// Convenient way to bundle a buffer and its length, to pass it around
-// typed by its root.
-// A BufferRef does not own its buffer.
-struct BufferRefBase {};  // for std::is_base_of
-template<typename T> struct BufferRef : BufferRefBase {
-  BufferRef() : buf(nullptr), len(0), must_free(false) {}
-  BufferRef(uint8_t *_buf, uoffset_t _len)
-      : buf(_buf), len(_len), must_free(false) {}
-
-  ~BufferRef() {
-    if (must_free) free(buf);
-  }
-
-  const T *GetRoot() const { return flatbuffers::GetRoot<T>(buf); }
-
-  bool Verify() {
-    Verifier verifier(buf, len);
-    return verifier.VerifyBuffer<T>(nullptr);
-  }
-
-  uint8_t *buf;
-  uoffset_t len;
-  bool must_free;
-};
-
 // "structs" are flat structures that do not have an offset table, thus
 // always have all members present and do not support forwards/backwards
 // compatible extensions.
@@ -2607,10 +2475,6 @@ typedef uint64_t hash_value_t;
 #ifdef FLATBUFFERS_CPP98_STL
   typedef void (*resolver_function_t)(void **pointer_adr, hash_value_t hash);
   typedef hash_value_t (*rehasher_function_t)(void *pointer);
-#else
-  typedef std::function<void (void **pointer_adr, hash_value_t hash)>
-          resolver_function_t;
-  typedef std::function<hash_value_t (void *pointer)> rehasher_function_t;
 #endif
 // clang-format on
 
