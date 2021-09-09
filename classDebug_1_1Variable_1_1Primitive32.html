@@ -105,12 +105,16 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a85afbb59be6b2783ef54d4d97860f978"><td class="memItemLeft" align="right" valign="top"><a id="a85afbb59be6b2783ef54d4d97860f978"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Primitive32</b> (const char *name, Access access, float *data, const char *units, const char *help=&quot;&quot;, const char *fmt=&quot;%.3f&quot;)</td></tr>
 <tr class="separator:a85afbb59be6b2783ef54d4d97860f978"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab87635d7d3aa18165d3e2182751d7f5b"><td class="memItemLeft" align="right" valign="top"><a id="ab87635d7d3aa18165d3e2182751d7f5b"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_value</b> () override</td></tr>
-<tr class="separator:ab87635d7d3aa18165d3e2182751d7f5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a602b19490c8838b37d7d46b9972f2892"><td class="memItemLeft" align="right" valign="top"><a id="a602b19490c8838b37d7d46b9972f2892"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_value</b> (uint32_t value) override</td></tr>
-<tr class="separator:a602b19490c8838b37d7d46b9972f2892"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af442517bab9460734804eb84a02fdc3b"><td class="memItemLeft" align="right" valign="top"><a id="af442517bab9460734804eb84a02fdc3b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDebug_1_1Variable_1_1Primitive32.html#af442517bab9460734804eb84a02fdc3b">serialize_value</a> (void *write_buff) override</td></tr>
+<tr class="memdesc:af442517bab9460734804eb84a02fdc3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">should write its value to buffer of sufficient size <br /></td></tr>
+<tr class="separator:af442517bab9460734804eb84a02fdc3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4eb6cfb372fbe6b6dd800a8dea64190"><td class="memItemLeft" align="right" valign="top"><a id="ab4eb6cfb372fbe6b6dd800a8dea64190"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDebug_1_1Variable_1_1Primitive32.html#ab4eb6cfb372fbe6b6dd800a8dea64190">deserialize_value</a> (const void *read_buf) override</td></tr>
+<tr class="memdesc:ab4eb6cfb372fbe6b6dd800a8dea64190"><td class="mdescLeft">&#160;</td><td class="mdescRight">retrieves its own value from buffer <br /></td></tr>
+<tr class="separator:ab4eb6cfb372fbe6b6dd800a8dea64190"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3bf9d4d59e550070907a5e83c60c144"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDebug_1_1Variable_1_1Primitive32.html#ad3bf9d4d59e550070907a5e83c60c144">byte_size</a> () const override</td></tr>
+<tr class="separator:ad3bf9d4d59e550070907a5e83c60c144"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDebug_1_1Variable_1_1Base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDebug_1_1Variable_1_1Base')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDebug_1_1Variable_1_1Base.html">Debug::Variable::Base</a></td></tr>
 <tr class="memitem:a3492f601e777a98f22f18aa251fb4511 inherit pub_methods_classDebug_1_1Variable_1_1Base"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDebug_1_1Variable_1_1Base.html#a3492f601e777a98f22f18aa251fb4511">Base</a> (Type type, const char *name, Access access, const char *units, const char *help, const char *fmt=&quot;&quot;)</td></tr>
 <tr class="separator:a3492f601e777a98f22f18aa251fb4511 inherit pub_methods_classDebug_1_1Variable_1_1Base"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -145,6 +149,35 @@ Access&#160;</td><td class="memItemRight" valign="bottom"><b>access</b> () const
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>write_allowed</b> () const</td></tr>
 <tr class="separator:aeb67461170539a0fee2079e3026076fb inherit pub_methods_classDebug_1_1Variable_1_1Base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ad3bf9d4d59e550070907a5e83c60c144"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3bf9d4d59e550070907a5e83c60c144">&#9670;&nbsp;</a></span>byte_size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t Debug::Variable::Primitive32::byte_size </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>number of bytes occupied by value, so caller can ensure sufficient size of buffer </dd></dl>
+
+<p>Implements <a class="el" href="classDebug_1_1Variable_1_1Base.html#ae20811bc205096530c6ed5849be4f860">Debug::Variable::Base</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>/home/runner/work/Ventilator/Ventilator/software/controller/lib/debugvars/vars.h</li>
 </ul>

@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['read_267',['read',['../classVenturiFlowSensor.html#a2018c81b7ff2eb367a667401c779f84a',1,'VenturiFlowSensor']]],
-  ['register_5fvariable_268',['register_variable',['../classDebug_1_1Variable_1_1Registry.html#a7ac33c383d238bf03464ef9532976439',1,'Debug::Variable::Registry']]]
+  ['find_285',['find',['../classDebug_1_1Variable_1_1Registry.html#ac0cec402a583acce24d639d2f4dc58ba',1,'Debug::Variable::Registry']]],
+  ['flush_286',['flush',['../classDebug_1_1Trace.html#aeed810186bbf2bc6d5c457b25dbf07b9',1,'Debug::Trace']]],
+  ['fullcount_287',['FullCount',['../classCircularBuffer.html#aba3ffb843076ce5383d7fcdf81eab538',1,'CircularBuffer']]]
 ];

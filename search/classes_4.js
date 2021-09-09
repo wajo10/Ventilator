@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['dmactrl_170',['DmaCtrl',['../classDmaCtrl.html',1,'']]],
-  ['dmastruct_171',['DmaStruct',['../structDmaStruct.html',1,'']]],
-  ['duration_172',['Duration',['../classDuration.html',1,'']]]
+  ['dmactrl_185',['DmaCtrl',['../classDmaCtrl.html',1,'']]],
+  ['dmastruct_186',['DmaStruct',['../structDmaStruct.html',1,'']]],
+  ['duration_187',['Duration',['../classDuration.html',1,'']]]
 ];
