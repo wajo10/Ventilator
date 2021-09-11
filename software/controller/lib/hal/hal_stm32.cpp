@@ -42,6 +42,7 @@ Abbreviations [RM], [DS], etc are defined in hal/README.md.
 
 // This is the main stack used in our system.
 __attribute__((aligned(8))) uint32_t system_stack[SYSTEM_STACK_SIZE];
+__attribute__((aligned(8))) uint8_t end;
 
 // local data
 static volatile int64_t ms_count;

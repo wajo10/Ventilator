@@ -376,6 +376,10 @@ template<typename T> class Vector {
     return IndirectHelper<T>::Read(element, 0);
   }
 
+  template<typename K> mutable_return_type MutableLookupByKey(K key) {
+    return const_cast<mutable_return_type>(LookupByKey(key));
+  }
+
  protected:
   // This class is only used to access pre-existing data. Don't ever
   // try to construct these manually.
@@ -1812,7 +1816,8 @@ class FlatBufferBuilder {
   /// buffer as a `vector`.
   /// @return Returns a typed `Offset` into the serialized data indicating
   /// where the vector is stored.
-  template<typename T> Offset<Vector<T>> CreateVector(const std::vector<T> &v) {
+  template<typename T, typename Alloc>
+  Offset<Vector<T>> CreateVector(const std::vector<T, Alloc> &v) {
     return CreateVector(data(v), v.size());
   }
 
@@ -1871,8 +1876,9 @@ class FlatBufferBuilder {
   /// buffer as a `vector`.
   /// @return Returns a typed `Offset` into the serialized data indicating
   /// where the vector is stored.
+  template<typename Alloc>
   Offset<Vector<Offset<String>>> CreateVectorOfStrings(
-      const std::vector<std::string> &v) {
+      const std::vector<std::string, Alloc> &v) {
     return CreateVectorOfStrings(v.cbegin(), v.cend());
   }
 
@@ -2018,9 +2024,9 @@ class FlatBufferBuilder {
   /// to the FlatBuffer struct.
   /// @return Returns a typed `Offset` into the serialized data indicating
   /// where the vector is stored.
-  template<typename T, typename S>
+  template<typename T, typename S, typename Alloc>
   Offset<Vector<const T *>> CreateVectorOfNativeStructs(
-      const std::vector<S> &v, T (*const pack_func)(const S &)) {
+      const std::vector<S, Alloc> &v, T (*const pack_func)(const S &)) {
     return CreateVectorOfNativeStructs<T, S>(data(v), v.size(), pack_func);
   }
 
@@ -2032,9 +2038,9 @@ class FlatBufferBuilder {
   /// serialize into the buffer as a `vector`.
   /// @return Returns a typed `Offset` into the serialized data indicating
   /// where the vector is stored.
-  template<typename T, typename S>
+  template<typename T, typename S, typename Alloc>
   Offset<Vector<const T *>> CreateVectorOfNativeStructs(
-      const std::vector<S> &v) {
+      const std::vector<S, Alloc> &v) {
     return CreateVectorOfNativeStructs<T, S>(data(v), v.size());
   }
 
@@ -2053,8 +2059,9 @@ class FlatBufferBuilder {
   /// serialize into the buffer as a `vector`.
   /// @return Returns a typed `Offset` into the serialized data indicating
   /// where the vector is stored.
-  template<typename T>
-  Offset<Vector<const T *>> CreateVectorOfSortedStructs(std::vector<T> *v) {
+  template<typename T, typename Alloc>
+  Offset<Vector<const T *>> CreateVectorOfSortedStructs(
+      std::vector<T, Alloc> *v) {
     return CreateVectorOfSortedStructs(data(*v), v->size());
   }
 
@@ -2066,9 +2073,9 @@ class FlatBufferBuilder {
   /// serialize into the buffer as a `vector`.
   /// @return Returns a typed `Offset` into the serialized data indicating
   /// where the vector is stored.
-  template<typename T, typename S>
+  template<typename T, typename S, typename Alloc>
   Offset<Vector<const T *>> CreateVectorOfSortedNativeStructs(
-      std::vector<S> *v) {
+      std::vector<S, Alloc> *v) {
     return CreateVectorOfSortedNativeStructs<T, S>(data(*v), v->size());
   }
 
@@ -2144,9 +2151,9 @@ class FlatBufferBuilder {
   /// offsets to store in the buffer in sorted order.
   /// @return Returns a typed `Offset` into the serialized data indicating
   /// where the vector is stored.
-  template<typename T>
+  template<typename T, typename Alloc>
   Offset<Vector<Offset<T>>> CreateVectorOfSortedTables(
-      std::vector<Offset<T>> *v) {
+      std::vector<Offset<T>, Alloc> *v) {
     return CreateVectorOfSortedTables(data(*v), v->size());
   }
 
@@ -2325,6 +2332,11 @@ template<typename T> T *GetMutableRoot(void *buf) {
   return reinterpret_cast<T *>(
       reinterpret_cast<uint8_t *>(buf) +
       EndianScalar(*reinterpret_cast<uoffset_t *>(buf)));
+}
+
+template<typename T> T *GetMutableSizePrefixedRoot(void *buf) {
+  return GetMutableRoot<T>(reinterpret_cast<uint8_t *>(buf) +
+                           sizeof(uoffset_t));
 }
 
 template<typename T> const T *GetRoot(const void *buf) {

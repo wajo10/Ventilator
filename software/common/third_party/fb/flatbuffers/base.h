@@ -32,7 +32,11 @@
 #include <cstdlib>
 #include <cstring>
 
-#include <utility>
+#if defined(ARDUINO) && !defined(ARDUINOSTL_M_H)
+  #include <utility.h>
+#else
+  #include <utility>
+#endif
 
 #include <string>
 #include <type_traits>
@@ -245,7 +249,7 @@ namespace flatbuffers {
 
 #ifndef FLATBUFFERS_GENERAL_HEAP_ALLOC_OK
   // Allow heap allocations to be used
-  #define FLATBUFFERS_GENERAL_HEAP_ALLOC_OK 1
+  #define FLATBUFFERS_GENERAL_HEAP_ALLOC_OK 0
 #endif // !FLATBUFFERS_GENERAL_HEAP_ALLOC_OK
 
 #ifndef FLATBUFFERS_HAS_NEW_STRTOD

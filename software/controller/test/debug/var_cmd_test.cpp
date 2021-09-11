@@ -53,10 +53,10 @@ TEST(VarHandler, GetVarInfo) {
 
   const DebugFB::GetVarInfoResponse *res =
       flatbuffers::GetRoot<DebugFB::GetVarInfoResponse>(response.data());
-  EXPECT_EQ(res->name()->str(), name);
-  EXPECT_EQ(res->help()->str(), help);
-  EXPECT_EQ(res->fmt()->str(), format);
-  EXPECT_EQ(res->unit()->str(), unit);
+  EXPECT_EQ(res->name()->c_str(), name);
+  EXPECT_EQ(res->help()->c_str(), help);
+  EXPECT_EQ(res->fmt()->c_str(), format);
+  EXPECT_EQ(res->unit()->c_str(), unit);
 }
 
 TEST(VarHandler, GetVar) {

@@ -17,10 +17,18 @@ env.Append(
         # Disable rtti per this guide to disabling exceptions in embedded C++:
         # http://elegantinvention.com/blog/information/smaller-binary-size-with-c-on-baremetal-g/
         "-fno-rtti",
+        "-fno-use-cxa-atexit",
     ]
 )
 
 # These link flags tell the linker that the processor we're using has
 # hardware floating point, so the software floating point libraries aren't
 # needed.
-env.Append(LINKFLAGS=["-mfpu=fpv4-sp-d16", "-mfloat-abi=hard", "-nostartfiles"])
+env.Append(
+    LINKFLAGS=[
+        "-mfpu=fpv4-sp-d16",
+        "-mfloat-abi=hard",
+        "-nostartfiles",
+        "-specs=nosys.specs",
+    ]
+)
