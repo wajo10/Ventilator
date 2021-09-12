@@ -53,8 +53,8 @@ fi
 git pull
 
 ### Update desktop shortcuts
-yes | cp -rf software/utils/rpi_config/Github /home/pi/Desktop
-yes | cp -rf software/utils/rpi_config/*.desktop /home/pi/Desktop
+yes | cp -rf utils/rpi_config/Github /home/pi/Desktop
+yes | cp -rf utils/rpi_config/*.desktop /home/pi/Desktop
 
 ### Update controller and deploy
 ./controller/controller.sh clean
