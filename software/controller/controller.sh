@@ -68,6 +68,7 @@ Utility script for the RespiraWorks Ventilator controller.
 The following options are available:
   install   Installs platformio and configures udev rules for deployment
                 [-f] - force installation, even with root privileges (for CI only)
+  update    Updates platformio and required libraries
   check     Runs static checks only
   clean     Clean build directories
   debug     Run debugger CLI (Python utility) to communicate with controller remotely
@@ -114,6 +115,16 @@ configure_platformio() {
     echo "Updated udev rules. You might have to restart your machine for changes to become effective."
 
     exit $EXIT_SUCCESS
+}
+
+update_platformio() {
+  pio upgrade
+  pio update
+  pio system prune
+  pio platform install native
+  pio platform install ststm32
+
+  exit $EXIT_SUCCESS
 }
 
 run_checks() {
@@ -202,6 +213,17 @@ elif [ "$1" == "install" ]; then
   fi
 
   configure_platformio
+
+##########
+# UPDATE #
+##########
+elif [ "$1" == "update" ]; then
+  if [ "$EUID" -eq 0 ] && [ "$2" != "-f" ]; then
+    echo "Please do not run update with root privileges!"
+    exit $EXIT_SUCCESS
+  fi
+
+  update_platformio
 
 #########
 # CLEAN #
