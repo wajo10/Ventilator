@@ -86,8 +86,8 @@ static constexpr float VelIntSpeedReg = TickTime * (1 << 26);
 static constexpr int MicrostepPerStep = 128;
 
 // These functions raise and lower the chip select pin
-inline void CSHigh() { GpioSetPin(GpioBBase, 6); }
-inline void CSLow() { GpioClrPin(GpioBBase, 6); }
+inline void CSHigh() { GpioSetPin(GpioBBase, 15); }
+inline void CSLow() { GpioClrPin(GpioBBase, 15); }
 
 StepMtrErr StepMotor::SetParam(StepMtrParam param, uint32_t value) {
   uint8_t p = static_cast<uint8_t>(param);
@@ -170,24 +170,26 @@ void HalApi::StepperMotorInit() {
   //   PA5 - SCLK
   //   PA6 - MISO
   //   PA7 - MOSI
-  //   PB6 - CS
+  //   PB15 - CS
   //
   // Some additional pins I don't really care about, but
   // are connected to the stepper developer's board
   // For the most part I can just ignore these
-  //   PA9  - Reset input.
-  //   PA10 - flag open drain output
-  //   PB4  - busy open drain output
-  //   PC10 - STCK input
+  //   PB11  - Reset input.
+  //   PB2 - flag open drain output
+  //   PB12  - busy1 open drain output
+  //   PB13  - busy2 open drain output
+  //   PB0 - STCK1 input
+  //   PB1 - STCK2 input
 
   // Configure the CS and reset pins as outputs.
   // pulled high.  I don't really use the reset pin,
   // I just want it to be high so I don't reset the
   // part inadvertently
   CSHigh();
-  GpioSetPin(GpioABase, 9);
-  GpioPinMode(GpioBBase, 6, GPIOPinMode::Output);
-  GpioPinMode(GpioABase, 9, GPIOPinMode::Output);
+  GpioSetPin(GpioBBase, 11);
+  GpioPinMode(GpioBBase, 15, GPIOPinMode::Output);
+  GpioPinMode(GpioBBase, 11, GPIOPinMode::Output);
 
   // Assign the three SPI pins to the SPI peripheral
   GpioPinAltFunc(GpioABase, 5, 5);

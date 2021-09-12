@@ -72,7 +72,7 @@ Reference abbreviations ([RM], [PCB], etc) are defined in hal/README.md
 static constexpr float SampleHistoryTimeSec = 0.001f;
 
 // Total number of A/D inputs we're sampling
-static constexpr int AdcChannels = 5;
+static constexpr int AdcChannels = 4;
 
 // Resolution of the ADC channels (in bits).
 // We are using the default value (which is also the highest possible one - see [RM] 16.4.22).
@@ -158,11 +158,20 @@ void HalApi::InitADC() {
   EnableClock(AdcBase);
 
   // Configure the 5 pins used as analog inputs
-  GpioPinMode(GpioCBase, 0, GPIOPinMode::Analog);  // PC0 (ADC1_IN1)  interim board: analog pressure
-  GpioPinMode(GpioABase, 1, GPIOPinMode::Analog);  // PA1 (ADC1_IN6)  U3 patient pressure
-  GpioPinMode(GpioABase, 4, GPIOPinMode::Analog);  // PA4 (ADC1_IN9)  U4 inhale flow
-  GpioPinMode(GpioBBase, 0, GPIOPinMode::Analog);  // PB0 (ADC1_IN15) U5 exhale flow
-  GpioPinMode(GpioCBase, 1, GPIOPinMode::Analog);  // PC3 (ADC1_IN2)  interim board: oxygen sensor
+  // GpioPinMode(GpioCBase, 0, GPIOPinMode::Analog);  // PC0 (ADC1_IN1)  interim board: analog
+  // pressure GpioPinMode(GpioABase, 1, GPIOPinMode::Analog);  // PA1 (ADC1_IN6)  U3 patient
+  // pressure GpioPinMode(GpioABase, 4, GPIOPinMode::Analog);  // PA4 (ADC1_IN9)  U4 inhale flow
+  // GpioPinMode(GpioBBase, 0, GPIOPinMode::Analog);  // PB0 (ADC1_IN15) U5 exhale flow
+  // GpioPinMode(GpioCBase, 1, GPIOPinMode::Analog);  // PC3 (ADC1_IN2)  interim board: oxygen
+  // sensor
+  // Configure the 7 pins used as analog inputs
+  GpioPinMode(GpioCBase, 0, GPIOPinMode::Analog);  // PC0 (ADCx_IN1)  FiO2- Oxygen-FiO2
+  GpioPinMode(GpioCBase, 1, GPIOPinMode::Analog);  // PC1 (ADCx_IN2)  PATIENT_PRESSURE
+  //    GpioPinMode(GpioCBase, 2, GPIOPinMode::Analog);  // PC2 (ADCx_IN3)  MIX_TANK_PRESSURE
+  GpioPinMode(GpioCBase, 3, GPIOPinMode::Analog);  // PC3 (ADCx_IN4)  O2_PRESSURE
+  GpioPinMode(GpioCBase, 4, GPIOPinMode::Analog);  // PC4 (ADCx_IN13) EXHALE_FLOW
+  //    GpioPinMode(GpioCBase, 5, GPIOPinMode::Analog);  // PC5 (ADCx_IN14) O2_FLOW
+  GpioPinMode(GpioABase, 1, GPIOPinMode::Analog);  // PA1 (ADCx_IN6)  Inf_Flow
 
   // Perform a power-up and calibration sequence on the A/D converter
   AdcReg *adc = AdcBase;
@@ -222,19 +231,23 @@ void HalApi::InitADC() {
 
   // Set sample times ([RM] 16.4.12).
   adc->adc[0].sample_times.ch1 = static_cast<uint32_t>(AdcSampleTime);
-  adc->adc[0].sample_times.ch6 = static_cast<uint32_t>(AdcSampleTime);
-  adc->adc[0].sample_times.ch9 = static_cast<uint32_t>(AdcSampleTime);
-  adc->adc[0].sample_times.ch15 = static_cast<uint32_t>(AdcSampleTime);
   adc->adc[0].sample_times.ch2 = static_cast<uint32_t>(AdcSampleTime);
+  // adc->adc[0].sample_times.ch3 = static_cast<uint32_t>(AdcSampleTime);
+  adc->adc[0].sample_times.ch4 = static_cast<uint32_t>(AdcSampleTime);
+  adc->adc[0].sample_times.ch13 = static_cast<uint32_t>(AdcSampleTime);
+  // adc->adc[0].sample_times.ch14 = static_cast<uint32_t>(AdcSampleTime);
+  adc->adc[0].sample_times.ch6 = static_cast<uint32_t>(AdcSampleTime);
 
   // Set conversion sequence length (number of used channels - 1, per [RM] p468)
   adc->adc[0].sequence.length = AdcChannels - 1;
 
-  adc->adc[0].sequence.sequence1 = 1;   // PC0 (ADC1_IN1)  interim board: analog pressure
-  adc->adc[0].sequence.sequence2 = 6;   // PA1 (ADC1_IN6)  U3 patient pressure
-  adc->adc[0].sequence.sequence3 = 9;   // PA4 (ADC1_IN9)  U4 inhale flow
-  adc->adc[0].sequence.sequence4 = 15;  // PB0 (ADC1_IN15) U5 exhale flow
-  adc->adc[0].sequence.sequence5 = 2;   // PC3 (ADC1_IN2)  interim board: oxygen sensor
+  adc->adc[0].sequence.sequence1 = 1;  // PC0 (ADCx_IN1)  FiO2- Oxygen-FiO2
+  adc->adc[0].sequence.sequence2 = 2;  // PC1 (ADCx_IN2)  PATIENT_PRESSURE
+  // adc->adc[0].sequence.sequence3 = 3;   // PC2 (ADCx_IN3)  MIX_TANK_PRESSURE
+  adc->adc[0].sequence.sequence4 = 4;   // PC3 (ADCx_IN4)  O2_PRESSURE
+  adc->adc[0].sequence.sequence5 = 13;  // PC4 (ADCx_IN13) EXHALE_FLOW
+  // adc->adc[0].sequence.sequence5 = 14;  // PC5 (ADCx_IN14) O2_FLOW
+  adc->adc[0].sequence.sequence5 = 6;  // PA1 (ADCx_IN6)  Inf_Flow
 
   // I use DMA1 channel 1 to copy A/D readings into the buffer ([RM] 11.4.4)
   EnableClock(Dma1Base);
@@ -266,16 +279,20 @@ void HalApi::InitADC() {
 Voltage HalApi::AnalogRead(AnalogPin pin) {
   int offset = [&] {
     switch (pin) {
-      case AnalogPin::InterimBoardAnalogPressure:
+      case AnalogPin::InterimBoardOxygenSensor:
         return 0;
       case AnalogPin::U3PatientPressure:
         return 1;
-      case AnalogPin::U4InhaleFlow:
-        return 2;
+        //     case AnalogPin::MIXTANKPRESSURE:
+        //       return 2;
+      case AnalogPin::InterimBoardAnalogPressure:
+        //       return 3;
       case AnalogPin::U5ExhaleFlow:
-        return 3;
-      case AnalogPin::InterimBoardOxygenSensor:
         return 4;
+        //      case AnalogPin::O2FLOW  :
+        //        return 5;
+      case AnalogPin::U4InhaleFlow:
+        return 6;
     }
     // All cases covered above (and GCC checks this).
     __builtin_unreachable();

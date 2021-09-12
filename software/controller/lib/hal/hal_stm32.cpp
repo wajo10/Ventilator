@@ -199,15 +199,15 @@ void HalApi::Init() {
  * pin is used for which function.  A less definitive, but perhaps
  * easier to read version is available in [PCBsp]
  *
- * ID inputs.  These can be used to identify the PCB revision
+ * ID inputs.  No ID's IN Rev A PCB revision
  * we're running on.
  *  PB1  - ID0
  *  PA12 - ID1
  *
  * LED outputs.
- *  PC13 - red
- *  PC14 - yellow
- *  PC15 - green
+ *  PC8 - red
+ *  PC9 - yellow
+ *  PA8 - green
  *****************************************************************/
 void HalApi::InitGpio() {
   // See [RM] chapter 8 for details on GPIO
@@ -221,18 +221,18 @@ void HalApi::InitGpio() {
   EnableClock(GpioHBase);
 
   // Configure PCB ID pins as inputs.
-  GpioPinMode(GpioBBase, 1, GPIOPinMode::Input);
-  GpioPinMode(GpioABase, 12, GPIOPinMode::Input);
+  // GpioPinMode(GpioBBase, 1, GPIOPinMode::Input); // No ID's For Rev A Board
+  // GpioPinMode(GpioABase, 12, GPIOPinMode::Input);
 
   // Configure LED pins as outputs
-  GpioPinMode(GpioCBase, 13, GPIOPinMode::Output);
-  GpioPinMode(GpioCBase, 14, GPIOPinMode::Output);
-  GpioPinMode(GpioCBase, 15, GPIOPinMode::Output);
+  GpioPinMode(GpioCBase, 8, GPIOPinMode::Output);
+  GpioPinMode(GpioCBase, 9, GPIOPinMode::Output);
+  GpioPinMode(GpioABase, 8, GPIOPinMode::Output);
 
   // Turn all three LEDs off initially
-  GpioClrPin(GpioCBase, 13);
-  GpioClrPin(GpioCBase, 14);
-  GpioClrPin(GpioCBase, 15);
+  GpioClrPin(GpioCBase, 8);
+  GpioClrPin(GpioCBase, 9);
+  GpioClrPin(GpioABase, 8);
 }
 
 // Set or clear the specified digital output
@@ -240,11 +240,11 @@ void HalApi::DigitalWrite(BinaryPin pin, VoltageLevel value) {
   auto [base, bit] = [&]() -> std::pair<GpioReg *, int> {
     switch (pin) {
       case BinaryPin::RedLED:
-        return {GpioCBase, 13};
+        return {GpioCBase, 8};
       case BinaryPin::YellowLED:
-        return {GpioCBase, 14};
+        return {GpioCBase, 9};
       case BinaryPin::GreenLED:
-        return {GpioCBase, 15};
+        return {GpioABase, 8};
     }
     // All cases covered above (and GCC checks this).
     __builtin_unreachable();
@@ -432,12 +432,13 @@ void HalApi::InitPwmOut() {
   // part in 4000 (80000000/20000) or about 12 bits.
   static constexpr int PwmFreqHz = 20000;
 
-  EnableClock(Timer2Base);
+  EnableClock(Timer3Base);
 
-  // Connect PB3 to timer 2
-  GpioPinAltFunc(GpioBBase, 3, 1);
+  // Connect PC6 to timer 3
 
-  TimerReg *tmr = Timer2Base;
+  GpioPinAltFunc(GpioCBase, 6, 1);
+
+  TimerReg *tmr = Timer3Base;
 
   // Set the frequency
   tmr->auto_reload = (CPU_FREQ / PwmFreqHz) - 1;
@@ -467,7 +468,7 @@ void HalApi::AnalogWrite(PwmPin pin, float duty) {
   auto [tmr, chan] = [&]() -> std::pair<TimerReg *, int> {
     switch (pin) {
       case PwmPin::Blower:
-        return {Timer2Base, 1};
+        return {Timer3Base, 1};
     }
     // All cases covered above (and GCC checks this).
     __builtin_unreachable();
@@ -586,10 +587,10 @@ static UART debug_uart(Uart2Base);
 extern UartDma dma_uart;
 #endif
 // The UART that talks to the rPi uses the following pins:
-//    PB10 - TX
-//    PB11 - RX
-//    PB13 - RTS
-//    PB14 - CTS
+//    PA9 - TX
+//    PA10 - RX
+//    PA12 - RTS
+//    PA11 - CTS
 //
 // The Nucleo board also includes a secondary serial port that's
 // indirectly connected to its USB connector.  This port is
@@ -614,10 +615,10 @@ void HalApi::InitUARTs() {
   GpioPinAltFunc(GpioABase, 2, 7);
   GpioPinAltFunc(GpioABase, 3, 7);
 
-  GpioPinAltFunc(GpioBBase, 10, 7);
-  GpioPinAltFunc(GpioBBase, 11, 7);
-  GpioPinAltFunc(GpioBBase, 13, 7);
-  GpioPinAltFunc(GpioBBase, 14, 7);
+  GpioPinAltFunc(GpioABase, 9, 7);
+  GpioPinAltFunc(GpioABase, 10, 7);
+  GpioPinAltFunc(GpioABase, 12, 7);
+  GpioPinAltFunc(GpioABase, 11, 7);
 
 #ifdef UART_VIA_DMA
   dma_uart.Init(115200);

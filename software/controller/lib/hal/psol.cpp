@@ -57,14 +57,14 @@ void HalApi::InitPSOL() {
   // that there won't be any audible noise from the switching
   static constexpr int PwmFreq = 5000;
 
-  EnableClock(Timer1Base);
+  EnableClock(Timer2Base);
 
-  // Connect PA11 to timer 1
+  // Connect PB10 to timer 2
   // [DS] table 17 shows which functions can be connected to each pin.
-  // For PA11 we select function 1 to connect it to timer 1.
-  GpioPinAltFunc(GpioABase, 11, 1);
+  // For PA11 we select function 3 to connect it to timer 2.
+  GpioPinAltFunc(GpioBBase, 10, 3);
 
-  TimerReg *tmr = Timer1Base;
+  TimerReg *tmr = Timer2Base;
 
   // Set the frequency
   tmr->auto_reload = (CPU_FREQ / PwmFreq) - 1;
@@ -99,7 +99,7 @@ void HalApi::InitPSOL() {
 // Set the PSOL output level to a value from 0 (fully closed)
 // to 1 (fully open)
 void HalApi::PSolValue(float val) {
-  TimerReg *tmr = Timer1Base;
+  TimerReg *tmr = Timer2Base;
 
   val = std::clamp(val, 0.0f, 1.0f);
 

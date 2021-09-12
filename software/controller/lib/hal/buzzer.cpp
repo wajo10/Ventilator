@@ -34,15 +34,15 @@ limitations under the License.
 void HalApi::InitBuzzer() {
   static constexpr int BuzzerFreqHz = 2400;
 
-  EnableClock(Timer3Base);
+  EnableClock(Timer1Base);
 
-  // Connect PB4 to timer 3
+  // Connect PB14 to timer 1
   // The STM32 datasheet has a table (table 17) which shows
   // which functions can be connected to each pin.  For
-  // PB4 we select function 2 to connect it to timer 3.
-  GpioPinAltFunc(GpioBBase, 4, 2);
+  // PB14 we select function 2 to connect it to timer 1.
+  GpioPinAltFunc(GpioBBase, 14, 2);
 
-  TimerReg *tmr = Timer3Base;
+  TimerReg *tmr = Timer1Base;
 
   // Set the frequency
   tmr->auto_reload = (CPU_FREQ / BuzzerFreqHz) - 1;
@@ -71,13 +71,13 @@ void HalApi::InitBuzzer() {
 }
 
 void HalApi::BuzzerOff() {
-  TimerReg *tmr = Timer3Base;
+  TimerReg *tmr = Timer1Base;
   tmr->capture_compare[0] = 0;
 }
 
 // Set the buzzer on with the specified volume (0 to 1)
 void HalApi::BuzzerOn(float volume) {
-  TimerReg *tmr = Timer3Base;
+  TimerReg *tmr = Timer1Base;
 
   volume = std::clamp(volume, 0.0f, 1.0f);
 
