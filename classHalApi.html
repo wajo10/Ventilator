@@ -63,32 +63,31 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classHalApi-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">HalApi Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+<div class="dynheader">
+Collaboration diagram for HalApi:</div>
+<div class="dyncontent">
+<div class="center"><img src="classHalApi__coll__graph.png" border="0" usemap="#HalApi_coll__map" alt="Collaboration graph"/></div>
+<map name="HalApi_coll__map" id="HalApi_coll__map">
+<area shape="rect" title=" " alt="" coords="185,95,251,121"/>
+<area shape="rect" href="classPSOL.html" title="\TODO: generalize to be instantiable (dbg var prefixes, etc..)" alt="" coords="5,5,60,32"/>
+<area shape="rect" href="classPWM.html" title="\TODO: make this an explicit singleton?" alt="" coords="84,5,139,32"/>
+<area shape="rect" href="classLEDIndicators.html" title=" " alt="" coords="163,5,273,32"/>
+<area shape="rect" href="classBuzzer.html" title=" " alt="" coords="298,5,365,32"/>
+<area shape="rect" href="classADC.html" title="\TODO: could be explicit singleton?" alt="" coords="389,5,439,32"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aefe060c27e9e382bcf751a3e57f90817"><td class="memItemLeft" align="right" valign="top"><a id="aefe060c27e9e382bcf751a3e57f90817"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>Init</b> ()</td></tr>
 <tr class="separator:aefe060c27e9e382bcf751a3e57f90817"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a489e235f721c9c524472aeb68308bbc9"><td class="memItemLeft" align="right" valign="top"><a id="a489e235f721c9c524472aeb68308bbc9"></a>
-<a class="el" href="classTime.html">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Now</b> ()</td></tr>
-<tr class="separator:a489e235f721c9c524472aeb68308bbc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97e5dd6f17fe6fb7a07d9c59d6d961b3"><td class="memItemLeft" align="right" valign="top"><a id="a97e5dd6f17fe6fb7a07d9c59d6d961b3"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>Delay</b> (<a class="el" href="classDuration.html">Duration</a> d)</td></tr>
-<tr class="separator:a97e5dd6f17fe6fb7a07d9c59d6d961b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4845fde0d62860eca52d975b0655b878"><td class="memItemLeft" align="right" valign="top"><a id="a4845fde0d62860eca52d975b0655b878"></a>
-<a class="el" href="classVoltage.html">Voltage</a>&#160;</td><td class="memItemRight" valign="bottom"><b>AnalogRead</b> (AnalogPin pin) const</td></tr>
-<tr class="separator:a4845fde0d62860eca52d975b0655b878"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab998508039bfbd032d09f734a13272d3"><td class="memItemLeft" align="right" valign="top"><a id="ab998508039bfbd032d09f734a13272d3"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>AnalogWrite</b> (PwmPin pin, float duty)</td></tr>
-<tr class="separator:ab998508039bfbd032d09f734a13272d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9fedfbbd8f203a9fea5aea6398b36dd2"><td class="memItemLeft" align="right" valign="top"><a id="a9fedfbbd8f203a9fea5aea6398b36dd2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>DigitalWrite</b> (BinaryPin binary_pin, VoltageLevel value)</td></tr>
-<tr class="separator:a9fedfbbd8f203a9fea5aea6398b36dd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2fd64a0cd24711573781a960e13cdec9"><td class="memItemLeft" align="right" valign="top"><a id="a2fd64a0cd24711573781a960e13cdec9"></a>
 uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>SerialRead</b> (char *buf, uint16_t len)</td></tr>
 <tr class="separator:a2fd64a0cd24711573781a960e13cdec9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -116,33 +115,6 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>DebugBytesAvailab
 <tr class="memitem:acbc489e373d3badfa97df156c489e575"><td class="memItemLeft" align="right" valign="top"><a id="acbc489e373d3badfa97df156c489e575"></a>
 uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>DebugBytesAvailableForRead</b> ()</td></tr>
 <tr class="separator:acbc489e373d3badfa97df156c489e575"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac407da6d833363987d47f9bb6212408b"><td class="memItemLeft" align="right" valign="top"><a id="ac407da6d833363987d47f9bb6212408b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>BuzzerOn</b> (float volume=1.0f)</td></tr>
-<tr class="separator:ac407da6d833363987d47f9bb6212408b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad20dd8f0df8d0a3c32e23ddb7e3ebfd1"><td class="memItemLeft" align="right" valign="top"><a id="ad20dd8f0df8d0a3c32e23ddb7e3ebfd1"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>BuzzerOff</b> ()</td></tr>
-<tr class="separator:ad20dd8f0df8d0a3c32e23ddb7e3ebfd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a901a83457fee44f1eaf21fb686cf62e0"><td class="memItemLeft" align="right" valign="top"><a id="a901a83457fee44f1eaf21fb686cf62e0"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>InitPSOL</b> ()</td></tr>
-<tr class="separator:a901a83457fee44f1eaf21fb686cf62e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21042f0ea26dd5bc82d19d0712c348f4"><td class="memItemLeft" align="right" valign="top"><a id="a21042f0ea26dd5bc82d19d0712c348f4"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>PSolValue</b> (float val)</td></tr>
-<tr class="separator:a21042f0ea26dd5bc82d19d0712c348f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0194c94fc21111631db2ead111319e0e"><td class="memItemLeft" align="right" valign="top"><a id="a0194c94fc21111631db2ead111319e0e"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>FlashErasePage</b> (uint32_t address)</td></tr>
-<tr class="separator:a0194c94fc21111631db2ead111319e0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a231dcf30fb53ac585a93f6fb648f26bd"><td class="memItemLeft" align="right" valign="top"><a id="a231dcf30fb53ac585a93f6fb648f26bd"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>FlashWrite</b> (uint32_t addr, void *data, size_t ct)</td></tr>
-<tr class="separator:a231dcf30fb53ac585a93f6fb648f26bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06c8fe9aaec46100b3a9f19daecbcf7d"><td class="memItemLeft" align="right" valign="top"><a id="a06c8fe9aaec46100b3a9f19daecbcf7d"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>RawPin</b> (PwmPin pin)</td></tr>
-<tr class="separator:a06c8fe9aaec46100b3a9f19daecbcf7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96d442726570c55337c658d0ab0b78e4"><td class="memItemLeft" align="right" valign="top"><a id="a96d442726570c55337c658d0ab0b78e4"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>RawPin</b> (AnalogPin pin)</td></tr>
-<tr class="separator:a96d442726570c55337c658d0ab0b78e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad690644fe05b0f022144431fb00fccde"><td class="memItemLeft" align="right" valign="top"><a id="ad690644fe05b0f022144431fb00fccde"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>RawPin</b> (BinaryPin pin)</td></tr>
-<tr class="separator:ad690644fe05b0f022144431fb00fccde"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93ebfe96e6e5a2c1507b8d7f017cbbd3"><td class="memItemLeft" align="right" valign="top"><a id="a93ebfe96e6e5a2c1507b8d7f017cbbd3"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>EarlyInit</b> ()</td></tr>
 <tr class="separator:a93ebfe96e6e5a2c1507b8d7f017cbbd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -152,21 +124,43 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>ResetDevice</b> ()</t
 <tr class="memitem:a54867655aca356c6a345bd99bbc28e18"><td class="memItemLeft" align="right" valign="top"><a id="a54867655aca356c6a345bd99bbc28e18"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>StartLoopTimer</b> (const <a class="el" href="classDuration.html">Duration</a> &amp;period, void(*callback)(void *), void *arg)</td></tr>
 <tr class="separator:a54867655aca356c6a345bd99bbc28e18"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa52c9997f8002eb848056dd1020972b7"><td class="memItemLeft" align="right" valign="top"><a id="aa52c9997f8002eb848056dd1020972b7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>WatchdogHandler</b> ()</td></tr>
-<tr class="separator:aa52c9997f8002eb848056dd1020972b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68a5c7b77e3b19173bd11b6b0eea6f7f"><td class="memItemLeft" align="right" valign="top"><a id="a68a5c7b77e3b19173bd11b6b0eea6f7f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>DisableInterrupts</b> ()</td></tr>
-<tr class="separator:a68a5c7b77e3b19173bd11b6b0eea6f7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad1ec7bb1d8c5f6fa62c6c88fe68de4da"><td class="memItemLeft" align="right" valign="top"><a id="ad1ec7bb1d8c5f6fa62c6c88fe68de4da"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>EnableInterrupts</b> ()</td></tr>
-<tr class="separator:ad1ec7bb1d8c5f6fa62c6c88fe68de4da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abfbf3d615aa6ab03a9e18d46d5254ed5"><td class="memItemLeft" align="right" valign="top"><a id="abfbf3d615aa6ab03a9e18d46d5254ed5"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>InterruptsEnabled</b> () const</td></tr>
-<tr class="separator:abfbf3d615aa6ab03a9e18d46d5254ed5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6eccc2e414783c75f035c62ed5a951c8"><td class="memItemLeft" align="right" valign="top"><a id="a6eccc2e414783c75f035c62ed5a951c8"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>InInterruptHandler</b> ()</td></tr>
-<tr class="separator:a6eccc2e414783c75f035c62ed5a951c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac247be4ab8b1223d56d2d84530ef7db6"><td class="memItemLeft" align="right" valign="top"><a id="ac247be4ab8b1223d56d2d84530ef7db6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>init_PCB_ID_pins</b> ()</td></tr>
+<tr class="separator:ac247be4ab8b1223d56d2d84530ef7db6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ff9fd362707d289c8b537b8d79a6528"><td class="memItemLeft" align="right" valign="top"><a id="a9ff9fd362707d289c8b537b8d79a6528"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>InitUARTs</b> ()</td></tr>
+<tr class="separator:a9ff9fd362707d289c8b537b8d79a6528"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1dc643b2f2ba9f25281b5f938e40cf78"><td class="memItemLeft" align="right" valign="top"><a id="a1dc643b2f2ba9f25281b5f938e40cf78"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>TESTSerialGetOutgoingData</b> (char *data, uint16_t len)</td></tr>
+<tr class="separator:a1dc643b2f2ba9f25281b5f938e40cf78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2670653be481795323180a00cdc06e0a"><td class="memItemLeft" align="right" valign="top"><a id="a2670653be481795323180a00cdc06e0a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>TESTSerialPutIncomingData</b> (const char *data, uint16_t len)</td></tr>
+<tr class="separator:a2670653be481795323180a00cdc06e0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a351d05508005b45571d3c163fafdef6f"><td class="memItemLeft" align="right" valign="top"><a id="a351d05508005b45571d3c163fafdef6f"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>TESTDebugGetOutgoingData</b> (char *data, uint16_t len)</td></tr>
+<tr class="separator:a351d05508005b45571d3c163fafdef6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a373a1030d827993da8f1449de598b3a9"><td class="memItemLeft" align="right" valign="top"><a id="a373a1030d827993da8f1449de598b3a9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>TESTDebugPutIncomingData</b> (const char *data, uint16_t len)</td></tr>
+<tr class="separator:a373a1030d827993da8f1449de598b3a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a191ed6740c91d57c0a54acbe56b33a5d"><td class="memItemLeft" align="right" valign="top"><a id="a191ed6740c91d57c0a54acbe56b33a5d"></a>
+<a class="el" href="classADC.html">ADC</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHalApi.html#a191ed6740c91d57c0a54acbe56b33a5d">adc</a></td></tr>
+<tr class="memdesc:a191ed6740c91d57c0a54acbe56b33a5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">\TODO: likely these should not even be members <br /></td></tr>
+<tr class="separator:a191ed6740c91d57c0a54acbe56b33a5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4f769a666faecf062d9f80a783fd2fc"><td class="memItemLeft" align="right" valign="top"><a id="ab4f769a666faecf062d9f80a783fd2fc"></a>
+<a class="el" href="classBuzzer.html">Buzzer</a>&#160;</td><td class="memItemRight" valign="bottom"><b>buzzer</b></td></tr>
+<tr class="separator:ab4f769a666faecf062d9f80a783fd2fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec591d54194ba1746e25065cfa7bca90"><td class="memItemLeft" align="right" valign="top"><a id="aec591d54194ba1746e25065cfa7bca90"></a>
+<a class="el" href="classPSOL.html">PSOL</a>&#160;</td><td class="memItemRight" valign="bottom"><b>psol</b></td></tr>
+<tr class="separator:aec591d54194ba1746e25065cfa7bca90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae94b395baaf77419bc06b64b559c025"><td class="memItemLeft" align="right" valign="top"><a id="aae94b395baaf77419bc06b64b559c025"></a>
+<a class="el" href="classLEDIndicators.html">LEDIndicators</a>&#160;</td><td class="memItemRight" valign="bottom"><b>LEDs</b></td></tr>
+<tr class="separator:aae94b395baaf77419bc06b64b559c025"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6564c3cd898729f71fde805cf59cfcf"><td class="memItemLeft" align="right" valign="top"><a id="af6564c3cd898729f71fde805cf59cfcf"></a>
+<a class="el" href="classPWM.html">PWM</a>&#160;</td><td class="memItemRight" valign="bottom"><b>pwm</b></td></tr>
+<tr class="separator:af6564c3cd898729f71fde805cf59cfcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>/home/runner/work/Ventilator/Ventilator/software/controller/lib/hal/hal.h</li>

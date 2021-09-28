@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RespiraWorks Ventilator: InterruptControlStruct Struct Reference</title>
+<title>RespiraWorks Ventilator: LEDIndicators Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,36 +62,28 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structInterruptControlStruct-members.html">List of all members</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="classLEDIndicators-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">InterruptControlStruct Struct Reference</div>  </div>
+<div class="title">LEDIndicators Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:a9d30d1b6c52594657c8a97173484d9a0"><td class="memItemLeft" align="right" valign="top"><a id="a9d30d1b6c52594657c8a97173484d9a0"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>set_enable</b> [32]</td></tr>
-<tr class="separator:a9d30d1b6c52594657c8a97173484d9a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acfd149d884319e4a17da00dbc8774cfd"><td class="memItemLeft" align="right" valign="top"><a id="acfd149d884319e4a17da00dbc8774cfd"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>clear_enable</b> [32]</td></tr>
-<tr class="separator:acfd149d884319e4a17da00dbc8774cfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f0cfe090876116601a589163756658a"><td class="memItemLeft" align="right" valign="top"><a id="a9f0cfe090876116601a589163756658a"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>set_pending</b> [32]</td></tr>
-<tr class="separator:a9f0cfe090876116601a589163756658a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6ea5e56ffdb38734fefdb26a6fb1cce"><td class="memItemLeft" align="right" valign="top"><a id="ae6ea5e56ffdb38734fefdb26a6fb1cce"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>clear_pending</b> [32]</td></tr>
-<tr class="separator:ae6ea5e56ffdb38734fefdb26a6fb1cce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44a8b411762ce04aebe93f952bdb492e"><td class="memItemLeft" align="right" valign="top"><a id="a44a8b411762ce04aebe93f952bdb492e"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>active</b> [64]</td></tr>
-<tr class="separator:a44a8b411762ce04aebe93f952bdb492e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9918e721af981935c25a7a327126e41f"><td class="memItemLeft" align="right" valign="top"><a id="a9918e721af981935c25a7a327126e41f"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>priority</b> [1024]</td></tr>
-<tr class="separator:a9918e721af981935c25a7a327126e41f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a47378ec3f3488aff60231e236d162074"><td class="memItemLeft" align="right" valign="top"><a id="a47378ec3f3488aff60231e236d162074"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>initialize</b> ()</td></tr>
+<tr class="separator:a47378ec3f3488aff60231e236d162074"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7ee3bd8993840cb7e55d263687e707f"><td class="memItemLeft" align="right" valign="top"><a id="aa7ee3bd8993840cb7e55d263687e707f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set</b> (BinaryPin binary_pin, VoltageLevel value)</td></tr>
+<tr class="separator:aa7ee3bd8993840cb7e55d263687e707f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f7393f8b8e04f1b1fe241b0b805ee04"><td class="memItemLeft" align="right" valign="top"><a id="a8f7393f8b8e04f1b1fe241b0b805ee04"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLEDIndicators.html#a8f7393f8b8e04f1b1fe241b0b805ee04">set_pin_mode</a> (BinaryPin pin, GPIO::PinMode mode)</td></tr>
+<tr class="memdesc:a8f7393f8b8e04f1b1fe241b0b805ee04"><td class="mdescLeft">&#160;</td><td class="mdescRight">\TODO: is this the best thing to test? Isn't this implementation-specific? <br /></td></tr>
+<tr class="separator:a8f7393f8b8e04f1b1fe241b0b805ee04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this struct was generated from the following file:<ul>
-<li>/home/runner/work/Ventilator/Ventilator/software/controller/lib/hal/hal_stm32_regs.h</li>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>/home/runner/work/Ventilator/Ventilator/software/controller/lib/hal/led_indicators.h</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

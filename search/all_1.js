@@ -2,7 +2,7 @@ var searchData=
 [
   ['active_5fvariable_5fcount_4',['active_variable_count',['../classDebug_1_1Trace.html#a7ab7cf1f69154af6a7eb9b5567978ab9',1,'Debug::Trace']]],
   ['actuatorsstate_5',['ActuatorsState',['../structActuatorsState.html',1,'']]],
-  ['adcstruct_6',['AdcStruct',['../structAdcStruct.html',1,'']]],
+  ['adc_6',['ADC',['../classADC.html',1,'ADC'],['../classHalApi.html#a191ed6740c91d57c0a54acbe56b33a5d',1,'HalApi::adc()']]],
   ['alarmmanager_7',['AlarmManager',['../classAlarmManager.html',1,'']]],
   ['alarmpriority_8',['AlarmPriority',['../classAlarmPriority.html',1,'']]],
   ['analogpressuresensor_9',['AnalogPressureSensor',['../classAnalogPressureSensor.html',1,'']]],
