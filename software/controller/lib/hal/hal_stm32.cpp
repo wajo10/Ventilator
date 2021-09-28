@@ -302,7 +302,20 @@ void HalApi::InitUARTs() {
 
 void Uart2ISR() { debug_uart.ISR(); }
 
-#ifndef UART_VIA_DMA
+#if defined(UART_VIA_DMA)
+void DMA1Channel2ISR() {
+  uart_dma.DMA_tx_interrupt_handler();
+  DMA::get_register(DMA::Base::DMA1)->interrupt_clear.gif2 = 1;  // clear all channel 3 flags
+}
+
+void DMA1Channel3ISR() {
+  uart_dma.DMA_rx_interrupt_handler();
+  DMA::get_register(DMA::Base::DMA1)->interrupt_clear.gif3 = 1;  // clear all channel 2 flags
+}
+
+// This is the interrupt handler for the UART.
+void Uart3ISR() { uart_dma.UART_interrupt_handler(); }
+#else
 void Uart3ISR() { rpi_uart.ISR(); }
 #endif
 

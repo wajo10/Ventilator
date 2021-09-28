@@ -18,7 +18,7 @@ limitations under the License.
 
 #include "dma.h"
 #include "serial_listeners.h"
-#include "uart.h"
+#include "uart_regs.h"
 
 class DmaCtrl {
  public:

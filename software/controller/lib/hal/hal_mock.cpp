@@ -34,7 +34,6 @@ void HalApi::TESTSerialPutIncomingData(const char *data, uint16_t len) {
 }
 
 uint16_t HalApi::DebugRead(char *buf, uint16_t len) { return debug_serial_port_.Read(buf, len); }
-uint16_t HalApi::DebugBytesAvailableForRead() { return debug_serial_port_.BytesAvailableForRead(); }
 uint16_t HalApi::DebugWrite(const char *buf, uint16_t len) {
   return debug_serial_port_.Write(buf, len);
 }

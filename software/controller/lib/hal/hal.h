@@ -102,9 +102,6 @@ class HalApi {
   // many bytes were actually written and handle "short writes" where we wrote
   // less than the whole buffer.
   [[nodiscard]] uint16_t SerialWrite(const char *buf, uint16_t len);
-  [[nodiscard]] uint16_t SerialWrite(uint8_t data) {
-    return SerialWrite(reinterpret_cast<const char *>(&data), 1);
-  }
 
   // Number of bytes we can write without blocking.
   uint16_t SerialBytesAvailableForWrite();
@@ -113,7 +110,6 @@ class HalApi {
   [[nodiscard]] uint16_t DebugWrite(const char *buf, uint16_t len);
   [[nodiscard]] uint16_t DebugRead(char *buf, uint16_t len);
   uint16_t DebugBytesAvailableForWrite();
-  uint16_t DebugBytesAvailableForRead();
 
   // Perform some early chip initialization before static constructors are run
   void EarlyInit();

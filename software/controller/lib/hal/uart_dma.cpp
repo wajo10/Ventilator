@@ -14,11 +14,9 @@ limitations under the License.
 
 */
 
-#if defined(BARE_STM32) && defined(UART_VIA_DMA)
+#if defined(BARE_STM32)
 
 #include "uart_dma.h"
-
-#include "hal_stm32_regs.h"
 
 // STM32 UART3 driver based on DMA transfers.
 
@@ -29,8 +27,6 @@ limitations under the License.
 // CPU is notified via interrupt.
 
 // This driver also provides Character Match callback on match_char reception.
-
-extern UartDma uart_dma;
 
 // Performs UART3 initialization
 void UartDma::initialize(const uint32_t cpu_frequency_hz, const uint32_t baud) {
@@ -271,20 +267,5 @@ void UartDma::DMA_rx_interrupt_handler() {
     }
   }
 }
-
-// TODO: These are declared in hal_stm32.cpp but implemented here, clean this up!
-
-void DMA1Channel2ISR() {
-  uart_dma.DMA_tx_interrupt_handler();
-  DMA::get_register(DMA::Base::DMA1)->interrupt_clear.gif2 = 1;  // clear all channel 3 flags
-}
-
-void DMA1Channel3ISR() {
-  uart_dma.DMA_rx_interrupt_handler();
-  DMA::get_register(DMA::Base::DMA1)->interrupt_clear.gif3 = 1;  // clear all channel 2 flags
-}
-
-// This is the interrupt handler for the UART.
-void Uart3ISR() { uart_dma.UART_interrupt_handler(); }
 
 #endif
