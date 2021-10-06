@@ -120,16 +120,16 @@ install_linux() {
           qml-module-qtquick-controls2 \
           qml-module-qtmultimedia \
           pulseaudio \
-          python-pip \
+          python3-pip \
           xvfb \
-          bear \
           cppcheck \
           gcovr \
           lcov \
           clang-tidy
 }
 
-configure_conan() {
+install_local() {
+  pip install conan gitpython
   conan profile new --detect default
   conan profile update settings.compiler.libcxx=libstdc++11 default
   conan remote add conan-center https://conan.bintray.com False -f
@@ -245,6 +245,17 @@ elif [ "$1" == "install" ]; then
     echo "Unsupported platform: ${PLATFORM}"
     exit $EXIT_FAILURE
   fi
+
+#################
+# INSTALL LOCAL #
+#################
+elif [ "$1" == "install_local" ]; then
+  if [ "$EUID" -eq 0 ] && [ -z "$FORCED_ROOT" ]; then
+    echo "Please do not run install_local with root privileges!"
+    exit $EXIT_FAILURE
+  fi
+
+  install_local
 
 #########
 # CLEAN #
