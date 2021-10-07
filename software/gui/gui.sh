@@ -130,6 +130,7 @@ install_linux() {
 
 install_local() {
   pip3 install conan gitpython
+  source ${HOME}/.profile
   conan profile new --detect default
   conan profile update settings.compiler.libcxx=libstdc++11 default
   conan remote add conan-center https://conan.bintray.com False -f
