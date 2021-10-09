@@ -51,7 +51,7 @@ print_help() {
 RespiraWorks Ventilator UI build & test utilities.
 
 The following options are available:
-  install     Install dependencies for your platform [$PLATFORM]
+  install     One-time installation of build toolchain and dependencies
   clean       Clean build directory and de-initialize git submodules
   build       Build the gui to /build, options:
       [--relase/--debug] - what it says (default=release)
@@ -97,38 +97,35 @@ create_clean_directory() {
 
 install_linux() {
   # Last tuned for Ubuntu 2021.04 Hirsute
-  apt-get update
-  apt-get install -y \
-          git \
-          build-essential \
-          curl \
-          cmake \
-          qtbase5-dev \
-          qtbase5-dev-tools \
-          qtmultimedia5-dev \
-          qtdeclarative5-dev \
-          qtdeclarative5-dev-tools \
-          qtquickcontrols2-5-dev \
-          libqt5serialport5 \
-          libqt5serialport5-dev \
-          libqt5multimedia5 \
-          libqt5multimedia5-plugins \
-          libqt5multimediaquick5 \
-          libqt5multimediawidgets5 \
-          qml-module-qtcharts \
-          qml-module-qtquick-controls \
-          qml-module-qtquick-controls2 \
-          qml-module-qtmultimedia \
-          pulseaudio \
-          python3-pip \
-          xvfb \
-          cppcheck \
-          gcovr \
-          lcov \
-          clang-tidy
-}
-
-install_local() {
+  sudo apt-get update
+  sudo apt-get install -y \
+               git \
+               build-essential \
+               curl \
+               cmake \
+               qtbase5-dev \
+               qtbase5-dev-tools \
+               qtmultimedia5-dev \
+               qtdeclarative5-dev \
+               qtdeclarative5-dev-tools \
+               qtquickcontrols2-5-dev \
+               libqt5serialport5 \
+               libqt5serialport5-dev \
+               libqt5multimedia5 \
+               libqt5multimedia5-plugins \
+               libqt5multimediaquick5 \
+               libqt5multimediawidgets5 \
+               qml-module-qtcharts \
+               qml-module-qtquick-controls \
+               qml-module-qtquick-controls2 \
+               qml-module-qtmultimedia \
+               pulseaudio \
+               python3-pip \
+               xvfb \
+               cppcheck \
+               gcovr \
+               lcov \
+               clang-tidy
   pip3 install conan gitpython
   source ${HOME}/.profile
   conan profile new --detect default
@@ -235,8 +232,8 @@ elif [ "$1" == "install" ]; then
     configure_conan
     exit $EXIT_SUCCESS
   elif [ "$PLATFORM" == "Linux" ]; then
-    if [ "$EUID" -ne 0 ]; then
-      echo "Please run install with root privileges!"
+    if [ "$EUID" -eq 0 ] && [ -z "$FORCED_ROOT" ]; then
+      echo "Please do not run install with root privileges!"
       exit $EXIT_FAILURE
     fi
     install_linux
@@ -245,17 +242,6 @@ elif [ "$1" == "install" ]; then
     echo "Unsupported platform: ${PLATFORM}"
     exit $EXIT_FAILURE
   fi
-
-#################
-# INSTALL LOCAL #
-#################
-elif [ "$1" == "install_local" ]; then
-  if [ "$EUID" -eq 0 ] && [ -z "$FORCED_ROOT" ]; then
-    echo "Please do not run install_local with root privileges!"
-    exit $EXIT_FAILURE
-  fi
-
-  install_local
 
 #########
 # CLEAN #
