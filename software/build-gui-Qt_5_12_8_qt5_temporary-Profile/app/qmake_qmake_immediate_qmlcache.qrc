@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<RCC version="1.0">
+    <qresource prefix="/">
+        <file alias="images/Logo.png">../../gui/app/images/Logo.png</file>
+        <file alias="images/respiraWorksLogoHorizontalTransparent.png">../../gui/app/images/respiraWorksLogoHorizontalTransparent.png</file>
+        <file alias="images/RW_add_24.svg">../../gui/app/images/RW_add_24.svg</file>
+        <file alias="images/RW_adjust_24.svg">../../gui/app/images/RW_adjust_24.svg</file>
+        <file alias="images/RW_alarm-off_24.svg">../../gui/app/images/RW_alarm-off_24.svg</file>
+        <file alias="images/RW_alarm_24.svg">../../gui/app/images/RW_alarm_24.svg</file>
+        <file alias="images/RW_battery-100_24.svg">../../gui/app/images/RW_battery-100_24.svg</file>
+        <file alias="images/RW_battery-25_24.svg">../../gui/app/images/RW_battery-25_24.svg</file>
+        <file alias="images/RW_battery-50_24.svg">../../gui/app/images/RW_battery-50_24.svg</file>
+        <file alias="images/RW_battery-75_24.svg">../../gui/app/images/RW_battery-75_24.svg</file>
+        <file alias="images/RW_debug.svg">../../gui/app/images/RW_debug.svg</file>
+        <file alias="images/RW_info_24.svg">../../gui/app/images/RW_info_24.svg</file>
+        <file alias="images/RW_inspsenssettings_24.svg">../../gui/app/images/RW_inspsenssettings_24.svg</file>
+        <file alias="images/RW_log_24.svg">../../gui/app/images/RW_log_24.svg</file>
+        <file alias="images/RW_menu_24.svg">../../gui/app/images/RW_menu_24.svg</file>
+        <file alias="images/RW_substract_24.svg">../../gui/app/images/RW_substract_24.svg</file>
+        <file alias="images/RW_warning_24.svg">../../gui/app/images/RW_warning_24.svg</file>
+        <file alias="sounds/alarm_high.wav">../../gui/app/sounds/alarm_high.wav</file>
+        <file alias="sounds/alarm_low.wav">../../gui/app/sounds/alarm_low.wav</file>
+        <file alias="sounds/alarm_medium.wav">../../gui/app/sounds/alarm_medium.wav</file>
+        <file alias="fonts/NotoSans-Bold.ttf">../../gui/app/fonts/NotoSans-Bold.ttf</file>
+        <file alias="fonts/NotoSans-BoldItalic.ttf">../../gui/app/fonts/NotoSans-BoldItalic.ttf</file>
+        <file alias="fonts/NotoSans-Italic.ttf">../../gui/app/fonts/NotoSans-Italic.ttf</file>
+        <file alias="fonts/NotoSans-Regular.ttf">../../gui/app/fonts/NotoSans-Regular.ttf</file>
+        <file alias="fonts/Oxygen-Bold.ttf">../../gui/app/fonts/Oxygen-Bold.ttf</file>
+        <file alias="fonts/Oxygen-Light.ttf">../../gui/app/fonts/Oxygen-Light.ttf</file>
+        <file alias="fonts/Oxygen-Regular.ttf">../../gui/app/fonts/Oxygen-Regular.ttf</file>
+    </qresource>
+</RCC>

@@ -122,6 +122,7 @@ int main(int argc, char *argv[]) {
     }
     while (!file.atEnd()) {
       QString line{file.readLine()};
+      printf("PASA \n");
       line = line.trimmed();
       if (line.isEmpty() || line.startsWith("#") || line.startsWith("time"))
         continue;
@@ -133,6 +134,7 @@ int main(int argc, char *argv[]) {
       status.sensor_readings.flow_ml_per_min = 60 * tokens[2].toFloat();
       status.sensor_readings.volume_ml = tokens[3].toFloat();
       status.sensor_readings.breath_id = tokens[4].toInt();
+      printf("%s\n", tokens[4].toStdString().c_str());
       statuses.push_back(status);
     }
 

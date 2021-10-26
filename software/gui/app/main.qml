@@ -17,12 +17,12 @@ ApplicationWindow {
     maximumHeight: 600
     height: 600
     title: qsTr("Ventilator")
-    visibility: GuiStateContainer.isDebugBuild ?
-                    ApplicationWindow.Windowed :
-                    ApplicationWindow.FullScreen
+//    visibility: GuiStateContainer.isDebugBuild ?
+//                    ApplicationWindow.Windowed :
+//                    ApplicationWindow.FullScreen
     // uncomment this like if you want to see it full-screen
     // But that shouldn't matter on rPI running on EGLFS
-    //visibility: Qt.WindowFullScreen
+    visibility: Qt.WindowFullScreen
 
     background: Rectangle {
         color: Style.theme.color.windowBackground

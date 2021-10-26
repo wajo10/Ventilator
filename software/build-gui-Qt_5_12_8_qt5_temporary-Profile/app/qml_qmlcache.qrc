@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<RCC>
+    <qresource prefix="/">
+        <file alias="qmldir">../../gui/app/qmldir</file>
+        <file alias="sample-data/gui-sample-data.dat">../../gui/app/sample-data/gui-sample-data.dat</file>
+    </qresource>
+</RCC>
