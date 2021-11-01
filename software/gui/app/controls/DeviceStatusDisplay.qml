@@ -43,7 +43,7 @@ Row {
             id: period
             font: Style.clockFont
             color: Style.theme.color.textAlternative
-            text: GuiStateContainer.hour >= 12 ? "PM" : "AM"
+            text: GuiStateContainer.clock.hour >= 12 ? "PM" : "AM"
         }
     }
 
